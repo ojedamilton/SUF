@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGrupoPermisosTable extends Migration
+class CreateUsuarioGruposTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateGrupoPermisosTable extends Migration
      */
     public function up()
     {
-        Schema::create('grupoPermisos', function (Blueprint $table) {
+        Schema::create('usuarioGrupos', function (Blueprint $table) {
+            $table->unsignedBigInteger('idUsuario');
             $table->unsignedBigInteger('idGrupo');
-            $table->unsignedBigInteger('idPermiso');
-            $table->boolean('estadoGropoPermiso');
+            $table->boolean('estadoUsuarioGrupos');
             $table->timestamps();
 
+            $table->foreign('idUsuario')->references('id')->on('users');
             $table->foreign('idGrupo')->references('id')->on('grupos');
-            $table->foreign('idPermiso')->references('id')->on('permisos');
         });
     }
 
@@ -31,6 +31,6 @@ class CreateGrupoPermisosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('grupo_permisos');
+        Schema::dropIfExists('usuarioGrupos');
     }
 }

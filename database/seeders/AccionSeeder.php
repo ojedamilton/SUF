@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class PermisoSeeder extends Seeder
+class AccionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,10 +15,10 @@ class PermisoSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permisos')->insert([
-            'nombrePermiso' => 'view',
-            'descripcionPermiso' => 'Permiso a todo el contenido',
-            'estadoPermiso' => 1,
+        DB::table('acciones')->insert([
+            'nombreAccion' => 'view',
+            'descripcionAccion' => 'Permiso a todo el contenido',
+            'estadoAccion' => 1,
         ]); 
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class GrupoPermisoSeeder extends Seeder
+class GrupoAccionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,10 +15,10 @@ class GrupoPermisoSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('grupoPermisos')->insert([
+        DB::table('grupoAcciones')->insert([
             'idGrupo' => 1,
-            'idPermiso' => 1,
-            'estadoGropoPermiso'=>1
+            'idAccion' => 1,
+            'estadoGrupoAccion'=>1
         ]);  
     }
 }

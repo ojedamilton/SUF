@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterTableUsers extends Migration
+class CreateGrupoAccionesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,14 @@ class AlterTableUsers extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            
+        Schema::create('grupoAcciones', function (Blueprint $table) {
+            $table->unsignedBigInteger('idGrupo');
+            $table->unsignedBigInteger('idAccion');
+            $table->boolean('estadoGrupoAccion');
+            $table->timestamps();
+
             $table->foreign('idGrupo')->references('id')->on('grupos');
+            $table->foreign('idAccion')->references('id')->on('acciones');
         });
     }
 
@@ -26,8 +31,6 @@ class AlterTableUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('grupoAcciones');
     }
 }
