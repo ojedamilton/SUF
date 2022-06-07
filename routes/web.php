@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Mail\NotificacionRegistro;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +19,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/hola', function () {
+    return 'welcome';
+});
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+ /*  RUTAS -> Usuarios */
+ Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
+
+ Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');
+       

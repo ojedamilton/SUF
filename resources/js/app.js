@@ -8,8 +8,8 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 
-import VueRouter from 'vue-router';
-Vue.use(VueRouter);
+/*import VueRouter from 'vue-router';
+Vue.use(VueRouter); */
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -22,21 +22,29 @@ Vue.use(VueRouter);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('listado-user-component', require('./components/ListadoUserComponent.vue').default);
+Vue.component('nuevo-user-component', require('./components/NuevoUserComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-const routes = [
+/* const routes = [
     {
         path:'example',
         component:'./components/ExampleComponent.vue'
     }
 
-];
-const router =  new VueRouter({routes});
+]; */
+
+//const router =  new VueRouter({routes});
+
+var pathServer = window.location.hostname;
 const app = new Vue({
     el: '#app',
-    router:router
+    data:{
+        menu:0,
+        path:'https://'+pathServer,
+    }
 });
