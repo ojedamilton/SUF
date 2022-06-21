@@ -15,7 +15,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ config('app.name')}}</title>
   <link rel="icon" href="{{asset('img/folder.png')}}">
-
+  {{-- <link rel="stylesheet" href="{{asset('css/styles.css')}}"> --}}
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
@@ -26,7 +26,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{asset('css/adminlte.css')}}">
 </head>
 <body class="hold-transition sidebar-mini">
-<div id="app" class="wrapper"> <!-- div vue.js -->
+<div id="app" class="wrapper"> <!-- div corre vue.js -->
 
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -289,10 +289,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <template v-if="menu==11"> 
               <nuevo-user-component  :path="path"></nuevo-user-component>
           </template>
-           {{--  
-            <template v-if="menu==3"> 
-              <typedoc-component  :path="path"></typedoc-component>
+           
+            <template v-if="menu==5"> 
+              <facturacion-component  :path="path"></facturacion-component>
             </template>
+          {{--    
             <template v-if="menu==4"> 
               <speciality-component  :path="path"></speciality-component>
             </template> 
