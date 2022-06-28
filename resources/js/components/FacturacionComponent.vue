@@ -14,59 +14,12 @@
               >Cliente</label
             >
             <div class="col-lg-3 dropdown">
-              <input
-                type="text"
-                class="form-control input-sm dropdown-toggle"
-                id="nombre_cliente"
-                placeholder="Selecciona un cliente"
-                required=""
-                value=""
-                data-toggle="dropdown"
-                aria-expanded="true"
-              />
+              <input type="text" class="form-control input-sm dropdown-toggle" v-model="buscar" @keyup="listarClientes(buscar)"  id="nombre_cliente" placeholder="Selecciona un cliente" value="" data-toggle="dropdown"
+                aria-expanded="true"/>
               <div class="dropdown-menu" style="">
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  data-value="1"
-                  data-email="pablo.9000ppp@hotmail.com"
-                  data-telefono="018341453794"
-                >
-                  P<span class="text-primary">a</span>blo Picasso</button
-                ><button
-                  type="button"
-                  class="dropdown-item"
-                  data-value="3889"
-                  data-email="juanhernandezm2208@gmail.com"
-                  data-telefono="3023921157"
-                >
-                  Ju<span class="text-primary">a</span>n David</button
-                ><button
-                  type="button"
-                  class="dropdown-item"
-                  data-value="3887"
-                  data-email="alanlop@gmail.com"
-                  data-telefono="4221255"
-                >
-                  W<span class="text-primary">a</span>lter</button
-                ><button
-                  type="button"
-                  class="dropdown-item"
-                  data-value="3890"
-                  data-email="alanlopezeta@gmail.com"
-                  data-telefono="2345"
-                >
-                  LOL<span class="text-primary">A</span></button
-                ><button
-                  type="button"
-                  class="dropdown-item"
-                  data-value="3882"
-                  data-email="fbn@gmail.com"
-                  data-telefono="urrego beltran"
-                >
-                  k<span class="text-primary">a</span>therine marcela
-                </button>
-              </div>
+                <button v-for="cliente in arrayClientes" :key="cliente.id" :value="cliente.id" type="button" @click="rellenarCampos(cliente.nombreCliente,cliente.apellidoCliente,cliente.telefonoCliente,cliente.direccionCliente)" class="dropdown-item" data-value="1" data-email="asd@asd.com">
+                  {{cliente.nombreCliente + ' ' + cliente.apellidoCliente}}</button>
+                </div>
               <input id="id_cliente" name="id_cliente" type="hidden" value="" />
             </div>
             <label for="tel1" class="col-lg-1 control-label">Teléfono</label>
@@ -74,8 +27,8 @@
               <input
                 type="text"
                 class="form-control input-sm"
-                id="tel1"
-                placeholder="Teléfono"
+                id="telefono"
+                v-model="telefono"
                 value=""
                 readonly=""
               />
@@ -85,8 +38,8 @@
               <input
                 type="text"
                 class="form-control input-sm"
-                id="mail"
-                placeholder="Email"
+                id="email"
+                v-model="email"
                 readonly=""
                 value=""
               />
@@ -104,27 +57,10 @@
             </div>
             <label for="email" class="col-lg-1 control-label">Pago</label>
             <div class="col-lg-2">
-              <select
-                class="form-control input-sm"
-                id="condiciones"
-                name="condiciones"
-              >
-                <option value="1">Efectivo</option>
-                <option value="2">Cheque</option>
-                <option value="3">Transferencia bancaria</option>
-                <option value="4">Crédito</option>
+              <select class="form-control input-sm" id="valor" name="valor">
+                <option  v-for="valor in arrayValores" :key="valor.id" :value="valor.id">{{valor.nombreValor}}</option>
               </select>
             </div>
-            <!-- <div class="col-lg-2">
-              <select
-                class="form-control input-sm"
-                id="estado_factura"
-                name="estado_factura"
-              >
-                <option value="1">Pagado</option>
-                <option value="2">Pendiente</option>
-              </select>
-            </div> -->
           </div>
 
           <div class="col-md-12">
@@ -138,22 +74,6 @@
                 >
                   <i class="bi bi-plus-circle-fill"></i> Nuevo producto
                 </button>
-             <!--    <button
-                  type="button"
-                  class="btn btn-outline-secondary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addModal"
-                >
-                  <i class="bi bi-person-fill"></i> Nuevo cliente
-                </button> -->
-                <!-- <button
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#myModal"
-                  class="btn btn-outline-secondary"
-                >
-                  <i class="bi bi-search"></i> Agregar productos
-                </button> -->
                 <button type="submit" class="btn btn-outline-secondary">
                   <i class="bi bi-printer-fill"></i> Imprimir
                 </button>
@@ -210,17 +130,64 @@ export default {  // todo lo que voy a exportar
   props: ["path"], // obtengo constante definida en app.js
   data() {  // variables con las que me manejo en el template
     return {
-     arraaay:'array'
+      arrayValores: [],
+      arrayClientes: [],
+      buscar:'',
+      telefono:'',
+      email:'',
+      cliente:'',
+      tituloModal: "",
+      nombreVendedor: "",
+      description: "",
+      modal:0,
     }
   },
-  computed: {  // se usa para hacer logica extensa en el template 
-
+  computed: {  
+    // se usa para hacer logica extensa en el template 
   },
   methods:{  // metodos comunes impulsados por eventos
+    listarValores() {
+      let me = this;
+      var url = this.path + "/valores";
+      axios
+        .get(url) // ,{ params: {},} 
+        .then(function (response) {
+          var respuesta = response.data;
+          me.arrayValores = respuesta.valores;
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (error.response.status === 401) {
+            location.reload(true);
+          }
+        });
+    },
 
+    listarClientes(buscar) {
+      let me = this;
+      var url = this.path + "/clientes?buscar="+buscar;
+      axios
+        .get(url) // ,{ params: {},} 
+        .then(function (response) {
+          var respuesta = response.data;
+          me.arrayClientes = respuesta.clientes;
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (error.response.status === 401) {
+            location.reload(true);
+          }
+        });
+    },
+    rellenarCampos(n,a,t,e){
+        this.telefono=t;
+        this.email=e;
+        this.buscar=n+' '+a;
+    }
   },
-  mounted() {  // se auto ejecuta apenas termina de cargar el DOM
-
+  mounted() {  // se auto-ejecuta apenas termina de cargar el DOM
+   this.listarValores();
+   this.listarClientes();
   }
 };
 </script>

@@ -24,6 +24,7 @@ Vue.use(VueRouter); */
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('listado-user-component', require('./components/ListadoUserComponent.vue').default);
 Vue.component('nuevo-user-component', require('./components/NuevoUserComponent.vue').default);
+Vue.component('facturacion-component', require('./components/FacturacionComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -45,6 +46,6 @@ const app = new Vue({
     el: '#app',
     data:{
         menu:0,
-        path:'https://'+pathServer,
+        path:'http://'+pathServer+':8000',
     }
 });

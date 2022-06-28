@@ -2,8 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Mail\NotificacionRegistro;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ValorController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ClienteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +27,15 @@ Route::get('/hola', function () {
 });
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
  /*  RUTAS -> Usuarios */
  Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
-
  Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');
+
+ /*  RUTAS -> Valores */
+ Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
+
+ /*  RUTAS -> Clientes */
+ Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');
        

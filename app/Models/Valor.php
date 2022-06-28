@@ -12,7 +12,7 @@ class Valor extends Model
     protected $table='valores';
 
     protected $fillable = [
-        'nombre',
-        'descripcion'
+        'nombreValor',
+        'estadoValor'
     ];
 }

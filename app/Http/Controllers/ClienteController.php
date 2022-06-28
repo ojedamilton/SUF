@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Cliente;
 
 class ClienteController extends Controller
 {
@@ -11,32 +12,21 @@ class ClienteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function listarcliente(Request $request)
+    public function getAllClientes(Request $request)
     {
         // Si quieren Ingresar sin un request , redirecciona al home 
         if(!$request->ajax())return redirect('/');
 
-       /*  $buscar= $request->buscar;
-        if ($buscar=='') {
-            $users=Cliente::orderBy('id','desc')
-                         ->paginate(10);
-        }else{
-            $cliente=Cliente::where('username','like','%'.$buscar.'%')
-                        ->orWhere('name','like','%'.$buscar.'%')
-                        ->orderBy('name','asc')
-                        ->paginate(10);
-        } 
+         $buscar= $request->buscar;
+
+         $cliente=Cliente::where('nombreCliente','like','%'.$buscar.'%')
+                        ->orWhere('apellidoCliente','like','%'.$buscar.'%')
+                        ->orWhere('dniCliente','like','%'.$buscar.'%')
+                        ->orderBy('nombreCliente','asc')
+                        ->get();         
         return[
-            'pagination'=>[
-                'total'=>$users->total(),
-                'current_page'=>$users->currentPage(),
-                'per_page'=>$users->perPage(),
-                'last_page'=>$users->lastPage(),
-                'from'=>$users->firstItem(),
-                'to'=>$users->lastItem(),
-            ],
-            'cliente'=>$cliente,
-        ]; */
+            'clientes'=>$cliente,
+        ]; 
     }
 
     /**
