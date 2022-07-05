@@ -68,15 +68,14 @@
               <div class="btn-group" role="group" aria-label="Basic example">
                 <button
                   type="button"
-                  class="btn btn-outline-secondary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addModalProducto"
+                  class="btn btn-success"
+                  @click="abrirModal()"
                 >
-                  <i class="bi bi-plus-circle-fill"></i> Nuevo producto
+                  <i class="bi bi-plus-circle-fill"></i> Agregar Articulo
                 </button>
-                <button type="submit" class="btn btn-outline-secondary">
+             <!--    <button type="submit" class="btn btn-primary">
                   <i class="bi bi-printer-fill"></i> Imprimir
-                </button>
+                </button> -->
               </div>
             </div>
           </div>
@@ -88,8 +87,7 @@
           class="col-md-12"
           style="margin-top: 10px"
         ></div>
-        <!-- Carga los datos ajax -->
-
+      
         <div id="resultados" class="col-md-12" style="margin-top: 10px">
           <table class="table">
             <tbody>
@@ -101,6 +99,15 @@
                 <th class="text-end">PRECIO TOTAL</th>
                 <th></th>
               </tr>
+                <!-- Iterar datos 
+                <tr>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                </tr>      
+                 -->
               <tr>
                 <td class="text-end" colspan="4">SUBTOTAL $</td>
                 <td class="text-end">0.00</td>
@@ -122,6 +129,69 @@
         <!-- Carga los datos ajax -->
       </div>
     </div>
+      <!-- Modal -->
+      <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">{{tituloModal}}</h5>
+              <button type="button"  @click="cerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              </div>
+              <div class="modal-body">
+                  <div class="c">
+                        <div class="c-header">
+                            <!-- Find a result -->
+                            <input type="text" v-model="buscarArticulo"  @keyup="listarArticulos(1,buscar)" class="form-control" placeholder="Texto a buscar">     
+                        </div> 
+                        <!-- List Table Sectores --> 
+                        <div class="cbody">   
+                            <table id="table_articulo" class="table table-striped" width="100%">
+                                <thead>
+                                <tr>  
+                                    <th>Codigo</th>
+                                    <th>articulo</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                    <th>Agregar</th>
+                                </tr>  
+                                </thead>  
+                                <tbody>
+                                    <tr v-for="articulo in arrayArticulos" :key="articulo.id" >    
+                                        <td>{{'1'}}</td>    
+                                        <td>{{'T-Shirt'}}</td> 
+                                        <td class="col-2">
+                                          <input class="form-control form-control-sm" type="number" name="precio" id="precio">
+                                        </td>
+                                        <td class="col-2">
+                                          <input class="form-control form-control-sm" type="number" name="cantidad" id="cantidad">
+                                          </td>
+                                        <td>
+                                          <button class="btn btn-primary">Add</button>
+                                        </td>
+                                    </tr>  
+                                </tbody>  
+                            </table>
+                            <nav>
+                                <ul class="pagination">
+                                    <li class="page-item"  v-if="pagination.current_page > 1 ">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
+                                    </li>
+                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page">1</a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page "  >
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar)">Sig</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div> 
+                    </div>
+              </div>
+          </div>
+          </div>
+      </div>
   </main>
 </template>
 <script>
@@ -132,7 +202,17 @@ export default {  // todo lo que voy a exportar
     return {
       arrayValores: [],
       arrayClientes: [],
+      arrayArticulos:[1],
       buscar:'',
+      buscarArticulo:'',
+      pagination:{
+                  'total':0,
+                  'current_page':0,
+                  'per_page':0,
+                  'last_page':0,
+                  'from':0,
+                  'to':0,
+      },
       telefono:'',
       email:'',
       cliente:'',
@@ -144,6 +224,29 @@ export default {  // todo lo que voy a exportar
   },
   computed: {  
     // se usa para hacer logica extensa en el template 
+    isActived: function(){
+            return this.pagination.current_page;
+        },
+        pagesNumber: function (){
+            if(!this.pagination.to){
+                return[]
+            }
+            var from= this.pagination.current_page - this.offset;
+            if(from < 1){
+                from = 1;
+            }
+            var to = from + (this.offset * 2);
+            if(to >= this.pagination.last_page){
+                to = this.pagination.last_page;
+            }
+
+            var pagesArray=[];
+            while(from <= to){
+                pagesArray.push(from);
+                from++;
+            }
+            return pagesArray;
+        }
   },
   methods:{  // metodos comunes impulsados por eventos
     listarValores() {
@@ -162,7 +265,12 @@ export default {  // todo lo que voy a exportar
           }
         });
     },
-
+    abrirModal(){
+     this.modal=1;
+    },
+    cerrarModal(){
+     this.modal=0;
+    },
     listarClientes(buscar) {
       let me = this;
       var url = this.path + "/clientes?buscar="+buscar;
@@ -183,7 +291,14 @@ export default {  // todo lo que voy a exportar
         this.telefono=t;
         this.email=e;
         this.buscar=n+' '+a;
-    }
+    },
+     cambiarPagina(page,buscar){
+        let me = this;
+        //Actualizar pagina actual
+        me.pagination.current_page=page;
+        //Enviar la petición para visualizar la data de esa página
+        me.listarArticulos(page,buscar);
+    },
   },
   mounted() {  // se auto-ejecuta apenas termina de cargar el DOM
    this.listarValores();
@@ -191,3 +306,15 @@ export default {  // todo lo que voy a exportar
   }
 };
 </script>
+<style>
+   .modal-content{
+        width: 100%;
+        position: absolute !important;
+    }
+    .mostrar{
+        display: list-item !important;
+        opacity: 1 !important;
+        position: absolute !important;
+        background-color: #3c29297a !important;
+    }
+</style>    
