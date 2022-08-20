@@ -5,15 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Valor extends Model
+class Factura extends Model
 {
     use HasFactory;
 
-    protected $table='valores';
+    protected $table='facturas';
 
     protected $fillable = [
         'id',
-        'nombreValor',
-        'estadoValor'
+        'fechaFactura',
+        'estadoFactura',
+        'idCliente',
+        'idValor',
+        'idUsuario'
     ];
 }
