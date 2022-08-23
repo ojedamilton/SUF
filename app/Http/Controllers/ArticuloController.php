@@ -17,6 +17,26 @@ class ArticuloController extends Controller
         //
     }
 
+    public function getAllArticulos(Request $request) {
+         //dd('llegue aca');
+         // Si quieren Ingresar sin un request , redirecciona al home 
+         if(!$request->ajax())return redirect('/');
+
+         $buscar= $request->buscar;
+        if (!$buscar) {
+            $articulo=Articulo::all();
+        }else{
+            $articulo=Articulo::where('nombreArticulo','like','%'.$buscar.'%')
+            ->orWhere('id','like','%'.$buscar.'%')
+            ->orderBy('nombreArticulo','asc')
+            ->get();       
+        }
+          
+        return[
+            'articulos'=>$articulo,
+        ]; 
+    }
+
     /**
      * Show the form for creating a new resource.
      *

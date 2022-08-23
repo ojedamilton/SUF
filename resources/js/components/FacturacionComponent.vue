@@ -17,7 +17,7 @@
               <input type="text" class="form-control input-sm dropdown-toggle" v-model="buscar" @keyup="listarClientes(buscar)"  id="nombre_cliente" placeholder="Selecciona un cliente" value="" data-toggle="dropdown"
                 aria-expanded="true"/>
               <div class="dropdown-menu" style="">
-                <button v-for="cliente in arrayClientes" :key="cliente.id" :value="cliente.id" type="button" @click="rellenarCampos(cliente.nombreCliente,cliente.apellidoCliente,cliente.telefonoCliente,cliente.direccionCliente)" class="dropdown-item" data-value="1" data-email="asd@asd.com">
+                <button v-for="cliente in arrayClientes" :key="cliente.id" :value="cliente.id" type="button" @click="rellenarCampos(cliente.nombreCliente,cliente.apellidoCliente,cliente.telefonoCliente,cliente.emailCliente)" class="dropdown-item" data-value="1" data-email="asd@asd.com">
                   {{cliente.nombreCliente + ' ' + cliente.apellidoCliente}}</button>
                 </div>
               <input id="id_cliente" name="id_cliente" type="hidden" value="" />
@@ -69,7 +69,7 @@
                 <button
                   type="button"
                   class="btn btn-success"
-                  @click="abrirModal()"
+                  @click="abrirModal(),listarArticulos(buscar)"
                 >
                   <i class="bi bi-plus-circle-fill"></i> Agregar Articulo
                 </button>
@@ -109,7 +109,7 @@
                 </tr>      
                  -->
               <tr>
-                <td class="text-end" colspan="4">SUBTOTAL $</td>
+                <td class="text-end" colspan="4">SUBTOTALES $</td>
                 <td class="text-end">0.00</td>
                 <td></td>
               </tr>
@@ -143,7 +143,7 @@
                   <div class="c">
                         <div class="c-header">
                             <!-- Find a result -->
-                            <input type="text" v-model="buscarArticulo"  @keyup="listarArticulos(1,buscar)" class="form-control" placeholder="Texto a buscar">     
+                            <input type="text" v-model="buscarArticulo"  @keyup="listarArticulos(buscarArticulo)" class="form-control" placeholder="Texto a buscar">     
                         </div> 
                         <!-- List Table Sectores --> 
                         <div class="cbody">   
@@ -159,13 +159,13 @@
                                 </thead>  
                                 <tbody>
                                     <tr v-for="articulo in arrayArticulos" :key="articulo.id" >    
-                                        <td>{{'1'}}</td>    
-                                        <td>{{'T-Shirt'}}</td> 
+                                        <td>{{articulo.id}}</td>    
+                                        <td>{{articulo.nombreArticulo}}</td> 
                                         <td class="col-2">
-                                          <input class="form-control form-control-sm" type="number" name="precio" id="precio">
+                                          <input class="form-control form-control-sm"  :value="articulo.precio" type="number" name="precio" id="precio">
                                         </td>
                                         <td class="col-2">
-                                          <input class="form-control form-control-sm" type="number" name="cantidad" id="cantidad">
+                                          <input class="form-control form-control-sm" :value="1" type="number" name="cantidad" id="cantidad">
                                           </td>
                                         <td>
                                           <button class="btn btn-primary">Add</button>
@@ -179,7 +179,7 @@
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page">1</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" >1</a>
                                     </li>
                                     <li class="page-item" v-if="pagination.current_page < pagination.last_page "  >
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar)">Sig</a>
@@ -202,7 +202,7 @@ export default {  // todo lo que voy a exportar
     return {
       arrayValores: [],
       arrayClientes: [],
-      arrayArticulos:[1],
+      arrayArticulos:[],
       buscar:'',
       buscarArticulo:'',
       pagination:{
@@ -216,6 +216,8 @@ export default {  // todo lo que voy a exportar
       telefono:'',
       email:'',
       cliente:'',
+      precio:0,
+      cantidadArtModal:1,
       tituloModal: "",
       nombreVendedor: "",
       description: "",
@@ -279,6 +281,22 @@ export default {  // todo lo que voy a exportar
         .then(function (response) {
           var respuesta = response.data;
           me.arrayClientes = respuesta.clientes;
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (error.response.status === 401) {
+            location.reload(true);
+          }
+        });
+    },
+    listarArticulos(buscar) {
+      let me = this;
+      var url = this.path + "/articulos?buscar="+buscar;
+      axios
+        .get(url) // ,{ params: {},} 
+        .then(function (response) {
+          var respuesta = response.data;
+          me.arrayArticulos = respuesta.articulos;
         })
         .catch(function (error) {
           console.log(error);

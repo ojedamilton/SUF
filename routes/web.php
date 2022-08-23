@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ArticuloController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,4 +39,8 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
  /*  RUTAS -> Clientes */
  Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');
+
+ // RUTAS -> Articulos
+
+ Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
        
