@@ -53,7 +53,7 @@
             </div>
             <label for="tel2" class="col-lg-1 control-label">Fecha</label>
             <div class="col-lg-2">
-              <input type="text" class="form-control input-sm" id="fecha" value="16/06/2022" readonly="" />
+              <input type="text" class="form-control input-sm" id="fecha" value="23/08/2022" readonly="" />
             </div>
             <label for="email" class="col-lg-1 control-label">Pago</label>
             <div class="col-lg-2">
@@ -165,10 +165,10 @@
                                           <input class="form-control form-control-sm"  :value="articulo.precio" type="number" name="precio" id="precio">
                                         </td>
                                         <td class="col-2">
-                                          <input class="form-control form-control-sm" :value="1" type="number" name="cantidad" id="cantidad">
+                                          <input class="form-control form-control-sm" v-model="cantidadArtModal" type="number" name="cantidad" id="cantidad">
                                           </td>
                                         <td>
-                                          <button class="btn btn-primary">Add</button>
+                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio,cantidadArtModal)" class="btn btn-primary">Add</button>
                                         </td>
                                     </tr>  
                                 </tbody>  
@@ -309,6 +309,9 @@ export default {  // todo lo que voy a exportar
         this.telefono=t;
         this.email=e;
         this.buscar=n+' '+a;
+    },
+    rellenarDetalleFactura(id,nombre,precio,cantidad){
+      console.log(id,nombre,precio,cantidad);
     },
      cambiarPagina(page,buscar){
         let me = this;
