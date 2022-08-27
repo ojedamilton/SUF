@@ -69,7 +69,7 @@
                 <button
                   type="button"
                   class="btn btn-success"
-                  @click="abrirModal(),listarArticulos(buscar)"
+                  @click="abrirModal(),listarArticulos(buscarArticulo)"
                 >
                   <i class="bi bi-plus-circle-fill"></i> Agregar Articulo
                 </button>
@@ -99,25 +99,14 @@
                 <th class="text-end">PRECIO TOTAL</th>
                 <th></th>
               </tr>
-                <!-- Iterar datos 
-                <tr>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
+                <!-- Iterar datos -->
+                <tr v-for="detalle in arrayDetalles" :key="detalle.id" > 
+                   <td>{{detalle.id}}</td>
+                   <td>{{detalle.cantidad}}</td>
+                   <td>{{detalle.nombre}}</td>
+                   <td>{{detalle.precio}}</td>
+                   <td>{{detalle.precioTotal}}</td>
                 </tr>      
-                 -->
-              <tr>
-                <td class="text-end" colspan="4">SUBTOTALES $</td>
-                <td class="text-end">0.00</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td class="text-end" colspan="4">IVA (13)% $</td>
-                <td class="text-end">0.00</td>
-                <td></td>
-              </tr>
               <tr>
                 <td class="text-end" colspan="4">TOTAL $</td>
                 <td class="text-end">0.00</td>
@@ -145,7 +134,7 @@
                             <!-- Find a result -->
                             <input type="text" v-model="buscarArticulo"  @keyup="listarArticulos(buscarArticulo)" class="form-control" placeholder="Texto a buscar">     
                         </div> 
-                        <!-- List Table Sectores --> 
+                        <!-- List Table Details --> 
                         <div class="cbody">   
                             <table id="table_articulo" class="table table-striped" width="100%">
                                 <thead>
@@ -165,10 +154,10 @@
                                           <input class="form-control form-control-sm"  :value="articulo.precio" type="number" name="precio" id="precio">
                                         </td>
                                         <td class="col-2">
-                                          <input class="form-control form-control-sm" v-model="cantidadArtModal" type="number" name="cantidad" id="cantidad">
+                                          <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
                                           </td>
                                         <td>
-                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio,cantidadArtModal)" class="btn btn-primary">Add</button>
+                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio)" class="btn btn-primary">Add</button> <!--  -->
                                         </td>
                                     </tr>  
                                 </tbody>  
@@ -203,6 +192,7 @@ export default {  // todo lo que voy a exportar
       arrayValores: [],
       arrayClientes: [],
       arrayArticulos:[],
+      arrayDetalles:[],
       buscar:'',
       buscarArticulo:'',
       pagination:{
@@ -289,9 +279,9 @@ export default {  // todo lo que voy a exportar
           }
         });
     },
-    listarArticulos(buscar) {
+    listarArticulos(buscarArticulo) {
       let me = this;
-      var url = this.path + "/articulos?buscar="+buscar;
+      var url = this.path + "/articulos?buscar="+buscarArticulo;
       axios
         .get(url) // ,{ params: {},} 
         .then(function (response) {
@@ -310,8 +300,18 @@ export default {  // todo lo que voy a exportar
         this.email=e;
         this.buscar=n+' '+a;
     },
-    rellenarDetalleFactura(id,nombre,precio,cantidad){
-      console.log(id,nombre,precio,cantidad);
+    rellenarDetalleFactura(id,nombre,precio,cantidad,t){
+      const valorCantidad = document.getElementById(id).value     
+       const detalleObjeto ={}
+       detalleObjeto.id=id
+       detalleObjeto.nombre=nombre
+       detalleObjeto.precio=precio
+       detalleObjeto.cantidad=valorCantidad
+       detalleObjeto.precioTotal=valorCantidad*precio
+       // const detalleParse= JSON.parse(JSON.stringify(detalleObjeto))
+       const detalleParse = {...detalleObjeto} // Sacar Observer
+       this.arrayDetalles.push(detalleParse)
+       console.log([...this.arrayDetalles][1])
     },
      cambiarPagina(page,buscar){
         let me = this;
