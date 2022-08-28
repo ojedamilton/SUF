@@ -93,27 +93,34 @@
             <tbody>
               <tr>
                 <th class="text-center">CODIGO</th>
-                <th class="text-center">CANT.</th>
                 <th>DESCRIPCION</th>
+                <th class="">CANT.</th>
                 <th class="text-end">PRECIO UNIT.</th>
                 <th class="text-end">PRECIO TOTAL</th>
+                <th class="text-end">ACCION</th>
                 <th></th>
               </tr>
                 <!-- Iterar datos -->
-                <tr v-for="detalle in arrayDetalles" :key="detalle.id" > 
-                   <td>{{detalle.id}}</td>
-                   <td>{{detalle.cantidad}}</td>
-                   <td>{{detalle.nombre}}</td>
+                <tr v-for="(detalle,index) in arrayDetalles" :key="detalle.id" > 
+                   <td class="text-center">{{detalle.id}}</td>
+                   <td >{{detalle.nombre}}</td>
+                   <td class="">{{detalle.cantidad}}</td>
                    <td>{{detalle.precio}}</td>
                    <td>{{detalle.precioTotal}}</td>
+                   <td>
+                     <button @click="eliminarItem(index)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                   </td>
                 </tr>      
               <tr>
                 <td class="text-end" colspan="4">TOTAL $</td>
-                <td class="text-end">0.00</td>
+                <td id="totalFactura" class="text-end">0.00</td>
                 <td></td>
               </tr>
             </tbody>
           </table>
+          <div class="d-flex justify-content-md-end">
+            <button class="btn btn-primary">Facturar</button>
+          </div>
         </div>
         <!-- Carga los datos ajax -->
       </div>
@@ -151,13 +158,13 @@
                                         <td>{{articulo.id}}</td>    
                                         <td>{{articulo.nombreArticulo}}</td> 
                                         <td class="col-2">
-                                          <input class="form-control form-control-sm"  :value="articulo.precio" type="number" name="precio" id="precio">
+                                          <input class="form-control form-control-sm" disabled  :value="articulo.precio" type="number" name="precio" id="precio">
                                         </td>
                                         <td class="col-2">
                                           <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
                                           </td>
                                         <td>
-                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio)" class="btn btn-primary">Add</button> <!--  -->
+                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio),sumarTotal()" class="btn btn-primary">Add</button> <!--  -->
                                         </td>
                                     </tr>  
                                 </tbody>  
@@ -312,6 +319,33 @@ export default {  // todo lo que voy a exportar
        const detalleParse = {...detalleObjeto} // Sacar Observer
        this.arrayDetalles.push(detalleParse)
        console.log([...this.arrayDetalles][1])
+    },
+    eliminarItem(id){
+      var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
+      console.log(parsedobj)
+      this.arrayDetalles.splice(id,1)
+      const restaTotal =  parsedobj.reduce((acum,elem,i)=>{
+        console.log(id,i);
+          if (id != i) {
+           acum=acum+elem.precioTotal
+           return acum 
+          }else{
+            return acum
+          }
+      },0)
+      console.log(restaTotal)
+      const totalFactura = document.querySelector('#totalFactura')
+      totalFactura.textContent = restaTotal
+    },
+    sumarTotal(){
+      var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
+      const total =parsedobj.reduce((acum,elem,i)=>{
+          acum=acum+elem.precioTotal
+          return acum
+      },0)
+      const totalFactura = document.querySelector('#totalFactura')
+      totalFactura.textContent = total
+      console.log(total)
     },
      cambiarPagina(page,buscar){
         let me = this;
