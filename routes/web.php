@@ -8,6 +8,7 @@ use App\Http\Controllers\ValorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ArticuloController;
+use App\Http\Controllers\FacturaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,4 +44,8 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
  // RUTAS -> Articulos
 
  Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
+
+ // RUTAS -> Facturacion 
+
+Route::post('/facturar', [FacturaController::class,'store'])->name('facturar');
        

@@ -8,6 +8,7 @@
       </div>
 
       <div class="card-body">
+        
         <form class="form-horizontal" role="form" id="datos_factura">
           <div class="row">
             <label for="nombre_cliente" class="col-lg-1 control-label"
@@ -17,7 +18,7 @@
               <input type="text" class="form-control input-sm dropdown-toggle" v-model="buscar" @keyup="listarClientes(buscar)"  id="nombre_cliente" placeholder="Selecciona un cliente" value="" data-toggle="dropdown"
                 aria-expanded="true"/>
               <div class="dropdown-menu" style="">
-                <button v-for="cliente in arrayClientes" :key="cliente.id" :value="cliente.id" type="button" @click="rellenarCampos(cliente.nombreCliente,cliente.apellidoCliente,cliente.telefonoCliente,cliente.emailCliente)" class="dropdown-item" data-value="1" data-email="asd@asd.com">
+                <button v-for="cliente in arrayClientes" :key="cliente.id" :value="cliente.id" type="button" @click="rellenarCampos(cliente.nombreCliente,cliente.apellidoCliente,cliente.telefonoCliente,cliente.emailCliente,cliente.id)" class="dropdown-item" data-value="1" data-email="asd@asd.com">
                   {{cliente.nombreCliente + ' ' + cliente.apellidoCliente}}</button>
                 </div>
               <input id="id_cliente" name="id_cliente" type="hidden" value="" />
@@ -53,7 +54,7 @@
             </div>
             <label for="tel2" class="col-lg-1 control-label">Fecha</label>
             <div class="col-lg-2">
-              <input type="text" class="form-control input-sm" id="fecha" value="23/08/2022" readonly="" />
+              <input type="text" class="form-control input-sm" id="fecha" v-model="fecha" readonly="" />
             </div>
             <label for="email" class="col-lg-1 control-label">Pago</label>
             <div class="col-lg-2">
@@ -101,12 +102,12 @@
                 <th></th>
               </tr>
                 <!-- Iterar datos -->
-                <tr v-for="(detalle,index) in arrayDetalles" :key="detalle.id" > 
-                   <td class="text-center">{{detalle.id}}</td>
+                <tr v-for="(detalle,index) in arrayDetalles" :key="detalle.idArticulo" > 
+                   <td class="text-center">{{detalle.idArticulo}}</td>
                    <td >{{detalle.nombre}}</td>
-                   <td class="">{{detalle.cantidad}}</td>
-                   <td>{{detalle.precio}}</td>
-                   <td>{{detalle.precioTotal}}</td>
+                   <td class="">{{detalle.cantidadArticulo}}</td>
+                   <td>{{detalle.precioVenta}}</td>
+                   <td>{{detalle.totalDetalle}}</td>
                    <td>
                      <button @click="eliminarItem(index)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                    </td>
@@ -119,7 +120,7 @@
             </tbody>
           </table>
           <div class="d-flex justify-content-md-end">
-            <button class="btn btn-primary">Facturar</button>
+            <button class="btn btn-primary" @click="facturarTodo()" >Facturar</button>
           </div>
         </div>
         <!-- Carga los datos ajax -->
@@ -158,7 +159,7 @@
                                         <td>{{articulo.id}}</td>    
                                         <td>{{articulo.nombreArticulo}}</td> 
                                         <td class="col-2">
-                                          <input class="form-control form-control-sm" disabled  :value="articulo.precio" type="number" name="precio" id="precio">
+                                          <input class="form-control form-control-sm" :value="articulo.precio" type="number" name="precio" id="precio">
                                         </td>
                                         <td class="col-2">
                                           <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
@@ -212,7 +213,9 @@ export default {  // todo lo que voy a exportar
       },
       telefono:'',
       email:'',
+      fecha:'',
       cliente:'',
+      idCliente:0,
       precio:0,
       cantidadArtModal:1,
       tituloModal: "",
@@ -302,19 +305,20 @@ export default {  // todo lo que voy a exportar
           }
         });
     },
-    rellenarCampos(n,a,t,e){
+    rellenarCampos(n,a,t,e,c){
         this.telefono=t;
         this.email=e;
         this.buscar=n+' '+a;
+        this.idCliente=c;
     },
     rellenarDetalleFactura(id,nombre,precio,cantidad,t){
-      const valorCantidad = document.getElementById(id).value     
+      const valorCantidad =parseInt(document.getElementById(id).value)     
        const detalleObjeto ={}
-       detalleObjeto.id=id
+       detalleObjeto.idArticulo=id
        detalleObjeto.nombre=nombre
-       detalleObjeto.precio=precio
-       detalleObjeto.cantidad=valorCantidad
-       detalleObjeto.precioTotal=valorCantidad*precio
+       detalleObjeto.precioVenta=parseInt(precio)
+       detalleObjeto.cantidadArticulo=valorCantidad
+       detalleObjeto.totalDetalle=valorCantidad*precio
        // const detalleParse= JSON.parse(JSON.stringify(detalleObjeto))
        const detalleParse = {...detalleObjeto} // Sacar Observer
        this.arrayDetalles.push(detalleParse)
@@ -327,7 +331,7 @@ export default {  // todo lo que voy a exportar
       const restaTotal =  parsedobj.reduce((acum,elem,i)=>{
         console.log(id,i);
           if (id != i) {
-           acum=acum+elem.precioTotal
+           acum=acum+elem.totalDetalle
            return acum 
           }else{
             return acum
@@ -340,12 +344,39 @@ export default {  // todo lo que voy a exportar
     sumarTotal(){
       var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
       const total =parsedobj.reduce((acum,elem,i)=>{
-          acum=acum+elem.precioTotal
+          acum=acum+elem.totalDetalle
           return acum
       },0)
       const totalFactura = document.querySelector('#totalFactura')
       totalFactura.textContent = total
       console.log(total)
+    },
+    facturarTodo(){
+      let totalFactura = document.querySelector('#totalFactura').textContent
+      let pago = parseInt(document.querySelector('#valor').value);
+      let me = this;
+      var url = this.path + "/facturar";
+      axios
+        .post(url ,{ 
+              factura:{
+                'pago':pago,
+                'id_cliente': this.idCliente,
+                'fecha':this.fecha,
+                'totalFactura':parseInt(totalFactura)
+              }, 
+              detalles:this.arrayDetalles
+        }) 
+        .then(function (response) {
+          var respuesta = response.data;
+          console.log(respuesta);
+          //me.arrayValores = respuesta.valores;
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (error.response.status === 401) {
+            location.reload(true);
+          }
+        });
     },
      cambiarPagina(page,buscar){
         let me = this;
@@ -358,6 +389,9 @@ export default {  // todo lo que voy a exportar
   mounted() {  // se auto-ejecuta apenas termina de cargar el DOM
    this.listarValores();
    this.listarClientes();
+   let date = new Date();
+   this.fecha=date.toISOString().split('T')[0];
+  
   }
 };
 </script>

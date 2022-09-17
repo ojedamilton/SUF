@@ -9,13 +9,14 @@ class DetalleFactura extends Model
 {
     use HasFactory;
 
-    protected $table='detallesfacturas';
+    protected $table='detallesFacturas';
 
     protected $fillable = [
         'id',
         'precioVenta',
         'cantidadArticulo',
         'idFactura',
-        'idArticulo'
+        'idArticulo',
+        'totalDetalle'
     ];
 }

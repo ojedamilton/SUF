@@ -17,6 +17,7 @@ class Factura extends Model
         'estadoFactura',
         'idCliente',
         'idValor',
-        'idUsuario'
+        'idUsuario',
+        'totalFactura'
     ];
 }
