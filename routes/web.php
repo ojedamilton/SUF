@@ -22,7 +22,7 @@ use App\Http\Controllers\FacturaController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 Route::get('/hola', function () {
     return 'welcome';

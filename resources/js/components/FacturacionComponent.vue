@@ -369,7 +369,15 @@ export default {  // todo lo que voy a exportar
         .then(function (response) {
           var respuesta = response.data;
           console.log(respuesta);
-          //me.arrayValores = respuesta.valores;
+         /*  me.arrayDetalles['idArticulo']=0;
+          me.arrayDetalles['nombre']='';
+          me.arrayDetalles['precioVenta']=0
+          me.arrayDetalles['cantidadArticulo']=0
+          me.arrayDetalles['totalDetalle']=0
+          totalFactura='';
+          this.telefono=0;
+          this.email='';
+          this.cliente=0; */
         })
         .catch(function (error) {
           console.log(error);

@@ -80,7 +80,7 @@ class FacturaController extends Controller
             $detalleFactura = new DetalleFactura;
             // con metodo Create paso Array
             //dd($detalleReq); 
-            $detalleFactura->create($detalleReq);
+            $detalleFactura->insert($detalleReq);
            DB::commit();
         } catch (\Throwable $th) {
            DB::rollback();
