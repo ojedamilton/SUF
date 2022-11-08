@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\FacturaController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,7 @@ use App\Http\Controllers\FacturaController;
 Route::get('/', function () {
     return view('auth.login');
 });
-Route::get('/hola', function () {
-    return 'welcome';
-});
+
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -48,4 +47,6 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
  // RUTAS -> Facturacion 
 
 Route::post('/facturar', [FacturaController::class,'store'])->name('facturar');
+Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
+Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid'); 
        

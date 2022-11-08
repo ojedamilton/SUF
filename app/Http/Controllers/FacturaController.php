@@ -68,6 +68,7 @@ class FacturaController extends Controller
             $factura->idValor=$request->factura['pago'];
             $factura->idUsuario=Auth::user()->id;
             $factura->totalFactura=$request->factura['totalFactura'];
+            $factura->descuento=$request->factura['descuento'];
             $factura->save();
             
             // Instancio Detalles
@@ -81,6 +82,7 @@ class FacturaController extends Controller
             // con metodo Create paso Array
             //dd($detalleReq); 
             $detalleFactura->insert($detalleReq);
+            //dd($detalleReq); 
            DB::commit();
         } catch (\Throwable $th) {
            DB::rollback();
@@ -114,7 +116,38 @@ class FacturaController extends Controller
         // Instanciamos el detalle de factura llamando al modelo DetalleFactura
 
     }
+    public function getAllFacturas(Request $request){
+       
+            //dd('llegue aca');
+            // Si quieren Ingresar sin un request , redirecciona al home 
+            if(!$request->ajax())return redirect('/');
 
+            $listadofacturas=Factura::
+                             orderBy('id','desc')
+                             ->get();
+  
+           return[
+               'listadofacturas'=>$listadofacturas,
+           ]; 
+       
+    } 
+    public function  getDetallesById(Request $request){
+       
+        //dd('llegue aca');
+        // Si quieren Ingresar sin un request , redirecciona al home 
+        if(!$request->ajax())return redirect('/');
+
+        
+        $idFactura=$request->id;
+        $detallesById=DetalleFactura::
+                         where('idFactura',$idFactura)
+                         ->get();
+
+       return[
+           'detallesbyid'=>$detallesById,
+       ]; 
+   
+    }
     /**
      * Display the specified resource.
      *

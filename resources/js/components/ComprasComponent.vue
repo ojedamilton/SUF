@@ -3,7 +3,7 @@
     <div class="card my-3">
       <div class="d-flex card-header">
         <div class="p-0 flex-grow-1">
-          <h5><i class="bi bi-plus-circle"></i> Nueva Factura</h5>
+          <h5><i class="bi bi-plus-circle"></i> Nueva Compra</h5>
         </div>
       </div>
 
@@ -25,11 +25,25 @@
             </div>
             <label for="tel1" class="col-lg-1 control-label">Teléfono</label>
             <div class="col-lg-2">
-              <input type="text" class="form-control input-sm" id="telefono" v-model="telefono" value="" readonly="">
+              <input
+                type="text"
+                class="form-control input-sm"
+                id="telefono"
+                v-model="telefono"
+                value=""
+                readonly=""
+              />
             </div>
             <label for="mail" class="col-lg-1 control-label">Email</label>
             <div class="col-lg-4">
-              <input type="text" class="form-control input-sm" id="email" v-model="email" readonly=""  value="" />
+              <input
+                type="text"
+                class="form-control input-sm"
+                id="email"
+                v-model="email"
+                readonly=""
+                value=""
+              />
             </div>
           </div>
 
@@ -97,29 +111,11 @@
                    <td>
                      <button @click="eliminarItem(index)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                    </td>
-                </tr>  
-              <tr> 
-                <td>
-                    <label class="text-end" colspan="4" for="descuento">Descuento</label>
-                </td>
-                <td class="text-end" colspan="2" >
-                   <select @change="obtenerDescuento()" v-model="descuento" name="descuento" id="descuento">
-                      <option value="0">Sin descuento</option>
-                      <option value="5">5%</option>
-                      <option value="10">10%</option>
-                      <option value="15">15%</option>
-                      <option value="20">20%</option>
-                   </select>
-                  </td>
-              </tr>    
+                </tr>      
               <tr>
-                <td class="text-end" colspan="4">SUBTOTAL $</td>
-                <td id="subTotalFactura" class="text-end">0.00</td>
-                <td></td>
-              </tr>
-              <tr>
-                  <td class="text-end" colspan="4">TOTAL $</td>
+                <td class="text-end" colspan="4">TOTAL $</td>
                 <td id="totalFactura" class="text-end">0.00</td>
+                <td></td>
               </tr>
             </tbody>
           </table>
@@ -169,7 +165,7 @@
                                           <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
                                           </td>
                                         <td>
-                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio),sumarSubtotal()" class="btn btn-primary">Add</button> <!--  -->
+                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio),sumarTotal()" class="btn btn-primary">Add</button> <!--  -->
                                         </td>
                                     </tr>  
                                 </tbody>  
@@ -206,7 +202,6 @@ export default {  // todo lo que voy a exportar
       arrayArticulos:[],
       arrayDetalles:[],
       buscar:'',
-      descuento:0,
       buscarArticulo:'',
       pagination:{
                   'total':0,
@@ -345,103 +340,41 @@ export default {  // todo lo que voy a exportar
           }
       },0)
       console.log(restaTotal)
-      const totalFactura = document.querySelector('#subTotalFactura')
+      const totalFactura = document.querySelector('#totalFactura')
       totalFactura.textContent = restaTotal
     },
-    sumarSubtotal(){
+    sumarTotal(){
       var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
-      const subTotal =parsedobj.reduce((acum,elem,i)=>{
+      const total =parsedobj.reduce((acum,elem,i)=>{
           acum=acum+elem.totalDetalle
           return acum
       },0)
-      const subTotalFactura = document.querySelector('#subTotalFactura')
-      subTotalFactura.textContent = subTotal
-      const totalFactura = document.querySelector('#totalFactura')
-      totalFactura.textContent = subTotal
-      console.log(subTotal)
-    },
-    sumarTotal(){
-      
       const totalFactura = document.querySelector('#totalFactura')
       totalFactura.textContent = total
-   
-    },
-    obtenerDescuento(){
-      const subTotalFactura = document.querySelector('#subTotalFactura');
-      const totalFactura = document.querySelector('#totalFactura');
-      let dcto  = 0;
-      switch (this.descuento) {
-        case '5':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*5/100;  
-          totalFactura.textContent = dcto;
-          break;
-        case '10':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*10/100;  
-          totalFactura.textContent = dcto;
-          break;
-        case '15':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*15/100;  
-          totalFactura.textContent = dcto;
-          break;
-        case '20':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*20/100; 
-          totalFactura.textContent = dcto;
-          break;    
-        default:
-           var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
-           const total =parsedobj.reduce((acum,elem,i)=>{
-                 acum=acum+elem.totalDetalle
-                return acum
-              },0)
-          totalFactura.textContent = total;
-          break;
-      }
-      /*  if (this.descuento) {
-         const totalFactura = document.querySelector('#totalFactura');
-         let dcto = parseFloat(totalFactura.textContent)*parseInt(this.descuento)/100;  
-         let total = parseFloat(totalFactura.textContent) - dcto;
-         totalFactura.textContent = total;
-       } */
+      console.log(total)
     },
     facturarTodo(){
-      let totalFactura = document.querySelector('#totalFactura').textContent;
+      let totalFactura = document.querySelector('#totalFactura').textContent
       let pago = parseInt(document.querySelector('#valor').value);
       let me = this;
-      
       //const detalleParse = {...detalleObjeto} // Sacar Observer
-     
-      //me.arrayDetalles=[];
+      me.arrayDetalles=[];
       //debugger;
       console.log('me Array: '+this.arrayDetalles);
-      var url = "/facturar";
+      var url =+ "/facturar";
       axios
         .post(url ,{ 
               factura:{
                 'pago':pago,
                 'id_cliente': this.idCliente,
                 'fecha':this.fecha,
-                'totalFactura':parseInt(totalFactura),
-                'descuento':parseInt(this.descuento),
+                'totalFactura':parseInt(totalFactura)
               }, 
               detalles:this.arrayDetalles
         }) 
         .then(function (response) {
           var respuesta = response.data;
-          document.querySelector('#subTotalFactura').textContent='0.00';
-          document.querySelector('#totalFactura').textContent='0.00';
-          me.arrayDetalles=[];
-          me.buscar='';
-          me.telefono='';
-          me.email='';
-          me.descuento=0;
           console.log(respuesta);
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Tu Factura Ha sido Creada',
-            showConfirmButton: false,
-            timer: 3000
-          })
           /* this.arrayDetalles.splice(this.arrayDetalles.lenght);
           totalFactura='0'; */
         })

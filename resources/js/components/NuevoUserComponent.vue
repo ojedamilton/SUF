@@ -127,7 +127,7 @@ export default {
     },
     listaruser(page, buscar) {
       let me = this;
-      var url = this.path + "/usuarios?page=" + page + "&buscar=" + buscar;
+      var url = "/usuarios?page=" + page + "&buscar=" + buscar;
       axios
         .get(url, {
           params: {},
@@ -150,7 +150,7 @@ export default {
     },
     listarRoles() {
       let me = this;
-      var url = this.path + "/role?destino=rolpermiso";
+      var url = "/role?destino=rolpermiso";
       axios
         .get(url, {
           params: {},
@@ -174,7 +174,7 @@ export default {
     },
     methodCan() {
       let me = this;
-      var url = this.path + "/roleuser";
+      var url = "/roleuser";
       axios
         .get(url, {
           params: {},
@@ -247,7 +247,7 @@ export default {
         return;
       }
       let me = this;
-      var url = this.path + "/nuevorolusuario";
+      var url = "/nuevorolusuario";
       axios
         .post(url, {
           model_id: this.idUser,
@@ -288,7 +288,7 @@ export default {
         return;
       }
       let me = this;
-      var url = this.path + "/updaterolusuario";
+      var url = "/updaterolusuario";
       axios
         .put(url, {
           model_id: this.idUser,
@@ -346,7 +346,7 @@ export default {
         .then((result) => {
           if (result.value) {
             let me = this;
-            var url = this.path + "/deleterolusuario";
+            var url = "/deleterolusuario";
             axios
               .post(url, {
                 id: idUser,

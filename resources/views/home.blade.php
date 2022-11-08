@@ -37,6 +37,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </li>
       <li class="nav-item d-none d-sm-inline-block">
        <h5 class="nav-link">Sistema de Unificado de Facturacion</h5>
+      {{--  <router-link to='/compras'>Compras</router-link> --}}
       </li>
     </ul>
 
@@ -80,46 +81,51 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library --> 
          {{--  @hasanyrole('Administracion-ADMIN') --}}
           <li class="nav-item menu-open"> 
-            <a href="#" class="nav-link ">
+            <a  href="#" class="nav-link ">
               <p>
                 FACTURACION
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li @click="menu=5" class="nav-item">
-                  <a href="#" class="nav-link">
+              <li  class="nav-item">
+                <router-link  class="nav-link" to='/facturacion'>
                     <i class="fas fa-file-alt nav-icon"></i>
                     <p>Nueva Facturacion</p>
-                  </a>
+                </router-link>
               </li>
-              {{-- <li @click="menu=4" class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-toolbox nav-icon"></i>
-                  <p>Especialidad</p>
-                </a>
-              </li> --}}
-              <li @click="menu=3" class="nav-item">
+              <li  class="nav-item">
+                <router-link  class="nav-link" to='/listadofacturacion'>
+                  <i class="fas fa-folder-minus nav-icon"></i>
+                  <p>Listado</p>
+                </router-link>
+              </li>    
+            </ul>
+          </li> 
+          <li class="nav-item "> 
+            <a href="#" class="nav-link ">
+              <p>
+                COMPRAS
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                  {{-- <a href="#" class="nav-link"> --}}
+                    <router-link  class="nav-link" to='/compras'>
+                    <i class="fas fa-toolbox nav-icon"></i>
+                    <p>Nueva Compra</p>
+                  </router-link>
+              </li>
+              <li  class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="fas fa-folder-minus nav-icon"></i>
                   <p>Listado</p>
                 </a>
-              </li>
-              {{-- <li @click="menu=2" class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-bezier-curve nav-icon"></i>
-                  <p>Sector/Esp/TipoDoc</p>
-                </a>
-              </li>
-              <li @click="menu=11" class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-users nav-icon"></i>
-                  <p>Cliente</p>
-                </a>
-              </li> --}}     
+              </li>    
             </ul>
           </li> 
-          <li class="nav-item menu-open"> 
+          <li class="nav-item "> 
             <a href="#" class="nav-link ">
               <p>
                 PRODUCTOS
@@ -127,19 +133,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li @click="menu=5" class="nav-item">
+              <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="fas fa-toolbox nav-icon"></i>
                     <p>Nueva Producto</p>
                   </a>
               </li>
-              {{-- <li @click="menu=4" class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-toolbox nav-icon"></i>
-                  <p>Especialidad</p>
-                </a>
-              </li> --}}
-              <li @click="menu=3" class="nav-item">
+              <li  class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="fas fa-folder-minus nav-icon"></i>
                   <p>Listado</p>
@@ -149,7 +149,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li> 
    {{--        @endhasanyrole 
           @hasanyrole('Documentos-ADMIN|Documentos-GESTOR|Documentos-CONSULTA') --}}
-          <li class="nav-item menu-open">
+          <li class="nav-item ">
             <a href="#" class="nav-link ">
               <p>
                 GRUPOS
@@ -157,7 +157,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li @click="menu=6"  class="nav-item">
+              <li  class="nav-item">
                 <a href="#" class="nav-link ">
                   <i class="fas fa-bezier-curve nav-icon"></i>
                  {{--  @can('edit documento')
@@ -170,7 +170,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li>
       {{--     @endhasanyrole
           @hasanyrole('Usuarios-ADMIN') --}}
-          <li class="nav-item menu-open">
+          <li class="nav-item">
             <a href="#" class="nav-link ">
               <p>
                 USUARIOS
@@ -178,16 +178,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li @click="menu=11"  class="nav-item">
-                <a href="#" class="nav-link ">
+              <li   class="nav-item">
+                <router-link  class="nav-link" to='/nuevoUsuario'>
                   <i class="fas fa-user-shield"></i>
                   <p>Nuevo Usuario</p>
                 </a>
               </li> 
             </ul>
             <ul class="nav nav-treeview">
-              <li @click="menu=10"  class="nav-item">
-                <a href="#" class="nav-link ">
+              <li  class="nav-item">
+                <router-link  class="nav-link" to='/listadoUsuario'>
                   <i class="fas fa-list"></i>
                   <p>Listado</p>
                 </a>
@@ -211,7 +211,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
    {{--  <div class="content">
       <div class="container-fluid"> --}}
        <div class="row">
-            <!-- Main content -->
+    <!-- Main content -->
     <section class="content col-lg-12">
         <div class="container-fluid">
           <!-- Small boxes (Stat box) -->
@@ -279,42 +279,228 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </div>
         </div>  
     </section>
+   {{--  <section class="col-lg-12">
+      <div class="card">
+        <div class="card-header border-transparent">
+        <h3 class="card-title">Latest Orders</h3>
+        <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+        </button>
+        <button type="button" class="btn btn-tool" data-card-widget="remove">
+        <i class="fas fa-times"></i>
+        </button>
+        </div>
+        </div>
+        
+        <div class="card-body p-0" style="display: block;">
+        <div class="table-responsive">
+        <table class="table m-0">
+        <thead>
+        <tr>
+        <th>Order ID</th>
+        <th>Item</th>
+        <th>Status</th>
+        <th>Popularity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td><a href="pages/examples/invoice.html">OR9842</a></td>
+        <td>Call of Duty IV</td>
+        <td><span class="badge badge-success">Shipped</span></td>
+        <td>
+        <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
+        </td>
+        </tr>
+        <tr>
+        <td><a href="pages/examples/invoice.html">OR1848</a></td>
+        <td>Samsung Smart TV</td>
+        <td><span class="badge badge-warning">Pending</span></td>
+        <td>
+        <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
+        </td>
+        </tr>
+        <tr>
+        <td><a href="pages/examples/invoice.html">OR7429</a></td>
+        <td>iPhone 6 Plus</td>
+        <td><span class="badge badge-danger">Delivered</span></td>
+        <td>
+        <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
+        </td>
+        </tr>
+        <tr>
+        <td><a href="pages/examples/invoice.html">OR7429</a></td>
+        <td>Samsung Smart TV</td>
+        <td><span class="badge badge-info">Processing</span></td>
+        <td>
+        <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
+        </td>
+        </tr>
+        <tr>
+        <td><a href="pages/examples/invoice.html">OR1848</a></td>
+        <td>Samsung Smart TV</td>
+        <td><span class="badge badge-warning">Pending</span></td>
+        <td>
+        <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
+        </td>
+        </tr>
+         <tr>
+        <td><a href="pages/examples/invoice.html">OR7429</a></td>
+        <td>iPhone 6 Plus</td>
+        <td><span class="badge badge-danger">Delivered</span></td>
+        <td>
+        <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
+        </td>
+        </tr>
+        <tr>
+        <td><a href="pages/examples/invoice.html">OR9842</a></td>
+        <td>Call of Duty IV</td>
+        <td><span class="badge badge-success">Shipped</span></td>
+        <td>
+        <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        
+        </div>
+        
+        <div class="card-footer clearfix" style="display: block;">
+        <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
+        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+        </div>
+        
+        </div>
+    </section> --}}
+    {{--   <section class="content col-lg-6">
+      <div class="card">
+        <div class="card-header border-0">
+        <h3 class="card-title">Products</h3>
+        <div class="card-tools">
+        <a href="#" class="btn btn-tool btn-sm">
+        <i class="fas fa-download"></i>
+        </a>
+        <a href="#" class="btn btn-tool btn-sm">
+        <i class="fas fa-bars"></i>
+        </a>
+        </div>
+        </div>
+        <div class="card-body table-responsive p-0">
+        <table class="table table-striped table-valign-middle">
+        <thead>
+        <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Sales</th>
+        <th>More</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td>
+        <img src="dist/img/default-150x150.png" alt="Product 1" class="img-circle img-size-32 mr-2">
+        Some Product
+        </td>
+        <td>$13 USD</td>
+        <td>
+        <small class="text-success mr-1">
+        <i class="fas fa-arrow-up"></i>
+        12%
+        </small>
+        12,000 Sold
+        </td>
+        <td>
+        <a href="#" class="text-muted">
+        <i class="fas fa-search"></i>
+        </a>
+        </td>
+        </tr>
+        <tr>
+        <td>
+        <img src="dist/img/default-150x150.png" alt="Product 1" class="img-circle img-size-32 mr-2">
+        Another Product
+        </td>
+        <td>$29 USD</td>
+        <td>
+        <small class="text-warning mr-1">
+        <i class="fas fa-arrow-down"></i>
+        0.5%
+        </small>
+        123,234 Sold
+        </td>
+        <td>
+        <a href="#" class="text-muted">
+        <i class="fas fa-search"></i>
+        </a>
+        </td>
+        </tr>
+        <tr>
+        <td>
+        <img src="dist/img/default-150x150.png" alt="Product 1" class="img-circle img-size-32 mr-2">
+        Amazing Product
+        </td>
+        <td>$1,230 USD</td>
+        <td>
+        <small class="text-danger mr-1">
+        <i class="fas fa-arrow-down"></i>
+        3%
+        </small>
+        198 Sold
+        </td>
+        <td>
+        <a href="#" class="text-muted">
+        <i class="fas fa-search"></i>
+        </a>
+        </td>
+        </tr>
+        <tr>
+        <td>
+        <img src="dist/img/default-150x150.png" alt="Product 1" class="img-circle img-size-32 mr-2">
+        Perfect Item
+        <span class="badge bg-danger">NEW</span>
+        </td>
+        <td>$199 USD</td>
+        <td>
+        <small class="text-success mr-1">
+        <i class="fas fa-arrow-up"></i>
+        63%
+        </small>
+        87 Sold
+        </td>
+        <td>
+        <a href="#" class="text-muted">
+        <i class="fas fa-search"></i>
+        </a>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        </div>
+    </section> --}}
+  
           {{-- <div class="col-lg-8"> --}}
           <!-- Contenido Principal -->
           
+    <router-view></router-view>
 
-          <template v-if="menu==10"> 
-            <user-component :path="path"></user-component>
-          </template> 
-          <template v-if="menu==11"> 
-              <nuevo-user-component  :path="path"></nuevo-user-component>
-          </template>
-           
-            <template v-if="menu==5"> 
-              <facturacion-component  :path="path"></facturacion-component>
-            </template>
-          {{--    
-            <template v-if="menu==4"> 
-              <speciality-component  :path="path"></speciality-component>
-            </template> 
-            <template v-if="menu==5"> 
-              <sector-component  :path="path"></sector-component> 
-            </template>  
-            <template v-if="menu==6"> 
-              <document-component :path="path"></document-component>
-            </template> 
-            <template v-if="menu==7"> 
-              <roles-component  :path="path"></roles-component>
-            </template>
-            <template v-if="menu==8"> 
-              <permisos-component  :path="path"></permisos-component>
-            </template> 
-            <template v-if="menu==9"> 
-              <rolpermiso-component  :path="path"></rolpermiso-component>
-            </template> 
-            <template v-if="menu==11"> 
-              <client-component :path="path"></client-component>
-            </template>  --}}
+    <template v-if="menu==10"> 
+      <user-component :path="path"></user-component>
+    </template> 
+    <template v-if="menu==11"> 
+        <nuevo-user-component  :path="path"></nuevo-user-component>
+    </template>
+      
+      <template v-if="menu==5"> 
+        <facturacion-component  :path="path"></facturacion-component>
+      </template>
+
+      <template v-if="menu==6"> 
+        <compras-component  :path="path"></compras-component>
+      </template>
+         
            {{-- @include('home') --}}
           <!-- /Fin del contenido principal -->
           {{-- </div> --}}

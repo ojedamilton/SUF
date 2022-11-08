@@ -7,39 +7,53 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
+ 
+import VueRouter from 'vue-router';
+Vue.use(VueRouter); 
+  
 
-/*import VueRouter from 'vue-router';
-Vue.use(VueRouter); */
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
+Vue.component('compras-component',require('./components/ComprasComponent.vue').default)
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('listado-user-component', require('./components/ListadoUserComponent.vue').default);
 Vue.component('nuevo-user-component', require('./components/NuevoUserComponent.vue').default);
 Vue.component('facturacion-component', require('./components/FacturacionComponent.vue').default);
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-/* const routes = [
+import ComprasComponent from './components/ComprasComponent.vue';
+import FacturacionComponent from './components/FacturacionComponent.vue';
+import ListadoFactura from './components/ListadoFactura.vue';
+import NuevoUsuario from './components/NuevoUserComponent.vue';
+import ListadoUsuario from './components/ListadoUserComponent.vue';
+
+  const routes = [
     {
-        path:'example',
-        component:'./components/ExampleComponent.vue'
+        path:'/compras',
+        name:'compras',
+        component:ComprasComponent
+    },
+    {
+        path:'/facturacion',
+        name:'facturacion',
+        component:FacturacionComponent
+    },
+    {
+        path:'/listadofacturacion',
+        name:'listadofacturacion',
+        component:ListadoFactura
+    },
+    {
+        path:'/nuevoUsuario',
+        name:'nuevoUsuario',
+        component:NuevoUsuario
+    },
+    {
+        path:'/listadoUsuario',
+        name:'listadoUsuario',
+        component:ListadoUsuario
     }
 
-]; */
+]; 
 
-//const router =  new VueRouter({routes});
+const router =  new VueRouter({routes}); 
 
 var pathServer = window.location.hostname;
 const app = new Vue({
@@ -47,5 +61,6 @@ const app = new Vue({
     data:{
         menu:0,
         path:'http://'+pathServer+':8000',
-    }
+    },
+    router
 });

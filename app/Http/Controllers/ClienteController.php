@@ -15,7 +15,7 @@ class ClienteController extends Controller
     public function getAllClientes(Request $request)
     {
         // Si quieren Ingresar sin un request , redirecciona al home 
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/home');
 
          $buscar= $request->buscar;
 
@@ -23,9 +23,13 @@ class ClienteController extends Controller
                         ->orWhere('apellidoCliente','like','%'.$buscar.'%')
                         ->orWhere('dniCliente','like','%'.$buscar.'%')
                         ->orderBy('nombreCliente','asc')
-                        ->get();         
+                        ->get();
+
+        $saludo=Cliente::saludar();
+                                 
         return[
             'clientes'=>$cliente,
+            'metodo'=>$saludo,
         ]; 
     }
 

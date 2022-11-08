@@ -174,7 +174,7 @@ import axios from 'axios';
             },
             listaruser(page,buscar){
                 let me = this;
-                var url= this.path+'/usuarios?page='+page+'&buscar='+buscar;
+                var url= '/usuarios?page='+page+'&buscar='+buscar;
                 axios.get( url , {
                     params: {
                     }
@@ -198,7 +198,7 @@ import axios from 'axios';
             },
             listarRoles(){
                 let me = this;
-                var url= this.path+'/role?destino=rolpermiso';
+                var url= '/role?destino=rolpermiso';
                 axios.get( url , {
                     params: {
                     }
@@ -223,7 +223,7 @@ import axios from 'axios';
             },
             methodCan(){
                 let me=this;
-                var url= this.path+'/roleuser';
+                var url= '/roleuser';
                 axios.get(url,{
                      params: {
                     }
@@ -294,7 +294,7 @@ import axios from 'axios';
                     return;
                 } 
                 let me=this;
-                var url= this.path+'/nuevorolusuario';
+                var url= '/nuevorolusuario';
                 axios.post(url,{
                     'model_id':this.idUser,
                     'role_id':this.idRol,
@@ -333,7 +333,7 @@ import axios from 'axios';
                     return;
                 } 
                 let me=this;
-                var url = this.path+'/updaterolusuario';
+                var url = '/updaterolusuario';
                 axios.put(url,{
                     'model_id':this.idUser,
                     'role_id':this.idRoleUser,
@@ -387,7 +387,7 @@ import axios from 'axios';
                 }).then((result) => {
                     if (result.value) {  
                         let me=this;
-                        var url = this.path+'/deleterolusuario';
+                        var url = '/deleterolusuario';
                         axios.post(url,{
                             'id':idUser,
                         }).then(function (response){
