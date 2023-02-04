@@ -125,6 +125,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>    
             </ul>
           </li> 
+          @canany(['isAdmin','isBuyer'])
           <li class="nav-item "> 
             <a href="#" class="nav-link ">
               <p>
@@ -147,8 +148,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>    
             </ul>
           </li> 
-   {{--        @endhasanyrole 
-          @hasanyrole('Documentos-ADMIN|Documentos-GESTOR|Documentos-CONSULTA') --}}
+          @endcanany
           <li class="nav-item ">
             <a href="#" class="nav-link ">
               <p>
@@ -168,8 +168,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
             </ul>
           </li>
-      {{--     @endhasanyrole
-          @hasanyrole('Usuarios-ADMIN') --}}
+          @canany(['isAdmin'])
           <li class="nav-item">
             <a href="#" class="nav-link ">
               <p>
@@ -194,7 +193,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li> 
             </ul>
           </li>
-        {{--   @endhasanyrole --}}
+        @endcanany
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

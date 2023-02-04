@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Models\UserGrupo;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,7 +25,39 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        //
+         
+         /* define a admin user role */
+        // Con el metodo pluck traemos solo ese valor del campo de la collection 
+        // con toArray lo transformamos
+         Gate::define('isAdmin', function($user) {
+            $userGrupo=UserGrupo::where('idUsuario',$user->id)
+                ->pluck('idGrupo')
+                ->toArray();
+            // aplico el Helper in_array()  
+            // verifico si es 1 (admin)  
+            $resultado=in_array(1,$userGrupo);
+            return $resultado;   
+         });
+           /* define a seller user role */
+           Gate::define('isSeller', function($user) {
+            $userGrupo=UserGrupo::where('idUsuario',$user->id)
+                ->pluck('idGrupo')
+                ->toArray();
+            // aplico el Helper in_array()  
+            // verifico si es 2 (vendedor)  
+            $resultado=in_array(2,$userGrupo);
+             return $resultado;   
+         });
+           /* define a buyer user role */
+           Gate::define('isBuyer', function($user) {
+            $userGrupo=UserGrupo::where('idUsuario',$user->id)
+                ->pluck('idGrupo')
+                ->toArray();
+            // aplico el Helper in_array()  
+            // verifico si es 3 (comprador)  
+            $resultado=in_array(3,$userGrupo);
+            return $resultado;   
+         });
+         
     }
 }
