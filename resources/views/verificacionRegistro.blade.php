@@ -10,5 +10,7 @@
     <h1>Correo De Verificacion</h1>
     <p>Ingrese aqui para registrarse :</p> 
     <a href="http://127.0.0.1:8000/register">Registrarse</a>
+    <p>Usuario: {{$usuario}}</p>
+    <p>Contraseña: {{$password}} </p>
 </body>
 </html>

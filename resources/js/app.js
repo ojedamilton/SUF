@@ -11,18 +11,18 @@ window.Vue = require('vue').default;
 import VueRouter from 'vue-router';
 Vue.use(VueRouter); 
   
-
-Vue.component('compras-component',require('./components/ComprasComponent.vue').default)
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('listado-user-component', require('./components/ListadoUserComponent.vue').default);
-Vue.component('nuevo-user-component', require('./components/NuevoUserComponent.vue').default);
-Vue.component('facturacion-component', require('./components/FacturacionComponent.vue').default);
-
 import ComprasComponent from './components/ComprasComponent.vue';
 import FacturacionComponent from './components/FacturacionComponent.vue';
 import ListadoFactura from './components/ListadoFactura.vue';
 import NuevoUsuario from './components/NuevoUserComponent.vue';
 import ListadoUsuario from './components/ListadoUserComponent.vue';
+
+Vue.component('compras-component',ComprasComponent)
+Vue.component('listado-user-component', ListadoUsuario);
+Vue.component('nuevo-user-component', NuevoUsuario);
+Vue.component('facturacion-component', FacturacionComponent);
+
+
 
   const routes = [
     {

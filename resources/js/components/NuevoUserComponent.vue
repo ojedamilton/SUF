@@ -6,51 +6,42 @@
           <div class="card-header">
             <h3 class="card-title">Nuevo Usuario</h3>
           </div>
-          <!-- /.card-header -->
           <!-- form start -->
-          <form>
+          <form id="form">
             <div class="card-body">
               <div class="form-group">
                 <label for="exampleInputName">Nombre</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exampleInputName"
-                  placeholder="Enter Name"
-                />
+                <input type="text" class="form-control" v-model="nombre" name="nombre" id="exampleInputName" placeholder="Enter Name"/>
               </div>
               <div class="form-group">
                 <label for="exampleInputName">Apellido</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exampleInputName"
-                  placeholder="Enter Name"
-                />
+                <input type="text" class="form-control" v-model="apellido" name="apellido" id="exampleInputName" placeholder="Enter Name"/>
               </div>
               <div class="form-group">
                 <label>Grupo/s</label>
-                <select multiple="" class="form-control">
-                    <option>Administrador</option>
-                    <option>Vendedor</option>
-                    <option>Comprador</option>
-                </select>
+                <div v-for=" grupo in arrayGrupos" :key="grupo.id" class="custom-control custom-checkbox">
+                  <input class="custom-control-input" v-model="idGrupos" type="checkbox" :value="grupo.id"  ref="input_nombre" :id="grupo.nombreGrupo"> 
+                  <label :for="grupo.nombreGrupo" class="custom-control-label">{{grupo.nombreGrupo}}</label>  
+                </div>
               </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleInputEmail1"
-                  placeholder="Enter email"
-                />
+                <input type="email" class="form-control" v-model="email" name="email" id="exampleInputEmail1" placeholder="Enter email"/>
+              </div>
+               <div class="form-group">
+                <label for="exampleInputEmail1">Contraseña</label>
+                <input type="password" class="form-control" v-model="password" name="password" id="password" placeholder="Enter Password"/>
               </div>
             </div>
-            <!-- /.card-body -->
-
+            <div class="loader" v-if="loading"></div>
+             <div v-show="erroruser" class="form-group div-error">
+                <div class="text-left">
+                    <div v-for="error in errorMostrarMsjuser" :key="error" v-text="error">
+                    </div>
+                </div>
+            </div>
             <div class="card-footer">
-              <button type="submit" class="btn btn-primary">Enviar Correo</button>
-              <a href="http://127.0.0.1:8000/notificacioncorreo">Enviar</a>
+              <button type="button" @click="enviarForm()" class="btn btn-primary">Enviar Correo</button>
             </div>
           </form>
         </div>
@@ -65,19 +56,18 @@ export default {
   data() {
     return {
       idUser: 0,
-      idRol: [],
-      idRoleUser: [],
-      idRolVmodle: [],
-      idRolBack: 0,
+      idGrupos: [],
+      name:"",
+      apellido:"",
+      email:"",
+      password:"",
+      loading: false,
       modal: 0,
       idCan: "",
       tituloModal: "",
-      nombreuser: "",
-      description: "",
       tipoAccion: 0,
       buscar: "",
-      arrayUser: [],
-      arrayRoles: [],
+      arrayGrupos: [],
       pagination: {
         total: 0,
         current_page: 0,
@@ -94,27 +84,7 @@ export default {
   computed: {
     isActived: function () {
       return this.pagination.current_page;
-    },
-    pagesNumber: function () {
-      if (!this.pagination.to) {
-        return [];
-      }
-      var from = this.pagination.current_page - this.offset;
-      if (from < 1) {
-        from = 1;
-      }
-      var to = from + this.offset * 2;
-      if (to >= this.pagination.last_page) {
-        to = this.pagination.last_page;
-      }
-
-      var pagesArray = [];
-      while (from <= to) {
-        pagesArray.push(from);
-        from++;
-      }
-      return pagesArray;
-    },
+    }
   },
   methods: {
     allLetter() {
@@ -125,18 +95,17 @@ export default {
       this._data.nombreuser = this._data.nombreuser.toUpperCase();
       return;
     },
-    listaruser(page, buscar) {
+    listarGrupos() {
       let me = this;
-      var url = "/usuarios?page=" + page + "&buscar=" + buscar;
+      var url = "/grupos";
       axios
         .get(url, {
           params: {},
         })
         .then(function (response) {
           var respuesta = response.data;
-          me.arrayUser = respuesta.users.data;
-          //respuesta.array_namesector.map(value=>{ me.arraynameSector.push(value.sector);});
-          me.pagination = respuesta.pagination;
+          me.arrayGrupos = respuesta.grupos;
+          //me.pagination = respuesta.pagination;
         })
         .catch(function (error) {
           console.log(error);
@@ -148,29 +117,60 @@ export default {
           // always executed
         });
     },
-    listarRoles() {
-      let me = this;
-      var url = "/role?destino=rolpermiso";
-      axios
-        .get(url, {
-          params: {},
-        })
-        .then(function (response) {
-          var respuesta = response.data;
-          me.arrayRoles = respuesta.rolepermiso;
-          console.log(respuesta.role.data[1].name);
-          //me.idRolUser=respuesta.role.data[1].name;
-          me.pagination = respuesta.pagination;
-        })
-        .catch(function (error) {
-          console.log(error);
-          if (error.response.status === 401) {
-            location.reload(true);
-          }
-        })
-        .then(function () {
-          // always executed
-        });
+    validaruser() {
+      this.erroruser = 0;
+      this.errorMostrarMsjuser = [];
+      if(!this.nombre) this.errorMostrarMsjuser.push('* El nombre no puede estar vacío');
+      if(!this.apellido) this.errorMostrarMsjuser.push('* El apellido no puede estar vacío');
+      if(!this.email) this.errorMostrarMsjuser.push('* El email no puede estar vacío');
+      if(!this.password) this.errorMostrarMsjuser.push('* La contraseña no puede estar vacía');
+      if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjuser.push('* El email no es valido');
+      if(this.idGrupos.length==0) this.errorMostrarMsjuser.push('* El Grupo no puede estar vacío');
+      if (this.errorMostrarMsjuser.length) this.erroruser = 1;
+    },
+    //Implemento Async-Await//
+    async enviarForm(){
+      this.validaruser();
+      if(this.erroruser==1)return; 
+      let me=this;
+      let url = "/crearusuario";
+      this.loading = true;
+      try {
+        const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,grupo:[...this.idGrupos],email:this.email,password:this.password})
+        let respuesta = response.data;
+        if (respuesta.status == 201) {
+          let success=respuesta.success;
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: success,
+            showConfirmButton: false,
+            timer: 4000
+          });
+          //Limpio variables
+          me.nombre='';
+          me.apellido='';
+          me.email='';
+          me.idGrupos=[];
+          me.password='';  
+          this.loading=false
+        }else{
+          let errors=respuesta.errors;
+          let strError=JSON.stringify(errors);
+          // Ver array 2 indices con array adentro...
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            html: strError,
+            showConfirmButton: false,
+            timer: 4000
+          });
+        }
+        this.loading=false
+      } catch (error) {
+         console.log('Errores de Conexion'+error);
+         this.loading=false
+      }
     },
     methodCan() {
       let me = this;
@@ -181,142 +181,6 @@ export default {
         })
         .then(function (response) {
           me.idCan = response.data;
-        })
-        .catch(function (error) {
-          console.log(error);
-          if (error.response.status === 401) {
-            location.reload(true);
-          }
-        });
-    },
-    cambiarPagina(page, buscar) {
-      let me = this;
-      //Actualizar pagina actual
-      me.pagination.current_page = page;
-      //Enviar la petición para visualizar la data de esa página
-      me.listaruser(page, buscar);
-    },
-    cerrarModal() {
-      this.modal = 0;
-      this.nombreuser = "";
-      this.description = "";
-    },
-    abrirModal(modelo, accion, data = []) {
-      let self = this;
-      /*   Vue.nextTick()
-                    .then(function () {
-                        self.$refs.input_nombre.focus();
-                }); */
-      switch (modelo) {
-        case "user": {
-          switch (accion) {
-            case "registrar": {
-              this.modal = 1;
-              this.tituloModal = "Registrar Usuario";
-              this.nombreuser = "";
-              this.description = "";
-              this.tipoAccion = 1;
-              break;
-            }
-            case "actualizar": {
-              this.modal = 1;
-              this.tituloModal = "Asignar Rol Usuario";
-              this.idUser = data["id"];
-              this.idRol = data["idrol"];
-              this.idRoleUser = [];
-              data["roles"].forEach((element) =>
-                this.idRoleUser.push(element["id"])
-              );
-              this.idRolBack = data["idrol"];
-              this.tipoAccion = 2;
-              break;
-            }
-          }
-        }
-      }
-    },
-    validaruser(ubicacionmodal) {
-      this.erroruser = 0;
-      this.errorMostrarMsjuser = [];
-      //if(!this.idRol) this.errorMostrarMsjuser.push('* El rol no puede estar vacío');
-      if (this.errorMostrarMsjuser.length) this.erroruser = 1;
-    },
-    registraroluser() {
-      this.validaruser("registrar");
-      if (this.erroruser == 1) {
-        return;
-      }
-      let me = this;
-      var url = "/nuevorolusuario";
-      axios
-        .post(url, {
-          model_id: this.idUser,
-          role_id: this.idRol,
-          idRoleUser: this.idRoleUser,
-        })
-        .then(function (response) {
-          if (response.data === "duplicado") {
-            swal.fire({
-              title: "Duplicado!",
-              text: "El registro esta Duplicado.",
-              icon: "error",
-              timer: 1500,
-              timerProgressBar: true,
-            });
-          } else {
-            me.cerrarModal();
-            me.listaruser(1, me.buscar);
-            swal.fire({
-              title: "Creado!",
-              text: "El Rol fue Creado.",
-              icon: "success",
-              timer: 1500,
-              timerProgressBar: true,
-            });
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-          if (error.response.status === 401) {
-            location.reload(true);
-          }
-        });
-    },
-    Actualizaroluser() {
-      this.validaruser("actualizar");
-      if (this.erroruser == 1) {
-        return;
-      }
-      let me = this;
-      var url = "/updaterolusuario";
-      axios
-        .put(url, {
-          model_id: this.idUser,
-          role_id: this.idRoleUser,
-          //'role_id_back':this.idRolBack,
-          idRoleUser: this.idRoleUser,
-        })
-        .then(function (response) {
-          if (response.data === "duplicado") {
-            swal.fire({
-              title: "Duplicado!",
-              text: "El registro esta Duplicado.",
-              icon: "error",
-              timer: 1500,
-              timerProgressBar: true,
-            });
-          } else {
-            me.cerrarModal();
-            me.listaruser(me.pagination.current_page, me.buscar);
-            me.methodCan();
-            swal.fire({
-              title: "Editado!",
-              text: "El Rol fue Editado.",
-              icon: "success",
-              timer: 1500,
-              timerProgressBar: true,
-            });
-          }
         })
         .catch(function (error) {
           console.log(error);
@@ -382,9 +246,7 @@ export default {
     },
   },
   mounted() {
-    this.listaruser(1, this.buscar);
-    this.listarRoles();
-    this.methodCan();
+    this.listarGrupos();
   },
 };
 </script>
@@ -406,5 +268,20 @@ export default {
 .div-error {
   color: red;
   font-weight: bold;
+}
+.loader{  /* Loader Div Class */
+    position: absolute;
+    top:0px;
+    right:0px;
+    width:100%;
+    height:100%;
+    background-color:#eceaea;
+    background-image: url('/webfonts/ajax-loader.gif');
+    background-size: 50px;
+    background-repeat:no-repeat;
+    background-position:center;
+    z-index:10000000;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
 }
 </style>
