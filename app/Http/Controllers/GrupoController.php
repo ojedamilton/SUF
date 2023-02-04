@@ -12,9 +12,17 @@ class GrupoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Si quieren Ingresar sin un request , redirecciona al home 
+        if(!$request->ajax())return redirect('/home');
+
+        //query que le pega al modelo
+        $valores=Grupo::all();
+        
+        return[
+            'grupos'=>$valores,
+        ];
     }
 
     /**
