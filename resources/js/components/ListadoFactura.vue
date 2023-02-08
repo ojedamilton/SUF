@@ -59,7 +59,7 @@
                                 <thead>
                                 <tr>  
                                     <th>Codigo</th>
-                                    <th>articulo</th>
+                                    <th>Articulo</th>
                                     <th>cantidad</th>
                                     <th>Precio</th>
                                 </tr>  

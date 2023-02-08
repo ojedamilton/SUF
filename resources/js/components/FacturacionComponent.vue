@@ -8,7 +8,7 @@
       </div>
 
       <div class="card-body">
-        
+
         <form class="form-horizontal" role="form" id="datos_factura">
           <div class="row">
             <label for="nombre_cliente" class="col-lg-1 control-label"
@@ -88,21 +88,22 @@
                 <th></th>
               </tr>
                 <!-- Iterar datos -->
-                <tr v-for="(detalle,index) in arrayDetalles" :key="detalle.idArticulo"> 
-                   <td class="text-center">{{detalle.idArticulo}}</td>
-                   <td >{{detalle.nombre}}</td>
-                   <td class="">{{detalle.cantidadArticulo}}</td>
-                   <td>{{detalle.precioVenta}}</td>
-                   <td>{{detalle.totalDetalle}}</td>
-                   <td>
-                     <button @click="eliminarItem(index)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
-                   </td>
-                </tr>  
-              <tr> 
+              <tr v-for="(detalle,index) in arrayDetalles" :key="detalle.idArticulo"> 
+                <td class="text-center">{{detalle.idArticulo}}</td>
+                <td >{{detalle.nombre}}</td>
+                <td class="">{{detalle.cantidadArticulo}}</td>
+                <td>{{detalle.precioVenta}}</td>
+                <td>{{detalle.totalDetalle}}</td>
+                <td>
+                  <button @click="eliminarItem(index), sumarSubtotal(), obtenerDescuento()" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                </td>
+                <td></td>
+              </tr>
+              <tr>
                 <td>
                     <label class="text-end" colspan="4" for="descuento">Descuento</label>
                 </td>
-                <td class="text-end" colspan="2" >
+                <td class="text-end" colspan="6" >
                    <select @change="obtenerDescuento()" v-model="descuento" name="descuento" id="descuento">
                       <option value="0">Sin descuento</option>
                       <option value="5">5%</option>
@@ -110,16 +111,16 @@
                       <option value="15">15%</option>
                       <option value="20">20%</option>
                    </select>
-                  </td>
-              </tr>    
+                </td>
+              </tr>
               <tr>
                 <td class="text-end" colspan="4">SUBTOTAL $</td>
-                <td id="subTotalFactura" class="text-end">0.00</td>
+                <td id="subTotalFactura" colspan="2" class="text-end">0.00</td>
                 <td></td>
               </tr>
               <tr>
                   <td class="text-end" colspan="4">TOTAL $</td>
-                <td id="totalFactura" class="text-end">0.00</td>
+                <td id="totalFactura" colspan="3" class="text-end">0.00</td>
               </tr>
             </tbody>
           </table>
@@ -132,66 +133,66 @@
     </div>
       <!-- Modal -->
       <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
           <div class="modal-content">
-              <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">{{tituloModal}}</h5>
-              <button type="button"  @click="cerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">{{tituloModal}}</h5>
+            <button type="button"  @click="cerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+              <div class="c">
+                    <div class="c-header">
+                        <!-- Find a result -->
+                        <input type="text" v-model="buscarArticulo"  @keyup="listarArticulos(buscarArticulo)" class="form-control" placeholder="Texto a buscar">     
+                    </div> 
+                    <!-- List Table Details --> 
+                    <div class="cbody">   
+                      <table id="table_articulo" class="table table-striped" width="100%">
+                          <thead>
+                            <tr>  
+                                <th>Codigo</th>
+                                <th>Articulo</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Agregar</th>
+                            </tr>  
+                          </thead>  
+                          <tbody>
+                            <tr v-for="articulo in arrayArticulos" :key="articulo.id" >    
+                                <td>{{articulo.id}}</td>    
+                                <td>{{articulo.nombreArticulo}}</td> 
+                                <td class="col-2">
+                                  <input class="form-control form-control-sm" :value="articulo.precio" type="number" name="precio" id="precio">
+                                </td>
+                                <td class="col-2">
+                                  <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
+                                  </td>
+                                <td>
+                                  <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
+                                </td>
+                            </tr>  
+                          </tbody>  
+                      </table>
+                      <nav>
+                          <ul class="pagination">
+                              <li class="page-item"  v-if="pagination.current_page > 1 ">
+                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
+                              </li>
+                              <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" >1</a>
+                              </li>
+                              <li class="page-item" v-if="pagination.current_page < pagination.last_page "  >
+                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar)">Sig</a>
+                              </li>
+                          </ul>
+                      </nav>
+                    </div> 
               </div>
-              <div class="modal-body">
-                  <div class="c">
-                        <div class="c-header">
-                            <!-- Find a result -->
-                            <input type="text" v-model="buscarArticulo"  @keyup="listarArticulos(buscarArticulo)" class="form-control" placeholder="Texto a buscar">     
-                        </div> 
-                        <!-- List Table Details --> 
-                        <div class="cbody">   
-                            <table id="table_articulo" class="table table-striped" width="100%">
-                                <thead>
-                                <tr>  
-                                    <th>Codigo</th>
-                                    <th>articulo</th>
-                                    <th>Precio</th>
-                                    <th>Cantidad</th>
-                                    <th>Agregar</th>
-                                </tr>  
-                                </thead>  
-                                <tbody>
-                                    <tr v-for="articulo in arrayArticulos" :key="articulo.id" >    
-                                        <td>{{articulo.id}}</td>    
-                                        <td>{{articulo.nombreArticulo}}</td> 
-                                        <td class="col-2">
-                                          <input class="form-control form-control-sm" :value="articulo.precio" type="number" name="precio" id="precio">
-                                        </td>
-                                        <td class="col-2">
-                                          <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
-                                          </td>
-                                        <td>
-                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio),sumarSubtotal()" class="btn btn-primary">Add</button> <!--  -->
-                                        </td>
-                                    </tr>  
-                                </tbody>  
-                            </table>
-                            <nav>
-                                <ul class="pagination">
-                                    <li class="page-item"  v-if="pagination.current_page > 1 ">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" >1</a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page "  >
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div> 
-                    </div>
-              </div>
+            </div>
           </div>
-          </div>
+        </div>
       </div>
   </main>
 </template>

@@ -111,10 +111,11 @@
                    <td>
                      <button @click="eliminarItem(index)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                    </td>
-                </tr>      
+                   <td></td>
+                </tr>
               <tr>
                 <td class="text-end" colspan="4">TOTAL $</td>
-                <td id="totalFactura" class="text-end">0.00</td>
+                <td id="totalFactura" colspan="2" class="text-end">0.00</td>
                 <td></td>
               </tr>
             </tbody>
@@ -148,7 +149,7 @@
                                 <thead>
                                 <tr>  
                                     <th>Codigo</th>
-                                    <th>articulo</th>
+                                    <th>Articulo</th>
                                     <th>Precio</th>
                                     <th>Cantidad</th>
                                     <th>Agregar</th>
@@ -165,7 +166,7 @@
                                           <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
                                           </td>
                                         <td>
-                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio),sumarTotal()" class="btn btn-primary">Add</button> <!--  -->
+                                          <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio),sumarTotal()" class="btn btn-primary">Agregar</button> <!--  -->
                                         </td>
                                     </tr>  
                                 </tbody>  
