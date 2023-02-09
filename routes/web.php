@@ -24,7 +24,14 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    {
+        if (Auth::check()) {
+            return view('home');
+        }
+        else {
+            return view('auth.login');
+        }
+    }
 });
 
 Auth::routes();
@@ -51,5 +58,4 @@ Route::get('/grupos', [GrupoController::class,'index'])->name('grupos');
 /* RUTAS -> Facturacion */
 Route::post('/facturar', [FacturaController::class,'store'])->name('facturar');
 Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
-Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid'); 
-       
+Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid');

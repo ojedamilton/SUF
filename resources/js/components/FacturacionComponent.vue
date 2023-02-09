@@ -110,6 +110,11 @@
                       <option value="10">10%</option>
                       <option value="15">15%</option>
                       <option value="20">20%</option>
+                      <option value="25">25%</option>
+                      <option value="30">30%</option>
+                      <option value="40">40%</option>
+                      <option value="50">50%</option>
+                      <option value="60">60%</option>
                    </select>
                 </td>
               </tr>
@@ -373,21 +378,41 @@ export default {  // todo lo que voy a exportar
       let dcto  = 0;
       switch (this.descuento) {
         case '5':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*5/100;  
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*5/100;
           totalFactura.textContent = dcto;
           break;
         case '10':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*10/100;  
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*10/100;
           totalFactura.textContent = dcto;
           break;
         case '15':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*15/100;  
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*15/100;
           totalFactura.textContent = dcto;
           break;
         case '20':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*20/100; 
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*20/100;
           totalFactura.textContent = dcto;
-          break;    
+          break;
+        case '25':
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*25/100;
+          totalFactura.textContent = dcto;
+          break;
+        case '30':
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*30/100;
+          totalFactura.textContent = dcto;
+          break;
+        case '40':
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*40/100;
+          totalFactura.textContent = dcto;
+          break;
+        case '50':
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*50/100;
+          totalFactura.textContent = dcto;
+          break;
+        case '60':
+          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*60/100;
+          totalFactura.textContent = dcto;
+          break;
         default:
            var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
            const total =parsedobj.reduce((acum,elem,i)=>{
