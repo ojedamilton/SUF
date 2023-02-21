@@ -24,16 +24,24 @@ class ArticuloController extends Controller
 
          $buscar= $request->buscar;
         if (!$buscar) {
-            $articulo=Articulo::all();
+            $articulo=Articulo::orderBy('id','asc')->paginate(3);
         }else{
             $articulo=Articulo::where('nombreArticulo','like','%'.$buscar.'%')
             ->orWhere('id','like','%'.$buscar.'%')
             ->orderBy('nombreArticulo','asc')
-            ->get();       
+            ->paginate(3);     
         }
           
         return[
             'articulos'=>$articulo,
+            'pagination'=>[
+                'total'=>$articulo->total(),
+                'current_page'=>$articulo->currentPage(),
+                'per_page'=>$articulo->perPage(),
+                'last_page'=>$articulo->lastPage(),
+                'from'=>$articulo->firstItem(),
+                'to'=>$articulo->lastItem(),
+            ],
         ]; 
     }
 

@@ -133,9 +133,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showUserAuth()
     {
-        //
+       return response()->json([
+                        "id"=>Auth::user()->id,
+                        "name"=>Auth::user()->name,
+                    ],200);
     }
 
     /**

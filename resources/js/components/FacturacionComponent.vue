@@ -15,13 +15,13 @@
               >Cliente</label
             >
             <div class="col-lg-3 dropdown">
-              <input type="text" class="form-control input-sm dropdown-toggle" v-model="buscar" @keyup="listarClientes(buscar)"  id="nombre_cliente" placeholder="Selecciona un cliente" value="" data-toggle="dropdown"
+              <input type="text" autocomplete="off" class="form-control input-sm dropdown-toggle" v-model="buscarCliente" @keyup="listarClientes(buscarCliente)"  id="nombre_cliente" placeholder="Selecciona un cliente" value="" data-toggle="dropdown"
                 aria-expanded="true"/>
               <div class="dropdown-menu" style="">
                 <button v-for="cliente in arrayClientes" :key="cliente.id" :value="cliente.id" type="button" @click="rellenarCampos(cliente.nombreCliente,cliente.apellidoCliente,cliente.telefonoCliente,cliente.emailCliente,cliente.id)" class="dropdown-item" data-value="1" data-email="asd@asd.com">
                   {{cliente.nombreCliente + ' ' + cliente.apellidoCliente}}</button>
                 </div>
-              <input id="id_cliente" name="id_cliente" type="hidden" value="" />
+              <input v-model="idCliente" name="id_cliente" type="hidden" value="" />
             </div>
             <label for="tel1" class="col-lg-1 control-label">Teléfono</label>
             <div class="col-lg-2">
@@ -36,7 +36,7 @@
           <div class="row my-2">
             <label for="empresa" class="col-lg-1 control-label">Vendedor</label>
             <div class="col-lg-3">
-              <input type="text" class="form-control input-sm" id="vendedor" value="administrador" readonly="" />
+              <input type="text" class="form-control input-sm" id="vendedor" v-model="nombreVendedor" readonly="" />
             </div>
             <label for="tel2" class="col-lg-1 control-label">Fecha</label>
             <div class="col-lg-2">
@@ -44,7 +44,7 @@
             </div>
             <label for="email" class="col-lg-1 control-label">Pago</label>
             <div class="col-lg-2">
-              <select class="form-control input-sm" id="valor" name="valor">
+              <select class="form-control input-sm" v-model="pagoId" id="valor" name="valor">
                 <option  v-for="valor in arrayValores" :key="valor.id" :value="valor.id">{{valor.nombreValor}}</option>
               </select>
             </div>
@@ -56,7 +56,7 @@
                 <button
                   type="button"
                   class="btn btn-success"
-                  @click="abrirModal(),listarArticulos(buscarArticulo)"
+                  @click="abrirModal(),listarArticulos(1,buscarArticulo)"
                 >
                   <i class="bi bi-plus-circle-fill"></i> Agregar Articulo
                 </button>
@@ -129,6 +129,12 @@
               </tr>
             </tbody>
           </table>
+           <div v-show="errorFactura" class="form-group div-error">
+                <div class="text-left">
+                    <div v-for="error in errorMostrarMsjFactura" :key="error" v-text="error">
+                    </div>
+                </div>
+            </div>
           <div class="d-flex justify-content-md-end">
             <button class="btn btn-primary" @click="facturarTodo()" >Facturar</button>
           </div>
@@ -146,14 +152,17 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>
+            <div class="text-center">
+              <h3>Agregar Articulos</h3>
+            </div> 
             <div class="modal-body">
               <div class="c">
                     <div class="c-header">
                         <!-- Find a result -->
-                        <input type="text" v-model="buscarArticulo"  @keyup="listarArticulos(buscarArticulo)" class="form-control" placeholder="Texto a buscar">     
+                        <input type="text" v-model="buscarArticulo"  @keyup="listarArticulos(1,buscarArticulo)" class="form-control" placeholder="Texto a buscar">     
                     </div> 
                     <!-- List Table Details --> 
-                    <div class="cbody">   
+                    <div class="cbody">  
                       <table id="table_articulo" class="table table-striped" width="100%">
                           <thead>
                             <tr>  
@@ -183,13 +192,13 @@
                       <nav>
                           <ul class="pagination">
                               <li class="page-item"  v-if="pagination.current_page > 1 ">
-                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
+                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscarArticulo)">Ant</a>
                               </li>
                               <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" >1</a>
+                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscarArticulo)" >{{page}}</a>
                               </li>
                               <li class="page-item" v-if="pagination.current_page < pagination.last_page "  >
-                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar)">Sig</a>
+                                  <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscarArticulo)">Sig</a>
                               </li>
                           </ul>
                       </nav>
@@ -211,7 +220,7 @@ export default {  // todo lo que voy a exportar
       arrayClientes: [],
       arrayArticulos:[],
       arrayDetalles:[],
-      buscar:'',
+      buscarCliente:'',
       descuento:0,
       buscarArticulo:'',
       pagination:{
@@ -222,17 +231,22 @@ export default {  // todo lo que voy a exportar
                   'from':0,
                   'to':0,
       },
+      offset:3,
       telefono:'',
       email:'',
       fecha:'',
       cliente:'',
       idCliente:0,
       precio:0,
+      pagoId:0,
       cantidadArtModal:1,
       tituloModal: "",
       nombreVendedor: "",
+      idVendedor: 0,
       description: "",
       modal:0,
+      errorFactura: 0,
+      errorMostrarMsjFactura: [],
     }
   },
   computed: {  
@@ -284,9 +298,33 @@ export default {  // todo lo que voy a exportar
     cerrarModal(){
      this.modal=0;
     },
-    listarClientes(buscar) {
+    validarFactura() {
+      this.errorFactura = 0;
+      this.errorMostrarMsjFactura = [];
+      if(!this.buscarCliente) this.errorMostrarMsjFactura.push('* El nombre de Cliente no puede estar vacío');
+      if(!this.telefono) this.errorMostrarMsjFactura.push('* El telefono no puede estar vacío');
+      if(!this.fecha) this.errorMostrarMsjFactura.push('* La fecha no puede estar vacío');
+      if(!this.pagoId) this.errorMostrarMsjFactura.push('* El metodo de pago no puede estar vacío');
+      if(!this.email) this.errorMostrarMsjFactura.push('* El email no puede estar vacío');
+      if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjFactura.push('* El email no es valido');
+      if (this.errorMostrarMsjFactura.length) this.errorFactura = 1;
+    },
+    async usuarioAuth(){
+       let me = this;
+       let url = '/showUserAuth'
+       try {
+            const response = await axios.get(url);
+            const status = response.status;
+            const data = response.data
+            this.idVendedor = data.id;
+            this.nombreVendedor = data.name; 
+       } catch (error) {
+         return 'error';
+       }  
+    },
+    listarClientes(buscarCliente) {
       let me = this;
-      var url = "/clientes?buscar="+buscar;
+      var url = "/clientes?buscar="+buscarCliente;
       axios
         .get(url) // ,{ params: {},} 
         .then(function (response) {
@@ -300,14 +338,15 @@ export default {  // todo lo que voy a exportar
           }
         });
     },
-    listarArticulos(buscarArticulo) {
+    listarArticulos(page,buscarArticulo) {
       let me = this;
-      var url = "/articulos?buscar="+buscarArticulo;
+      var url = "/articulos?page="+page+"&buscar="+buscarArticulo;
       axios
         .get(url) // ,{ params: {},} 
         .then(function (response) {
           var respuesta = response.data;
-          me.arrayArticulos = respuesta.articulos;
+          me.arrayArticulos = respuesta.articulos.data;
+          me.pagination = respuesta.pagination;
         })
         .catch(function (error) {
           console.log(error);
@@ -316,11 +355,11 @@ export default {  // todo lo que voy a exportar
           }
         });
     },
-    rellenarCampos(n,a,t,e,c){
-        this.telefono=t;
-        this.email=e;
-        this.buscar=n+' '+a;
-        this.idCliente=c;
+    rellenarCampos(nombre,apellido,tel,email,cliente){
+        this.telefono=tel;
+        this.email=email;
+        this.buscarCliente=nombre+' '+apellido;
+        this.idCliente=cliente;
     },
     rellenarDetalleFactura(id,nombre,precio,cantidad,t){
       const valorCantidad =parseInt(document.getElementById(id).value)     
@@ -430,6 +469,8 @@ export default {  // todo lo que voy a exportar
        } */
     },
     facturarTodo(){
+      this.validarFactura();
+      if(this.errorFactura==1)return; 
       let totalFactura = document.querySelector('#totalFactura').textContent;
       let pago = parseInt(document.querySelector('#valor').value);
       let me = this;
@@ -491,6 +532,7 @@ export default {  // todo lo que voy a exportar
    this.listarClientes();
    let date = new Date();
    this.fecha=date.toISOString().split('T')[0];
+   this.usuarioAuth();
   
   }
 };

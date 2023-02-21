@@ -42,6 +42,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
 Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');
 Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
+Route::get('/showUserAuth',[UserController::class,'showUserAuth'])->name('showUserAuth');
 
 /*  RUTAS -> Valores */
 Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');

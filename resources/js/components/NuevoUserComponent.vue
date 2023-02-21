@@ -15,7 +15,7 @@
               </div>
               <div class="form-group">
                 <label for="exampleInputName">Apellido</label>
-                <input type="text" class="form-control" v-model="apellido" name="apellido" id="exampleInputName" placeholder="Enter Name"/>
+                <input type="text" class="form-control" v-model="apellido" name="apellido" id="exampleInputApellido" placeholder="Enter Name"/>
               </div>
               <div class="form-group">
                 <label>Grupo/s</label>
@@ -26,7 +26,7 @@
               </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">Email</label>
-                <input type="email" class="form-control" v-model="email" name="email" id="exampleInputEmail1" placeholder="Enter email"/>
+                <input type="email" class="form-control"  v-model="email" name="email" id="exampleInputEmail1" placeholder="Enter email"/>
               </div>
                <div class="form-group">
                 <label for="exampleInputEmail1">Contraseña</label>
@@ -57,7 +57,7 @@ export default {
     return {
       idUser: 0,
       idGrupos: [],
-      name:"",
+      nombre:"",
       apellido:"",
       email:"",
       password:"",
