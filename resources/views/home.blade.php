@@ -78,9 +78,36 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library --> 
+               with font-awesome or any other icon font library -->
          {{--  @hasanyrole('Administracion-ADMIN') --}}
-          <li class="nav-item menu-open"> 
+         <!-- EMPRESA -->
+          @canany(['isAdmin'])
+          <li class="nav-item">
+            <a href="#" class="nav-link ">
+              <p>
+                EMPRESA
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li  class="nav-item">
+                <router-link  class="nav-link" to='/empresa'>
+                    <i class="fas fa-building nav-icon"></i>
+                    <p>Registrar Empresa</p>
+                </router-link>
+              </li>
+              <li  class="nav-item">
+                <router-link  class="nav-link" to='/listadoempresa'>
+                  <i class="fas fa-list nav-icon"></i>
+                  <p>Listado</p>
+                </router-link>
+              </li>    
+            </ul>
+          </li>
+          @endcanany
+          <!-- FACTURACION -->
+          @canany(['isAdmin','isSeller'])
+          <li class="nav-item menu-open">
             <a  href="#" class="nav-link ">
               <p>
                 FACTURACION
@@ -96,13 +123,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
               <li  class="nav-item">
                 <router-link  class="nav-link" to='/listadofacturacion'>
-                  <i class="fas fa-folder-minus nav-icon"></i>
+                  <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
                 </router-link>
               </li>    
             </ul>
-          </li> 
-          <li class="nav-item "> 
+          </li>
+          @endcanany
+          <!-- COMPRAS -->
+          @canany(['isAdmin','isBuyer'])
+          <li class="nav-item ">
             <a href="#" class="nav-link ">
               <p>
                 COMPRAS
@@ -119,14 +149,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
               <li  class="nav-item">
                 <a href="#" class="nav-link">
-                  <i class="fas fa-folder-minus nav-icon"></i>
+                  <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
                 </a>
               </li>    
             </ul>
-          </li> 
-          @canany(['isAdmin','isBuyer'])
-          <li class="nav-item "> 
+          </li>
+          @endcanany
+          <!-- PRODUCTOS -->
+          <li class="nav-item ">
             <a href="#" class="nav-link ">
               <p>
                 PRODUCTOS
@@ -136,20 +167,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul class="nav nav-treeview">
               <li class="nav-item">
                   <a href="#" class="nav-link">
-                    <i class="fas fa-toolbox nav-icon"></i>
-                    <p>Nueva Producto</p>
+                    <i class="fas fa-cubes nav-icon"></i>
+                    <p>Nuevo Producto</p>
                   </a>
               </li>
               <li  class="nav-item">
                 <a href="#" class="nav-link">
-                  <i class="fas fa-folder-minus nav-icon"></i>
+                  <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
                 </a>
               </li>    
             </ul>
-          </li> 
-          @endcanany
-          <li class="nav-item ">
+          </li>
+          <!-- GRUPOS -->
+          <!-- <li class="nav-item ">
             <a href="#" class="nav-link ">
               <p>
                 GRUPOS
@@ -160,14 +191,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <li  class="nav-item">
                 <a href="#" class="nav-link ">
                   <i class="fas fa-bezier-curve nav-icon"></i>
-                 {{--  @can('edit documento')
+                  {{--  @can('edit documento')
                   <p>{{dd($roles)}}</p><br>
                   @endcan --}}
                   <p>Nuevo Grupo</p>
                 </a>
               </li>
             </ul>
-          </li>
+          </li>-->
+          <!-- USUARIOS -->
           @canany(['isAdmin'])
           <li class="nav-item">
             <a href="#" class="nav-link ">
@@ -179,7 +211,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul class="nav nav-treeview">
               <li   class="nav-item">
                 <router-link  class="nav-link" to='/nuevoUsuario'>
-                  <i class="fas fa-user-shield"></i>
+                  <i class="fas fa-user-shield nav-icon"></i>
                   <p>Nuevo Usuario</p>
                 </a>
               </li> 
@@ -187,13 +219,115 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul class="nav nav-treeview">
               <li  class="nav-item">
                 <router-link  class="nav-link" to='/listadoUsuario'>
-                  <i class="fas fa-list"></i>
+                  <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
                 </a>
               </li> 
             </ul>
           </li>
-        @endcanany
+          @endcanany
+          <!-- CLIENTES -->
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <p>
+                CLIENTES
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fas fa-user-circle nav-icon"></i>
+                    <p>Nuevo Cliente</p>
+                  </a>
+              </li>
+              <li  class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="fas fa-list nav-icon"></i>
+                  <p>Listado</p>
+                </a>
+              </li>    
+            </ul>
+          </li>
+          <!-- PROVEEDORES -->
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <p>
+                PROVEEDORES
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-user-circle nav-icon"></i>
+                    <p>Nuevo Proveedor</p>
+                  </a>
+              </li>
+              <li  class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="fas fa-list nav-icon"></i>
+                  <p>Listado</p>
+                </a>
+              </li>    
+            </ul>
+          </li>
+          <!-- MEDIOS DE PAGO -->
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <p>
+                MEDIOS DE PAGO
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fas fa-donate nav-icon"></i>
+                    <p>Nuevo Medio de Pago</p>
+                  </a>
+              </li>
+              <li  class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="fas fa-list nav-icon"></i>
+                  <p>Listado</p>
+                </a>
+              </li>    
+            </ul>
+          </li>
+          <!-- LISTADOS -->
+          <li class="nav-item">
+            <a href="#" class="nav-link ">
+              <p>
+                LISTADOS
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li   class="nav-item">
+                <router-link  class="nav-link" to='/#'>
+                  <i class="far fa-chart-bar nav-icon"></i>
+                  <p>Subdiario de ventas</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li  class="nav-item">
+                <router-link  class="nav-link" to='/#'>
+                  <i class="far fa-chart-bar nav-icon"></i>
+                  <p>Ventas por cliente</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li  class="nav-item">
+                <router-link  class="nav-link" to='/#'>
+                  <i class="far fa-chart-bar nav-icon"></i>
+                  <p>Ventas por vendedor</p>
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
