@@ -12,6 +12,8 @@ use App\Models\Persona;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    
+    protected $pwd='';
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +25,8 @@ class User extends Authenticatable
         'apellido',
         'email',
         'password',
-        'estadoUsuario'
+        'estadoUsuario',
+        'pwd'
     ];
 
     /**
@@ -44,4 +47,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function setPwd($pwd){
+
+        $this->pwd = $pwd;
+    }
+
+    public function getPwd(){
+
+       return $this->pwd;
+    }
 }

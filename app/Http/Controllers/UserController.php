@@ -92,16 +92,18 @@ class UserController extends Controller
         }
         //dd($request->all());
         // Comienzo Transaccion
-        DB::beginTransaction();
-        try {
+       DB::beginTransaction();
+        try { 
             // Creo usuario en la tabla
-            $user=User::create([
-                "name"=>$request->nombre,
-                "apellido"=>$request->apellido,
-                "email"=>$request->email,
-                "password"=>bcrypt($request->password),
-                "estadoUsuario"=>1
-            ]);
+            $user = new User();
+            $user->name=$request->nombre;
+            $user->apellido=$request->apellido;
+            $user->email=$request->email;
+            $user->password=bcrypt($request->password);
+            $user->estadoUsuario=1;
+            $user->setPwd($request->password);
+            $user->save();
+
             //recorrer grupo/s
             $arrGrupo=[];
             foreach ($request->grupo as $grupo) {
@@ -115,8 +117,8 @@ class UserController extends Controller
             // insert a tabla usergrupo 
             $userGrupo=UserGrupo::insert($arrGrupo);
             // Envio correos
-            $this->sendMail($request->email,$request->password);
-            DB::commit();
+            //$this->sendMail($request->email,$request->password);
+             DB::commit();
             return response()->json(["success"=>"El usuario se ha creado correctamente","status"=>201]);
         } catch (\Throwable $th) {
             DB::rollBack();
