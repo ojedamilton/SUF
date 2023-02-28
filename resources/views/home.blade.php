@@ -97,11 +97,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </router-link>
               </li>
               <li  class="nav-item">
-                <router-link  class="nav-link" to='/listadoempresa'>
+                <router-link  class="nav-link" to='/#'>
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
                 </router-link>
-              </li>    
+              </li>
             </ul>
           </li>
           @endcanany
@@ -126,7 +126,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
                 </router-link>
-              </li>    
+              </li>
             </ul>
           </li>
           @endcanany
@@ -148,11 +148,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </router-link>
               </li>
               <li  class="nav-item">
-                <a href="#" class="nav-link">
+                <router-link  class="nav-link" to='/#'>
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
-                </a>
-              </li>    
+                </router-link>
+              </li>
             </ul>
           </li>
           @endcanany
@@ -166,17 +166,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fas fa-cubes nav-icon"></i>
-                    <p>Nuevo Producto</p>
-                  </a>
+                <router-link  class="nav-link" to='/#'>
+                  <i class="fas fa-cubes nav-icon"></i>
+                  <p>Nuevo Producto</p>
+                </router-link>
               </li>
               <li  class="nav-item">
-                <a href="#" class="nav-link">
+                <router-link  class="nav-link" to='/#'>
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
-                </a>
-              </li>    
+                </router-link>
+              </li>
             </ul>
           </li>
           <!-- GRUPOS -->
@@ -213,16 +213,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <router-link  class="nav-link" to='/nuevoUsuario'>
                   <i class="fas fa-user-shield nav-icon"></i>
                   <p>Nuevo Usuario</p>
-                </a>
-              </li> 
+                </router-link>
+              </li>
             </ul>
             <ul class="nav nav-treeview">
               <li  class="nav-item">
                 <router-link  class="nav-link" to='/listadoUsuario'>
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
-                </a>
-              </li> 
+                </router-link>
+              </li>
             </ul>
           </li>
           @endcanany
@@ -236,17 +236,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                  <a href="#" class="nav-link">
+                <router-link  class="nav-link" to='/nuevoCliente'>
                     <i class="fas fa-user-circle nav-icon"></i>
                     <p>Nuevo Cliente</p>
-                  </a>
+                  </router-link>
               </li>
               <li  class="nav-item">
-                <a href="#" class="nav-link">
+                <router-link  class="nav-link" to='/listadoCliente'>
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
-                </a>
-              </li>    
+                </router-link>
+              </li>
             </ul>
           </li>
           <!-- PROVEEDORES -->
@@ -259,17 +259,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-user-circle nav-icon"></i>
-                    <p>Nuevo Proveedor</p>
-                  </a>
+                <router-link  class="nav-link" to='/nuevoProveedor'>
+                  <i class="far fa-user-circle nav-icon"></i>
+                  <p>Nuevo Proveedor</p>
+                </router-link>
               </li>
               <li  class="nav-item">
-                <a href="#" class="nav-link">
+                <router-link  class="nav-link" to='/#'>
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
-                </a>
-              </li>    
+                </router-link>
+              </li>
             </ul>
           </li>
           <!-- MEDIOS DE PAGO -->
@@ -282,17 +282,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fas fa-donate nav-icon"></i>
-                    <p>Nuevo Medio de Pago</p>
-                  </a>
+                <router-link class="nav-link" to='/nuevoMedioPago'>
+                  <i class="fas fa-donate nav-icon"></i>
+                  <p>Nuevo Medio de Pago</p>
+                </router-link>
               </li>
               <li  class="nav-item">
-                <a href="#" class="nav-link">
+                <router-link class="nav-link" to='/listadoMedioPago'>
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
-                </a>
-              </li>    
+                </router-link>
+              </li>
             </ul>
           </li>
           <!-- LISTADOS -->
@@ -354,7 +354,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="small-box bg-info">
                 <div class="inner">
                   <h3>150</h3>
-  
+
                   <p>New Orders</p>
                 </div>
                 <div class="icon">
@@ -369,7 +369,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="small-box bg-success">
                 <div class="inner">
                   <h3>53<sup style="font-size: 20px">%</sup></h3>
-  
+
                   <p>Bounce Rate</p>
                 </div>
                 <div class="icon">
@@ -384,7 +384,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="small-box bg-warning">
                 <div class="inner">
                   <h3>44</h3>
-  
+
                   <p>User Registrations</p>
                 </div>
                 <div class="icon">
@@ -399,7 +399,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="small-box bg-danger">
                 <div class="inner">
                   <h3>65</h3>
-  
+
                   <p>Unique Visitors</p>
                 </div>
                 <div class="icon">
@@ -410,7 +410,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
             <!-- ./col -->
           </div>
-        </div>  
+        </div>
     </section>
    {{--  <section class="col-lg-12">
       <div class="card">
@@ -425,7 +425,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </button>
         </div>
         </div>
-        
+
         <div class="card-body p-0" style="display: block;">
         <div class="table-responsive">
         <table class="table m-0">
@@ -497,14 +497,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </tbody>
         </table>
         </div>
-        
+
         </div>
-        
+
         <div class="card-footer clearfix" style="display: block;">
         <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
         <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
         </div>
-        
+
         </div>
     </section> --}}
     {{--   <section class="content col-lg-6">
@@ -613,24 +613,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
         </div>
     </section> --}}
-  
+
           {{-- <div class="col-lg-8"> --}}
           <!-- Contenido Principal -->
-          
+
     <router-view></router-view>
 
-    <template v-if="menu==10"> 
+    <template v-if="menu==10">
       <user-component :path="path"></user-component>
-    </template> 
-    <template v-if="menu==11"> 
+    </template>
+    <template v-if="menu==11">
         <nuevo-user-component  :path="path"></nuevo-user-component>
     </template>
       
-      <template v-if="menu==5"> 
+      <template v-if="menu==5">
         <facturacion-component  :path="path"></facturacion-component>
       </template>
 
-      <template v-if="menu==6"> 
+      <template v-if="menu==6">
         <compras-component  :path="path"></compras-component>
       </template>
          
@@ -638,7 +638,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <!-- /Fin del contenido principal -->
           {{-- </div> --}}
           <!-- /.col-md-6 -->
-        </div> 
+        </div>
         <!-- /.row -->
     <!--  </div> /.container-fluid -->
    {{--  </div> --}}
@@ -670,7 +670,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
- <script src="{{asset('js/jquery.min.js')}}"></script> 
+ <script src="{{asset('js/jquery.min.js')}}"></script>
 <!-- Bootstrap 4 -->
 <script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
  <!-- JS APP -->

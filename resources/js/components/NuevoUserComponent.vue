@@ -11,26 +11,26 @@
             <div class="card-body">
               <div class="form-group">
                 <label for="exampleInputName">Nombre</label>
-                <input type="text" class="form-control" v-model="nombre" name="nombre" id="exampleInputName" placeholder="Enter Name"/>
+                <input type="text" class="form-control" v-model="nombre" name="nombre" id="exampleInputName" placeholder="Ingrese Nombre"/>
               </div>
               <div class="form-group">
-                <label for="exampleInputName">Apellido</label>
-                <input type="text" class="form-control" v-model="apellido" name="apellido" id="exampleInputApellido" placeholder="Enter Name"/>
+                <label for="exampleInputApellido">Apellido</label>
+                <input type="text" class="form-control" v-model="apellido" name="apellido" id="exampleInputApellido" placeholder="Ingrese Apellido"/>
               </div>
               <div class="form-group">
                 <label>Grupo/s</label>
                 <div v-for=" grupo in arrayGrupos" :key="grupo.id" class="custom-control custom-checkbox">
                   <input class="custom-control-input" v-model="idGrupos" type="checkbox" :value="grupo.id"  ref="input_nombre" :id="grupo.nombreGrupo"> 
-                  <label :for="grupo.nombreGrupo" class="custom-control-label">{{grupo.nombreGrupo}}</label>  
+                  <label :for="grupo.nombreGrupo" class="custom-control-label">{{grupo.nombreGrupo}}</label>
                 </div>
               </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">Email</label>
-                <input type="email" class="form-control"  v-model="email" name="email" id="exampleInputEmail1" placeholder="Enter email"/>
+                <input type="email" class="form-control"  v-model="email" name="email" id="exampleInputEmail1" placeholder="Ingrese Email"/>
               </div>
                <div class="form-group">
-                <label for="exampleInputEmail1">Contraseña</label>
-                <input type="password" class="form-control" v-model="password" name="password" id="password" placeholder="Enter Password"/>
+                <label for="password">Contraseña</label>
+                <input type="password" class="form-control" v-model="password" name="password" id="password" placeholder="Ingrese Contraseña"/>
               </div>
             </div>
             <div class="loader" v-if="loading"></div>
