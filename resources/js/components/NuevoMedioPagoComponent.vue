@@ -1,58 +1,49 @@
 <template>
-    <div class="container-fluid">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">Nuevo Medio De Pago</h3>
-            </div>
-            <!-- form start -->
-            <form id="form">
-              <div class="card-body">
-                <div class="form-group">
-                  <label for="exampleInputName">Nombre</label>
-                  <input type="text" class="form-control" v-model="nombre" name="nombre" id="exampleInputName" placeholder="Ingrese Nombre"/>
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputDescripcion">Descripción</label>
-                  <input type="text" class="form-control" v-model="descripcion" name="descripcion" id="exampleInputDescripcion" placeholder="Ingrese Descripción"/>
-                </div>
-              </div>
-              <div class="loader" v-if="loading"></div>
-               <!-- <div v-show="erroruser" class="form-group div-error">
-                  <div class="text-left">
-                      <div v-for="error in errorMostrarMsjuser" :key="error" v-text="error">
-                      </div>
-                  </div>
-              </div> -->
-              <div class="card-footer">
-                <button type="button" @click="enviarForm()" class="btn btn-primary">Crear</button>
-              </div>
-            </form>
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Nuevo Medio De Pago</h3>
           </div>
+          <!-- form start -->
+          <form id="form">
+            <div class="card-body">
+              <div class="form-group">
+                <label for="exampleInputName">Nombre</label>
+                <input type="text" class="form-control" v-model="nombre" name="nombre" id="exampleInputName" placeholder="Ingrese Nombre"/>
+              </div>
+            </div>
+            <div class="loader" v-if="loading"></div>
+              <div v-show="errormediopago" class="form-group div-error">
+                <div class="text-left">
+                    <div v-for="error in errorMostrarMsj" :key="error" v-text="error">
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+              <button type="button" @click="enviarForm()" class="btn btn-primary">Crear</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </template>
-  <!-- <script>
+  </div>
+</template>
+<script>
   import axios from "axios";
   export default {
     props: ["path"],
     data() {
       return {
-        idUser: 0,
-        idGrupos: [],
+        idMedioPago: 0,
         nombre:"",
-        apellido:"",
-        email:"",
-        password:"",
         loading: false,
         modal: 0,
         idCan: "",
         tituloModal: "",
         tipoAccion: 0,
         buscar: "",
-        arrayGrupos: [],
         pagination: {
           total: 0,
           current_page: 0,
@@ -62,8 +53,8 @@
           to: 0,
         },
         offset: 3,
-        erroruser: 0,
-        errorMostrarMsjuser: [],
+        errormediopago: 0,
+        errorMostrarMsj: [],
       };
     },
     computed: {
@@ -73,55 +64,28 @@
     },
     methods: {
       allLetter() {
-        let a = this._data.nombreuser;
+        let a = this._data.nombrevalor;
         if (!a.match(/^[A-Za-z]+$/)) {
           this._data.nombreRol = "";
         }
-        this._data.nombreuser = this._data.nombreuser.toUpperCase();
+        this._data.nombrevalor = this._data.nombrevalor.toUpperCase();
         return;
       },
-      listarGrupos() {
-        let me = this;
-        var url = "/grupos";
-        axios
-          .get(url, {
-            params: {},
-          })
-          .then(function (response) {
-            var respuesta = response.data;
-            me.arrayGrupos = respuesta.grupos;
-            //me.pagination = respuesta.pagination;
-          })
-          .catch(function (error) {
-            console.log(error);
-            if (error.response.status === 401) {
-              location.reload(true);
-            }
-          })
-          .then(function () {
-            // always executed
-          });
-      },
-      validaruser() {
-        this.erroruser = 0;
-        this.errorMostrarMsjuser = [];
-        if(!this.nombre) this.errorMostrarMsjuser.push('* El nombre no puede estar vacío');
-        if(!this.apellido) this.errorMostrarMsjuser.push('* El apellido no puede estar vacío');
-        if(!this.email) this.errorMostrarMsjuser.push('* El email no puede estar vacío');
-        if(!this.password) this.errorMostrarMsjuser.push('* La contraseña no puede estar vacía');
-        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjuser.push('* El email no es valido');
-        if(this.idGrupos.length==0) this.errorMostrarMsjuser.push('* El Grupo no puede estar vacío');
-        if (this.errorMostrarMsjuser.length) this.erroruser = 1;
+      validarMedioPago() {
+        this.errormediopago = 0;
+        this.errorMostrarMsj = [];
+        if(!this.nombre) this.errorMostrarMsj.push('* El nombre no puede estar vacío');
+        if (this.errorMostrarMsj.length) this.errormediopago = 1;
       },
       //Implemento Async-Await//
       async enviarForm(){
-        this.validaruser();
-        if(this.erroruser==1)return; 
+        this.validarMedioPago();
+        if(this.errormediopago==1)return;
         let me=this;
-        let url = "/crearusuario";
+        let url = "/crearvalores";
         this.loading = true;
         try {
-          const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,grupo:[...this.idGrupos],email:this.email,password:this.password})
+          const response= await axios.post(url,{nombre:this.nombre})
           let respuesta = response.data;
           if (respuesta.status == 201) {
             let success=respuesta.success;
@@ -134,10 +98,6 @@
             });
             //Limpio variables
             me.nombre='';
-            me.apellido='';
-            me.email='';
-            me.idGrupos=[];
-            me.password='';  
             this.loading=false
           }else{
             let errors=respuesta.errors;
@@ -153,89 +113,34 @@
           }
           this.loading=false
         } catch (error) {
-           console.log('Errores de Conexion'+error);
-           this.loading=false
+            console.log('Errores de Conexion'+error);
+            this.loading=false
         }
       },
-      methodCan() {
-        let me = this;
-        var url = "/roleuser";
-        axios
-          .get(url, {
-            params: {},
-          })
-          .then(function (response) {
-            me.idCan = response.data;
-          })
-          .catch(function (error) {
-            console.log(error);
-            if (error.response.status === 401) {
-              location.reload(true);
-            }
-          });
-      },
-      eliminaruser(idUser) {
-        const swalWithBootstrapButtons = Swal.mixin({
-          customClass: {
-            confirmButton: "btn btn-primary",
-            cancelButton: "btn btn-danger",
-          },
-          buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-          .fire({
-            title: "Estas seguro de eliminarlo?",
-            text: "You won't be able to revert this!",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar",
-            reverseButtons: true,
-          })
-          .then((result) => {
-            if (result.value) {
-              let me = this;
-              var url = "/deleterolusuario";
-              axios
-                .post(url, {
-                  id: idUser,
-                })
-                .then(function (response) {
-                  me.cerrarModal();
-                  me.listaruser(me.pagination.current_page, me.buscar);
-                  me.methodCan();
-                  swal.fire({
-                    title: "Eliminado!",
-                    text: "El registro fue Eliminado.",
-                    icon: "success",
-                    timer: 1500,
-                    timerProgressBar: true,
-                  });
-                })
-                .catch(function (error) {
-                  console.log(error);
-                  if (error.response.status === 401) {
-                    location.reload(true);
-                  }
-                });
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-              swal.fire({
-                title: "Cancelled",
-                text: "Your imaginary file is safe ",
-                icon: "error",
-                timer: 1500,
-                timerProgressBar: true,
-              });
-            }
-          });
-      },
+      // methodCan() {
+      //   let me = this;
+      //   var url = "/roleuser";
+      //   axios
+      //     .get(url, {
+      //       params: {},
+      //     })
+      //     .then(function (response) {
+      //       me.idCan = response.data;
+      //     })
+      //     .catch(function (error) {
+      //       console.log(error);
+      //       if (error.response.status === 401) {
+      //         location.reload(true);
+      //       }
+      //     });
+      // },
     },
     mounted() {
-      this.listarGrupos();
+      // this.listarGrupos();
     },
   };
-  </script> -->
-  <style>
+</script>
+<style>
   .modal-content {
     width: 100%;
     position: absolute !important;
@@ -269,5 +174,4 @@
       opacity: 0.4;
       filter: alpha(opacity=40);
   }
-  </style>
-  
+</style>
