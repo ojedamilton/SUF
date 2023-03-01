@@ -27,12 +27,11 @@ class UserController extends Controller
 
            $buscar= $request->buscar;
            if ($buscar=='') {
-               $users=User::with('grupos')
-                            ->orderBy('id','desc')
-                            ->paginate(10);
+            //    $users=User::with('grupos')
+            $users=User::orderBy('id','desc')
+                        ->paginate(10);
            }else{
-               $users=User::with('grupos')
-                           ->where('username','like','%'.$buscar.'%')
+               $users=User::where('username','like','%'.$buscar.'%')
                            ->orWhere('name','like','%'.$buscar.'%')
                            ->orderBy('name','asc')
                            ->paginate(10);

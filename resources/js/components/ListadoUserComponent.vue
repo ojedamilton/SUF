@@ -17,28 +17,28 @@
                             <table id="table_user" class="table table-striped" width="100%">
                                 <thead>
                                 <tr>  
-                                    <th>LOGIN</th>
                                     <th>NOMBRE</th>
+                                    <th>APELLIDO</th>
                                     <th>EMAIL</th>
                                     <th>GRUPOS</th>
-                                    <th v-if="idCan.includes('edit usuarios') || idCan.includes('delete usuarios')">ACCIÓN</th>
+                                    <th>ACCIÓN</th>
                                     <!-- <th>PERMISOS</th> -->
 
                                 </tr>  
                                 </thead>  
                                 <tbody>
                                     <tr v-for="user in arrayUser" :key="user.id">    
-                                        <td>{{user.username}}</td>    
-                                        <td>{{user.name}}</td> 
-                                        <td>{{user.email}}</td> 
+                                        <td>{{user.name}}</td>
+                                        <td>{{user.apellido}}</td>
+                                        <td>{{user.email}}</td>
                                         <td>
                                             <span  v-for="role in user.roles" :key="role.id"  class="badge badge-primary">
                                                 {{role.name}}
                                             </span>
                                         </td>
                                         <td>
-                                            <a v-if="idCan.includes('edit usuarios')" class="btn btn-secondary btn-sm" id="botoneditar" @click="abrirModal('user', 'actualizar', user )"><i class="fas fa-edit"></i></a>
-                                            <a v-if="idCan.includes('delete usuarios')" class="btn btn-danger btn-sm" @click="eliminaruser(user.id)" id="botoneliminar"><i class="fas fa-trash-alt"></i></a>  
+                                            <a @click="abrirModal('user','actualizar')"><i class="fas fa-edit"></i></a>
+                                            <a><i class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>  
                                 </tbody>  
@@ -162,16 +162,6 @@ import axios from 'axios';
             }
         },
          methods:{
-              allLetter()
-            {
-                let a=this._data.nombreuser;
-                if (!a.match(/^[A-Za-z]+$/)) {
-                    this._data.nombreRol="";
-                } 
-                this._data.nombreuser=this._data.nombreuser.toUpperCase();
-                return ;
-                
-            },
             listaruser(page,buscar){
                 let me = this;
                 var url= '/usuarios?page='+page+'&buscar='+buscar;
@@ -259,22 +249,22 @@ import axios from 'axios';
                     case "user":
                     {
                         switch(accion){
-                            case "registrar":{
-                                this.modal=1;
-                                this.tituloModal='Registrar Usuario';
-                                this.nombreuser='';
-                                this.description='';
-                                this.tipoAccion=1;
-                                break;
-                            }
+                            // case "registrar":{
+                            //     this.modal=1;
+                            //     this.tituloModal='Registrar Usuario';
+                            //     this.nombreuser='';
+                            //     this.description='';
+                            //     this.tipoAccion=1;
+                            //     break;
+                            // }
                             case "actualizar":{
                                 this.modal=1;
                                 this.tituloModal='Asignar Rol Usuario';
-                                this.idUser=data['id'];
-                                this.idRol=data['idrol'];
-                                this.idRoleUser=[];
-                                data['roles'].forEach(element => this.idRoleUser.push(element['id']));
-                                this.idRolBack=data['idrol'];
+                                // this.idUser=data['id'];
+                                // this.idRol=data['idrol'];
+                                // this.idRoleUser=[];
+                                // data['roles'].forEach(element => this.idRoleUser.push(element['id']));
+                                // this.idRolBack=data['idrol'];
                                 this.tipoAccion=2;
                                 break;
                             }

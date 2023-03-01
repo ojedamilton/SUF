@@ -14,7 +14,7 @@ class ClienteController extends Controller
      */
     public function getAllClientes(Request $request)
     {
-        // Si quieren Ingresar sin un request , redirecciona al home 
+        // Si quieren Ingresar sin un request , redirecciona al home
         if(!$request->ajax())return redirect('/home');
 
          $buscar= $request->buscar;
@@ -23,14 +23,22 @@ class ClienteController extends Controller
                         ->orWhere('apellidoCliente','like','%'.$buscar.'%')
                         ->orWhere('dniCliente','like','%'.$buscar.'%')
                         ->orderBy('nombreCliente','asc')
-                        ->get();
+                        ->paginate(10);
 
         $saludo=Cliente::saludar();
-                                 
+
         return[
+            'pagination'=>[
+                'total'=>$cliente->total(),
+                'current_page'=>$cliente->currentPage(),
+                'per_page'=>$cliente->perPage(),
+                'last_page'=>$cliente->lastPage(),
+                'from'=>$cliente->firstItem(),
+                'to'=>$cliente->lastItem(),
+            ],
             'clientes'=>$cliente,
             'metodo'=>$saludo,
-        ]; 
+        ];
     }
 
     /**
