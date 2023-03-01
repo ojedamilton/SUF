@@ -16,14 +16,26 @@ class ValorController extends Controller
         // Si quieren Ingresar sin un request , redirecciona al home 
         if(!$request->ajax())return redirect('/home');
 
-        $valores=Valor::all();  //query que le pega al modelo
-        
+        $buscar= $request->buscar;
+
+        $valores=Valor::where('nombreValor','like','%'.$buscar.'%')
+                        ->orderBy('nombreValor','asc')
+                        ->paginate(10);
+
+
         return[
+            'pagination'=>[
+                'total'=>$valores->total(),
+                'current_page'=>$valores->currentPage(),
+                'per_page'=>$valores->perPage(),
+                'last_page'=>$valores->lastPage(),
+                'from'=>$valores->firstItem(),
+                'to'=>$valores->lastItem(),
+            ],
             'valores'=>$valores,
         ];
     }
- 
-    
+
     /**
      * Store a newly created resource in storage.
      *

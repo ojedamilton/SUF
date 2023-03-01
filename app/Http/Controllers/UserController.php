@@ -31,8 +31,9 @@ class UserController extends Controller
             $users=User::orderBy('id','desc')
                         ->paginate(10);
            }else{
-               $users=User::where('username','like','%'.$buscar.'%')
-                           ->orWhere('name','like','%'.$buscar.'%')
+               $users=User::where('name','like','%'.$buscar.'%')
+                           ->orWhere('apellido','like','%'.$buscar.'%')
+                           ->orWhere('email','like','%'.$buscar.'%')
                            ->orderBy('name','asc')
                            ->paginate(10);
            } 
