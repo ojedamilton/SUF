@@ -39,7 +39,7 @@
               </div>
               <div class="form-group">
                 <label for="exampleInputSituacion">Situación Fiscal</label>
-                <select class="form-control" v-model="situacionId" id="situacion" name="situacion">
+                <select class="form-control" v-model="situacionId" id="exampleInputSituacion" name="situacion">
                 <option  v-for="situacion in arraySituacion" :key="situacion.id" :value="situacion.id">{{situacion.nombreSituacion}}</option>
               </select>
               </div>

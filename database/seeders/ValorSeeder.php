@@ -16,10 +16,10 @@ class ValorSeeder extends Seeder
     public function run()
     {
         $arrValores =[
-            ['nombreValor' => 'efectivo', 'estadoValor'=>1],
-            ['nombreValor' => 'credito', 'estadoValor'=>1],
-            ['nombreValor' => 'cheque', 'estadoValor'=>1],
-            ['nombreValor' => 'transferencia', 'estadoValor'=>1]
+            ['nombreValor' => 'efectivo', 'estadoValor'=>1, 'idEmpresa' => 1],
+            ['nombreValor' => 'credito', 'estadoValor'=>1, 'idEmpresa' => 1],
+            ['nombreValor' => 'cheque', 'estadoValor'=>1, 'idEmpresa' => 1],
+            ['nombreValor' => 'transferencia', 'estadoValor'=>1, 'idEmpresa' => 1]
         ] ;
        $valor= new Valor;
        $valor->insert($arrValores);

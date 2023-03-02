@@ -32,6 +32,12 @@
                 <label for="password">Contraseña</label>
                 <input type="password" class="form-control" v-model="password" name="password" id="password" placeholder="Ingrese Contraseña"/>
               </div>
+              <div class="form-group">
+                <label for="exampleInputEmpresa">Empresa</label>
+                <select class="form-control" v-model="empresaId" id="exampleInputEmpresa" name="situacion">
+                <option  v-for="empresa in arrayEmpresa" :key="empresa.id" :value="empresa.id">{{empresa.nombreEmpresa}}</option>
+              </select>
+              </div>
             </div>
             <div class="loader" v-if="loading"></div>
              <div v-show="erroruser" class="form-group div-error">
@@ -68,6 +74,7 @@
         tipoAccion: 0,
         buscar: "",
         arrayGrupos: [],
+        arrayEmpresa: [],
         pagination: {
           total: 0,
           current_page: 0,
@@ -78,6 +85,7 @@
         },
         offset: 3,
         erroruser: 0,
+        empresaId: 0,
         errorMostrarMsjuser: [],
       };
     },
@@ -87,14 +95,22 @@
       }
     },
     methods: {
-      allLetter() {
-        let a = this._data.nombreuser;
-        if (!a.match(/^[A-Za-z]+$/)) {
-          this._data.nombreRol = "";
-        }
-        this._data.nombreuser = this._data.nombreuser.toUpperCase();
-        return;
-      },
+      listarEmpresas() {
+      let me = this;
+      var url = "/empresa";
+      axios
+        .get(url) // ,{ params: {},} 
+        .then(function (response) {
+          var respuesta = response.data;
+          me.arrayEmpresa = respuesta.empresa;
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (error.response.status === 401) {
+            location.reload(true);
+          }
+        });
+    },
       listarGrupos() {
         let me = this;
         var url = "/grupos";
@@ -122,10 +138,11 @@
         this.errorMostrarMsjuser = [];
         if(!this.nombre) this.errorMostrarMsjuser.push('* El nombre no puede estar vacío');
         if(!this.apellido) this.errorMostrarMsjuser.push('* El apellido no puede estar vacío');
-        if(!this.email) this.errorMostrarMsjuser.push('* El email no puede estar vacío');
-        if(!this.password) this.errorMostrarMsjuser.push('* La contraseña no puede estar vacía');
-        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjuser.push('* El email no es valido');
         if(this.idGrupos.length==0) this.errorMostrarMsjuser.push('* El Grupo no puede estar vacío');
+        if(!this.email) this.errorMostrarMsjuser.push('* El email no puede estar vacío');
+        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjuser.push('* El email no es valido');
+        if(!this.password) this.errorMostrarMsjuser.push('* La contraseña no puede estar vacía');
+        if(!this.empresaId) this.errorMostrarMsjuser.push('* La empresa no puede estar vacía');
         if (this.errorMostrarMsjuser.length) this.erroruser = 1;
       },
       //Implemento Async-Await//
@@ -247,6 +264,7 @@
     },
     mounted() {
       this.listarGrupos();
+      listarEmpresas();
     },
   };
 </script>
