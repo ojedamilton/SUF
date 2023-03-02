@@ -14,6 +14,7 @@ class Valor extends Model
     protected $fillable = [
         'id',
         'nombreValor',
-        'estadoValor'
+        'estadoValor',
+        'idEmpresa'
     ];
 }

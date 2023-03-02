@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Valor;
+use Illuminate\Support\Facades\Auth;
+use App\Repositories\MedioPagoRepository;
+
 class ValorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $medioPagoRepository;
+    
+    public function __construct(MedioPagoRepository $medioPagoRepository){
+     
+      $this->medioPagoRepository = $medioPagoRepository;
+
+    }
+
     public function getAllValores(Request $request)
     {
         // Si quieren Ingresar sin un request , redirecciona al home 
@@ -18,21 +24,19 @@ class ValorController extends Controller
 
         $buscar= $request->buscar;
 
-        $valores=Valor::where('nombreValor','like','%'.$buscar.'%')
-                        ->orderBy('nombreValor','asc')
-                        ->paginate(10);
+        $medioPago=$this->medioPagoRepository->all($buscar,Auth::user()->idEmpresa);
 
 
         return[
             'pagination'=>[
-                'total'=>$valores->total(),
-                'current_page'=>$valores->currentPage(),
-                'per_page'=>$valores->perPage(),
-                'last_page'=>$valores->lastPage(),
-                'from'=>$valores->firstItem(),
-                'to'=>$valores->lastItem(),
+                'total'=>$medioPago->total(),
+                'current_page'=>$medioPago->currentPage(),
+                'per_page'=>$medioPago->perPage(),
+                'last_page'=>$medioPago->lastPage(),
+                'from'=>$medioPago->firstItem(),
+                'to'=>$medioPago->lastItem(),
             ],
-            'valores'=>$valores,
+            'valores'=>$medioPago,
         ];
     }
 

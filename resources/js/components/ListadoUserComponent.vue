@@ -411,8 +411,6 @@ import axios from 'axios';
         },
         mounted() {
               this.listaruser(1,this.buscar);
-              this.listarRoles();
-              this.methodCan();
         }
     }
        

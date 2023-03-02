@@ -12,14 +12,18 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\UserRepository;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $userRepository;
+    
+    public function __construct(UserRepository $userRepository){
+     
+      $this->userRepository = $userRepository;
+
+    }
+
     public function index(Request $request)
     {
         // Si quieren Ingresar sin un request , redirecciona al home 
@@ -28,14 +32,11 @@ class UserController extends Controller
            $buscar= $request->buscar;
            if ($buscar=='') {
             //    $users=User::with('grupos')
-            $users=User::orderBy('id','desc')
-                        ->paginate(10);
+            $users = $this->userRepository->all(Auth::user()->idEmpresa);
+
            }else{
-               $users=User::where('name','like','%'.$buscar.'%')
-                           ->orWhere('apellido','like','%'.$buscar.'%')
-                           ->orWhere('email','like','%'.$buscar.'%')
-                           ->orderBy('name','asc')
-                           ->paginate(10);
+
+                 $users = $this->userRepository->search($buscar,Auth::user()->idEmpresa);                
            } 
            return[
                'pagination'=>[

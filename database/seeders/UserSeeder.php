@@ -20,7 +20,8 @@ class UserSeeder extends Seeder
             'apellido' =>'admin',
             'email' => 'admin@admin.com',
             'password' => Hash::make('admin123'),
-            'estadoUsuario' => 1
+            'estadoUsuario' => 1,
+            'idEmpresa'=>1
             
         ]); 
     }

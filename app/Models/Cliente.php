@@ -19,6 +19,7 @@ class Cliente extends Persona
         'emailCliente',
         'direccionCliente',
         'telefonoCliente',
-        'estadoCliente'
+        'estadoCliente',
+        'idEmpresa'
     ];
 }

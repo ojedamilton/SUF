@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cliente;
+use Illuminate\Support\Facades\Auth;
+use App\Repositories\ClientRepository;
 
 class ClienteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $clientRepository;
+    
+    public function __construct(ClientRepository $clientRepository){
+     
+      $this->clientRepository = $clientRepository;
+
+    }
     public function getAllClientes(Request $request)
     {
         // Si quieren Ingresar sin un request , redirecciona al home
@@ -19,11 +23,7 @@ class ClienteController extends Controller
 
          $buscar= $request->buscar;
 
-         $cliente=Cliente::where('nombreCliente','like','%'.$buscar.'%')
-                        ->orWhere('apellidoCliente','like','%'.$buscar.'%')
-                        ->orWhere('dniCliente','like','%'.$buscar.'%')
-                        ->orderBy('nombreCliente','asc')
-                        ->paginate(10);
+         $cliente=$this->clientRepository->all($buscar,Auth::user()->idEmpresa);
 
         $saludo=Cliente::saludar();
 

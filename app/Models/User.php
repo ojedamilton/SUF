@@ -14,6 +14,8 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
     
     protected $pwd='';
+    
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.

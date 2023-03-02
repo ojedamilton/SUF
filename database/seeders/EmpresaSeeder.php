@@ -17,9 +17,15 @@ class EmpresaSeeder extends Seeder
     {
         $arrayEmpresas=[
             [
-             'id'=>1,'nombreEmpresa'=>'Empresuf','cuitEmpresa'=>23344439872,
-             'direccionEmpresa'=>'Calle Falsa 123','idTipoEmpresa'=>1,'estadoEmpresa'=>1,
-             'razonSocial'=>'Empresuf Srl','ingresosBrutosEmpresa'=>1,'telEmpresa'=>11223344,
+             'id'=>1,
+             'nombreEmpresa'=>'Empresuf',
+             'cuitEmpresa'=>23344439872,
+             'direccionEmpresa'=>'Calle Falsa 123',
+             'idTipoEmpresa'=>1,
+             'estadoEmpresa'=>1,
+             'razonSocial'=>'Empresuf Srl',
+             'ingresosBrutosEmpresa'=>1,
+             'telEmpresa'=>11223344,
              'inicioActividades'=>'1900-01-01'
             ]
         ];

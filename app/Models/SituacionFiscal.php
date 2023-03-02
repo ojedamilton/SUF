@@ -9,7 +9,7 @@ class SituacionFiscal extends Model
 {
     use HasFactory;
 
-    protected $table='situacionfiscal';
+    protected $table='situacionFiscal';
 
     protected $fillable = [
         'id',

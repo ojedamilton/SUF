@@ -283,7 +283,7 @@ export default {  // todo lo que voy a exportar
         .get(url) // ,{ params: {},} 
         .then(function (response) {
           var respuesta = response.data;
-          me.arrayValores = respuesta.valores;
+          me.arrayValores = respuesta.valores.data;
         })
         .catch(function (error) {
           console.log(error);
@@ -329,7 +329,7 @@ export default {  // todo lo que voy a exportar
         .get(url) // ,{ params: {},} 
         .then(function (response) {
           var respuesta = response.data;
-          me.arrayClientes = respuesta.clientes;
+          me.arrayClientes = respuesta.clientes.data;
         })
         .catch(function (error) {
           console.log(error);
