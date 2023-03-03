@@ -12,6 +12,7 @@ use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\SituacionFiscalController;
 use App\Http\Controllers\TipoEmpresaController;
+use App\Http\Controllers\EmpresaController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -41,7 +42,7 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 /* RUTAS -> Empresa */
-Route::get('/empresa', [EmpresaController::class,'index'])->name('empresa');
+Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresa');
 
 /* RUTAS -> Tipo Empresa */
 Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');

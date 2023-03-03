@@ -34,8 +34,8 @@
               </div>
               <div class="form-group">
                 <label for="exampleInputEmpresa">Empresa</label>
-                <select class="form-control" v-model="empresaId" id="exampleInputEmpresa" name="situacion">
-                <option  v-for="empresa in arrayEmpresa" :key="empresa.id" :value="empresa.id">{{empresa.nombreEmpresa}}</option>
+                <select class="form-control" v-model="empresaId" id="exampleInputEmpresa" name="empresas">
+                <option  v-for="empresas in arrayEmpresa" :key="empresas.id" :value="empresas.id">{{empresas.nombreEmpresa}}</option>
               </select>
               </div>
             </div>
@@ -97,12 +97,12 @@
     methods: {
       listarEmpresas() {
       let me = this;
-      var url = "/empresa";
+      var url = "/empresas";
       axios
         .get(url) // ,{ params: {},} 
         .then(function (response) {
           var respuesta = response.data;
-          me.arrayEmpresa = respuesta.empresa;
+          me.arrayEmpresa = respuesta.empresas;
         })
         .catch(function (error) {
           console.log(error);
@@ -264,7 +264,7 @@
     },
     mounted() {
       this.listarGrupos();
-      listarEmpresas();
+      this.listarEmpresas();
     },
   };
 </script>

@@ -9,8 +9,18 @@ class Empresa extends Model
 {
     use HasFactory;
 
-    protected $table="empresas";
+    protected $table='empresas';
 
-    protected $guarded = [];
-
+    protected $fillable = [
+        'id',
+        'nombreEmpresa',
+        'cuitEmpresa',
+        'direccionEmpresa',
+        'idTipoEmpresa',
+        'estadoEmpresa',
+        'razonSocial',
+        'ingresosBrutosEmpresa',
+        'telEmpresa',
+        'inicioActividades'
+    ];
 }
