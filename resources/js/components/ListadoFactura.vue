@@ -122,7 +122,7 @@
           </div>
           <div class="col-12">
             <div class="d-flex justify-content-md-center py-3">
-              <button class="btn btn-primary" @click="descargarPDF()" >Descargar</button>
+              <button class="btn btn-primary" @click="downloadPage()" >Descargar</button>
             </div>
           </div>  
         </div>
@@ -233,6 +233,9 @@ export default {
           .catch(function (error) {
             console.log(error);
           });
+    },
+     downloadPage() {
+      window.print();
     },
     abrirModal() {
       this.modal = 1;
