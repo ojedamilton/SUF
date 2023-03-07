@@ -2,6 +2,7 @@
   <div class="container-fluid">
     <div class="row justify-content-center">
       <div class="col-md-8">
+        <p class="text-center"><strong>ABM USUARIO</strong></p>
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">Nuevo Usuario</h3>
@@ -102,7 +103,7 @@
         .get(url) // ,{ params: {},} 
         .then(function (response) {
           var respuesta = response.data;
-          me.arrayEmpresa = respuesta.empresas;
+          me.arrayEmpresa = respuesta.empresas.data;
         })
         .catch(function (error) {
           console.log(error);
@@ -153,7 +154,7 @@
         let url = "/crearusuario";
         this.loading = true;
         try {
-          const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,grupo:[...this.idGrupos],email:this.email,password:this.password})
+          const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,grupo:[...this.idGrupos],email:this.email,password:this.password,empresaId:this.empresaId})
           let respuesta = response.data;
           if (respuesta.status == 201) {
             let success=respuesta.success;

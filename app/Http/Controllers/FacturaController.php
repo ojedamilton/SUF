@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetalleFactura;
 use Dompdf\Dompdf;
+use Carbon\Carbon;
 
 class FacturaController extends Controller
 {
@@ -51,8 +52,9 @@ class FacturaController extends Controller
      */
     public function store(Request $request)
     {
-        // Obtengo Pto Venta
-        $ptoVenta=DB::table('puntoVenta')->where('id',1)->first();
+        // Obtengo Pto Venta ||Proxima iteracion
+        //$ptoVenta=DB::table('puntoVenta')->where('id',1)->first();
+        $ptoVenta=1;
         $factura = Factura::where('idTipoFactura',$request->factura['tipoFacturaId'])->first();
         // ultimo Numero por cada Tipo de Factura 
         if($factura){
@@ -83,7 +85,7 @@ class FacturaController extends Controller
             $factura->idUsuario=Auth::user()->id;
             $factura->idTipoFactura=$request->factura['tipoFacturaId'];
             $factura->idEmpresa=Auth::user()->idEmpresa;
-            $factura->idpuntoVenta=$ptoVenta->id;
+            $factura->idpuntoVenta=$ptoVenta;
             $factura->totalFactura=$request->factura['totalFactura'];
             $factura->descuento=$request->factura['descuento'];
             $factura->save();
@@ -141,6 +143,7 @@ class FacturaController extends Controller
 
             $listadofacturas=Factura::
                              orderBy('id','desc')
+                             ->where('idEmpresa',Auth::user()->idEmpresa)
                              ->get();
   
            return[
@@ -154,7 +157,7 @@ class FacturaController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $factura=Factura::find($request->id);
-        $factura= Factura::with('puntoventa','tipofactura')->selectRaw("id,totalFactura,fechaModificacion,totalFactura,idPuntoVenta,idTipoFactura, CONCAT(LPAD(numeroFactura, 6, '0')) as numeroFactura")
+        $factura= Factura::with('puntoventa','tipofactura')->selectRaw("id,descuento,totalFactura,fechaModificacion,totalFactura,idPuntoVenta,idTipoFactura, CONCAT(LPAD(numeroFactura, 6, '0')) as numeroFactura")
                                 ->where('id',$request->id)
                                 ->first();
 
@@ -193,6 +196,28 @@ class FacturaController extends Controller
         // Descargar el PDF
         return $dompdf->stream('contenido-modal.pdf');
     }
+
+    public function reporteventas(){
+
+        $fecha_actual = Carbon::now()->toDateString();
+       // dd($fecha_actual);
+       /*  $inicio_semana_actual = $fecha_actual->startOfWeek()->startOfDay();
+        $fin_semana_actual = $fecha_actual->endOfWeek()->endOfDay(); */
+        //whereBetween('fechaModificacion', [$inicio_semana_actual, $fin_semana_actual])
+        $total_facturada_semana_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
+                                                ->where('fechaModificacion',$fecha_actual)
+                                                ->sum('totalFactura');                                       
+        $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa)->count();                                          
+        
+
+        return [
+          "cantVentaSemanal"=>$cantidad_facturas,
+          "totalVentaSemanal"=>$total_facturada_semana_actual
+        ];
+         
+
+    }
+
     /**
      * Display the specified resource.
      *

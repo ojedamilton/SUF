@@ -44,6 +44,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 /* RUTAS -> Empresa */
 Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
 Route::get('/userEmpresa', [EmpresaController::class,'userEmpresa'])->name('userempresa');
+Route::post('/createEmpresa', [EmpresaController::class,'createEmpresa'])->name('createempresa');
 
 /* RUTAS -> Tipo Empresa */
 Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');
@@ -55,6 +56,7 @@ Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('al
 Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid');
 Route::post('/getfacturasbyid',[FacturaController::class,'getFacturasById'])->name('facturasbyid');
 Route::post('/descargarFactura',[FacturaController::class,'descargarFactura'])->name('descargarfactura');
+Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('reporteventas');
 
 
 /* RUTAS -> Compras */
@@ -75,7 +77,7 @@ Route::get('/grupos', [GrupoController::class,'index'])->name('grupos');
 /*  RUTAS -> Clientes */
 Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');
 Route::post('/clienteTipoFactura', [ClienteController::class,'clienteTipoFactura'])->name('clientetipofactura');
-
+Route::post('/crearcliente', [ClienteController::class,'crearCliente'])->name('crearcliente');
 /*  RUTAS -> Situacion Fiscal */
 Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
 

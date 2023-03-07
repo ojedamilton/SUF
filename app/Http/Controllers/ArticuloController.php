@@ -24,7 +24,7 @@ class ArticuloController extends Controller
 
          $buscar= $request->buscar;
         if (!$buscar) {
-            $articulo=Articulo::orderBy('id','asc')->paginate(3);
+            $articulo=Articulo::orderBy('id','asc')->paginate(5);
         }else{
             $articulo=Articulo::where('nombreArticulo','like','%'.$buscar.'%')
                                 ->orWhere('id','like','%'.$buscar.'%')

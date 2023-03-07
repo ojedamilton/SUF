@@ -25,15 +25,15 @@ import NuevoProveedor from './components/NuevoProveedorComponent.vue';
 import ListadoProveedor from './components/ListadoProveedorComponent.vue';
 import NuevoMedioPago from './components/NuevoMedioPagoComponent.vue';
 import ListadoMedioPago from './components/ListadoMedioPagoComponent.vue';
-
-Vue.component('compras-component',ComprasComponent)
-Vue.component('listado-user-component', ListadoUsuario);
-Vue.component('nuevo-user-component', NuevoUsuario);
-Vue.component('facturacion-component', FacturacionComponent);
-
-
+import GraficosView from './components/GraficosComponent.vue';
 
   const routes = [
+
+    {
+        path:'/dashboard',
+        name:'dashboard',
+        component:GraficosView
+    },
     {
         path:'/empresa',
         name:'empresa',

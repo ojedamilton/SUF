@@ -18,6 +18,8 @@
                             <thead>
                             <tr>
                                 <th>NOMBRE</th>
+                                <th>RAZON SOCIAL</th>
+                                <th>CUIT</th>
                                 <th>ACCIÓN</th>
                                 <!-- <th>PERMISOS</th> -->
 
@@ -26,6 +28,8 @@
                             <tbody>
                                 <tr v-for="empresa in arrayEmpresas" :key="empresa.id">
                                     <td>{{empresa.nombreEmpresa}}</td>
+                                    <td>{{empresa.razonSocial}}</td>
+                                    <td>{{empresa.cuitEmpresa}}</td>
                                     <td>
                                         <a><i class="fas fa-edit"></i></a>
                                         <a><i class="fas fa-trash-alt"></i></a>

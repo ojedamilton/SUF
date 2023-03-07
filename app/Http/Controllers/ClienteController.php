@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Empresa;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use App\Repositories\ClientRepository;
 use App\Strategies\Clientes\ConsumidorFinalStrategy;
 use App\Strategies\Clientes\ExcentoStrategy;
@@ -77,9 +80,59 @@ class ClienteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function crearCliente(Request $request)
     {
-        //
+         // Valido Backend
+         $validator = Validator::make(
+            $request->all(),[
+            'nombre'=>'required|max:50',
+            'apellido'=>'required|max:50',
+            'razonSocial'=>'required',
+            'dniCliente'=>'required|unique:clientes',
+            'direccion'=>'required',
+            'email'=>'required|email',
+            'telefono'=>'required',
+            'situacionId'=>'required'
+        ],[
+            'razonsocial'=>'La razon social es requerida',
+            'dniCliente,required'=>'El cuit es requerido',
+            'dniCliente.unique'=>'El cuit ya existe',
+            'nombre.required'=>'El nombre es requerido',
+            'email.required'=>'El email es requerido',
+            'email.email'=>'El email tiene formato erroneo',
+            'apellido.required'=>'El apellido es requerido',
+            'situacionId'=>'Situacion Fiscal es requerido',
+            'direccion'=>'La direccion es requerida',
+            'telefono'=>'El telefono es requerida',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(["errors" => $validator->getMessageBag(),"status"=>401]);
+        }
+        // Comienzo Transaccion
+        DB::beginTransaction();
+        try { 
+            // Creo usuario en la tabla
+            $cliente = new Cliente();
+            $cliente->nombreCliente=$request->nombre;
+            $cliente->apellidoCliente=$request->apellido;
+            $cliente->razonSocial=$request->razonSocial;
+            $cliente->emailCliente=$request->email;
+            $cliente->idSituacion=$request->situacionId;
+            $cliente->dniCliente=$request->dniCliente;
+            $cliente->telefonoCliente=$request->telefono;
+            $cliente->direccionCliente=$request->direccion;
+            $cliente->idEmpresa=Auth::user()->idEmpresa;
+            $cliente->estadoCliente=1;
+            $cliente->save();
+
+            DB::commit();
+            return response()->json(["success"=>"El Cliente se ha creado correctamente","status"=>201]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json(["errors"=>"No se pudo crear el Cliente","status"=>401]);
+        }
     }
 
     /**

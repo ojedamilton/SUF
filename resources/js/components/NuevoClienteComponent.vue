@@ -1,6 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row justify-content-center">
+        <p class="text-center"><strong>ABM CLIENTE</strong></p>
       <div class="col-md-8">
         <div class="card card-primary">
           <div class="card-header">
@@ -139,7 +140,7 @@
         let url = "/crearcliente";
         this.loading = true;
         try {
-          const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,cuit:this.cuit,email:this.email,direccion:this.direccion,telefono:this.telefono,razonsocial:this.razonsocial})
+          const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,dniCliente:this.cuit,email:this.email,direccion:this.direccion,telefono:this.telefono,razonSocial:this.razonsocial,situacionId:this.situacionId})
           let respuesta = response.data;
           if (respuesta.status == 201) {
             let success=respuesta.success;
@@ -158,6 +159,7 @@
             me.direccion='';
             me.telefono='';
             me.razonsocial='';
+            me.situacionId='';
             this.loading=false
           }else{
             let errors=respuesta.errors;
@@ -177,23 +179,7 @@
             this.loading=false
         }
       },
-      // methodCan() {
-      //   let me = this;
-      //   var url = "/roleuser";
-      //   axios
-      //     .get(url, {
-      //       params: {},
-      //     })
-      //     .then(function (response) {
-      //       me.idCan = response.data;
-      //     })
-      //     .catch(function (error) {
-      //       console.log(error);
-      //       if (error.response.status === 401) {
-      //         location.reload(true);
-      //       }
-      //     });
-      // },
+     
     },
     mounted() {
       this.listarSituacion();

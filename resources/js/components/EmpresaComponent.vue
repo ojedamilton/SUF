@@ -135,10 +135,10 @@
         this.validarTipoEmpresa();
         if(this.errorempresa==1)return;
         let me=this;
-        let url = "/crearempresa";
+        let url = "/createEmpresa";
         this.loading = true;
         try {
-          const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,cuit:this.cuit,email:this.email,direccion:this.direccion,telefono:this.telefono,razonsocial:this.razonsocial})
+          const response= await axios.post(url,{nombre:this.nombre,razonsocial:this.razonsocial,cuitEmpresa:this.cuit,ingresosbrutos:this.ingresosbrutos,direccion:this.direccion,telefono:this.telefono,inicioActividades:this.inicioactividades,tipoId:this.tipoId})
           let respuesta = response.data;
           if (respuesta.status == 201) {
             let success=respuesta.success;
@@ -151,12 +151,13 @@
             });
             //Limpio variables
             me.nombre='';
-            me.apellido='';
+            me.razonsocial='';
             me.cuit='';
-            me.email='';
+            me.inicioActividades='';
             me.direccion='';
             me.telefono='';
-            me.razonsocial='';
+            me.ingresosbrutos='';
+            me.tipoId=0;
             this.loading=false
           }else{
             let errors=respuesta.errors;
@@ -176,23 +177,6 @@
             this.loading=false
         }
       },
-      // methodCan() {
-      //   let me = this;
-      //   var url = "/roleuser";
-      //   axios
-      //     .get(url, {
-      //       params: {},
-      //     })
-      //     .then(function (response) {
-      //       me.idCan = response.data;
-      //     })
-      //     .catch(function (error) {
-      //       console.log(error);
-      //       if (error.response.status === 401) {
-      //         location.reload(true);
-      //       }
-      //     });
-      // },
     },
     mounted() {
       this.listarTipoEmpresa();

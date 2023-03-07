@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class=" row justify-content-center">
             <div class="col-md-8">
-                <p class="text-center"><strong>ABM MEDIO DE PAGO</strong></p>
+                <p class="text-center"><strong>LISTADO MEDIO DE PAGO</strong></p>
                 <div class="card">
                     <div class="card-header">
                         <!-- Add users -->

@@ -186,7 +186,7 @@
                                 <td>{{articulo.id}}</td>    
                                 <td>{{articulo.nombreArticulo}}</td> 
                                 <td class="col-2">
-                                  <input class="form-control form-control-sm" :value="articulo.precio" type="number" name="precio" id="precio">
+                                  <input class="form-control form-control-sm" :value="articulo.precio" type="number" name="precio" :id="'precio_'+articulo.id">
                                 </td>
                                 <td class="col-2">
                                   <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
@@ -404,8 +404,9 @@ export default {  // todo lo que voy a exportar
         this.buscarCliente=nombre+' '+apellido;
         this.idCliente=cliente;
     },
-    rellenarDetalleFactura(id,nombre,precio,cantidad,t){
-      const valorCantidad =parseInt(document.getElementById(id).value)     
+    rellenarDetalleFactura(id,nombre){
+       let precio = parseInt(document.getElementById('precio_'+id).value);
+       const valorCantidad =parseInt(document.getElementById(id).value)     
        const detalleObjeto ={}
        detalleObjeto.idArticulo=id
        detalleObjeto.nombre=nombre

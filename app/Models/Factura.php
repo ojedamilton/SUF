@@ -21,8 +21,11 @@ class Factura extends Model
         'idValor',
         'idUsuario',
         'totalFactura',
-        'idPuntoVenta',
-        'idTipoFactura'
+        'idpuntoVenta',
+        'idTipoFactura',
+        'created_at',
+        'fechaModificacion',
+        'descuento'
     ];
 
     public function puntoventa(){

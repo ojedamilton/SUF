@@ -2,6 +2,7 @@
   <div class="container-fluid">
     <div class="row justify-content-center">
       <div class="col-md-8">
+        <p class="text-center"><strong>ABM MEDIO DE PAGO</strong></p>
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">Nuevo Medio De Pago</h3>

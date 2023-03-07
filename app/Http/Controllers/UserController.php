@@ -79,6 +79,7 @@ class UserController extends Controller
             'grupo'=>'required',
             'password'=>'required',
             'email'=>'required|unique:users|email',
+            'empresaId'=>'required'
         ],[
             'email.unique'=>'El email ya existe',
             'email.required'=>'El email es requerido',
@@ -86,7 +87,8 @@ class UserController extends Controller
             'nombre.required'=>'El nombre es requerido',
             'password.required'=>'La contraseña es requerida',
             'apellido.required'=>'El apellido es requerido',
-            'grupo.unique'=>'El grupo es requerido'
+            'grupo.unique'=>'El grupo es requerido',
+            'empresaId'=>'La empresa es requerida'
         ]);
         if ($validator->fails()) {
             return response()->json(["errors" => $validator->getMessageBag(),"status"=>401]);
@@ -101,6 +103,7 @@ class UserController extends Controller
             $user->apellido=$request->apellido;
             $user->email=$request->email;
             $user->password=bcrypt($request->password);
+            $user->idEmpresa=$request->empresaId;
             $user->estadoUsuario=1;
             $user->setPwd($request->password);
             $user->save();
