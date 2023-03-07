@@ -3,8 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-class AddForeingKeyEmpresas extends Migration
+class AddNumfacturaFacturaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +15,12 @@ class AddForeingKeyEmpresas extends Migration
     public function up()
     {
         Schema::table('facturas', function (Blueprint $table) {
-            $table->unsignedBigInteger('idTipoEmpresa')->nullable();
-            $table->foreign('idTipoEmpresa')->references('id')->on('empresas');
+            $table->string('numeroFactura',6)->nullable()->after('id');
         });
+        // Agrego el zerofill para que grabe los ceros a la izquierda (000001)
+        DB::statement('ALTER TABLE facturas MODIFY numeroFactura INT(6) ZEROFILL NULL');
     }
-
+    
     /**
      * Reverse the migrations.
      *
@@ -27,7 +29,7 @@ class AddForeingKeyEmpresas extends Migration
     public function down()
     {
         Schema::table('facturas', function (Blueprint $table) {
-            //
+            $table->dropColumn('numeroFactura');
         });
     }
 }

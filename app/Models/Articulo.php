@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DetallesFactura;
 
 class Articulo extends Model
 {
@@ -19,4 +20,9 @@ class Articulo extends Model
         'idCategoria',
         'estadoValor',
     ];
+
+    public function detallesFactura()
+    {
+        return $this->hasMany(DetalleFactura::class, 'id');
+    }
 }

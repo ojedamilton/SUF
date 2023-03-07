@@ -18,7 +18,7 @@
               <input type="text" autocomplete="off" class="form-control input-sm dropdown-toggle" v-model="buscarCliente" @keyup="listarClientes(buscarCliente)"  id="nombre_cliente" placeholder="Selecciona un cliente" value="" data-toggle="dropdown"
                 aria-expanded="true"/>
               <div class="dropdown-menu" style="">
-                <button v-for="cliente in arrayClientes" :key="cliente.id" :value="cliente.id" type="button" @click="rellenarCampos(cliente.nombreCliente,cliente.apellidoCliente,cliente.telefonoCliente,cliente.emailCliente,cliente.id)" class="dropdown-item" data-value="1" data-email="asd@asd.com">
+                <button v-for="cliente in arrayClientes" :key="cliente.id" :value="cliente.id" type="button" @click="clienteTipoFactura(cliente.idSituacion),rellenarCampos(cliente.nombreCliente,cliente.apellidoCliente,cliente.telefonoCliente,cliente.emailCliente,cliente.id)" class="dropdown-item" data-value="1" data-email="asd@asd.com">
                   {{cliente.nombreCliente + ' ' + cliente.apellidoCliente}}</button>
                 </div>
               <input v-model="idCliente" name="id_cliente" type="hidden" value="" />
@@ -45,7 +45,15 @@
             <label for="email" class="col-lg-1 control-label">Pago</label>
             <div class="col-lg-2">
               <select class="form-control input-sm" v-model="pagoId" id="valor" name="valor">
+                <option value="0">Seleccionar...</option>
                 <option  v-for="valor in arrayValores" :key="valor.id" :value="valor.id">{{valor.nombreValor}}</option>
+              </select>
+            </div>
+            <label for="email" class="col-lg-1 control-label">T.Factura</label>
+            <div class="col-lg-1">
+              <select class="form-control input-sm" v-model="tipoFacturaId"  id="tipoFactura" name="tipoFactura">
+                <option value=0>...</option>
+                <option  v-for="tipoFactura in arrayTipoFactura" :key="tipoFactura.idTipoFactura" :value="tipoFactura.idTipoFactura">{{tipoFactura.tipoFactura}}</option>
               </select>
             </div>
           </div>
@@ -220,6 +228,7 @@ export default {  // todo lo que voy a exportar
       arrayClientes: [],
       arrayArticulos:[],
       arrayDetalles:[],
+      arrayTipoFactura:[],
       buscarCliente:'',
       descuento:0,
       buscarArticulo:'',
@@ -239,6 +248,7 @@ export default {  // todo lo que voy a exportar
       idCliente:0,
       precio:0,
       pagoId:0,
+      tipoFacturaId:0,
       cantidadArtModal:1,
       tituloModal: "",
       nombreVendedor: "",
@@ -301,26 +311,59 @@ export default {  // todo lo que voy a exportar
     validarFactura() {
       this.errorFactura = 0;
       this.errorMostrarMsjFactura = [];
-      if(!this.buscarCliente) this.errorMostrarMsjFactura.push('* El nombre de Cliente no puede estar vacío');
+      if(!this.buscarCliente) this.errorMostrarMsjFactura.push('* El nombre de Clienteeee no puede estar vacío');
       if(!this.telefono) this.errorMostrarMsjFactura.push('* El telefono no puede estar vacío');
       if(!this.fecha) this.errorMostrarMsjFactura.push('* La fecha no puede estar vacío');
       if(!this.pagoId) this.errorMostrarMsjFactura.push('* El metodo de pago no puede estar vacío');
       if(!this.email) this.errorMostrarMsjFactura.push('* El email no puede estar vacío');
+      if(!this.tipoFacturaId || this.tipoFactura == 0) this.errorMostrarMsjFactura.push('* El tipoFactura no puede estar vacío');
+      if(!this.arrayDetalles[0]) this.errorMostrarMsjFactura.push('* No hay Articulos para Facturar');
       if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjFactura.push('* El email no es valido');
       if (this.errorMostrarMsjFactura.length) this.errorFactura = 1;
     },
     async usuarioAuth(){
-       let me = this;
+       let me  = this;
        let url = '/showUserAuth'
        try {
-            const response = await axios.get(url);
-            const status = response.status;
-            const data = response.data
-            this.idVendedor = data.id;
+            const response      = await axios.get(url);
+            const status        = response.status;
+            const data          = response.data
+            this.idVendedor     = data.id;
             this.nombreVendedor = data.name; 
        } catch (error) {
-         return 'error';
+         return 'error User Auth';
        }  
+    },
+    async tipoFacturaEmpresa(){
+      let me  = this;
+      let url = '/tipoFacturaEmpresa';
+      try {
+           const response         = await axios.get(url);
+           const data             = response.data;
+           this.arrayTipoFactura  = data.tipoFactura;
+           console.log(this.arrayTipoFactura);
+        
+      } catch (error) {
+        return 'error Tipo Factura'
+      }
+    },
+    async clienteTipoFactura(idTipo){
+      let me  = this;
+      let url = '/clienteTipoFactura';
+      try {
+           const response         = await axios.post(url,{idTipo});
+           const data             = response.data;
+           if (data.tipoFactura) {
+              this.arrayTipoFactura.splice(0,this.arrayTipoFactura.length, ...[]); 
+              this.$set(this.arrayTipoFactura, 0, ...[]);
+              this.$set(this.arrayTipoFactura,0, data.tipoFactura);
+           }else{
+             this.tipoFacturaEmpresa();
+           }
+        
+      } catch (error) {
+        return 'error Tipo Factura'
+      }
     },
     listarClientes(buscarCliente) {
       let me = this;
@@ -489,6 +532,7 @@ export default {  // todo lo que voy a exportar
                 'fecha':this.fecha,
                 'totalFactura':parseInt(totalFactura),
                 'descuento':parseInt(this.descuento),
+                'tipoFacturaId':this.tipoFacturaId
               }, 
               detalles:this.arrayDetalles
         }) 
@@ -533,6 +577,7 @@ export default {  // todo lo que voy a exportar
    let date = new Date();
    this.fecha=date.toISOString().split('T')[0];
    this.usuarioAuth();
+   this.tipoFacturaEmpresa();
   
   }
 };

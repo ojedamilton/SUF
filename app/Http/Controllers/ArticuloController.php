@@ -27,9 +27,9 @@ class ArticuloController extends Controller
             $articulo=Articulo::orderBy('id','asc')->paginate(3);
         }else{
             $articulo=Articulo::where('nombreArticulo','like','%'.$buscar.'%')
-            ->orWhere('id','like','%'.$buscar.'%')
-            ->orderBy('nombreArticulo','asc')
-            ->paginate(3);     
+                                ->orWhere('id','like','%'.$buscar.'%')
+                                ->orderBy('nombreArticulo','asc')
+                                ->paginate(3);     
         }
           
         return[

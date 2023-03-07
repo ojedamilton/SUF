@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Articulo;
 
 class DetalleFactura extends Model
 {
@@ -19,4 +20,10 @@ class DetalleFactura extends Model
         'idArticulo',
         'totalDetalle'
     ];
+
+    public function articulo()
+    {
+        //dd($this);
+        return $this->belongsTo(Articulo::class, 'idArticulo');
+    }
 }

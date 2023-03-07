@@ -23,7 +23,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="factura in arrayValores" :key="factura.id">
+            <tr v-for="factura in arrayFacturas" :key="factura.id">
               <td>
                 {{ factura.id }}
               </td>
@@ -32,7 +32,7 @@
                 {{ factura.fechaModificacion }}
               </td>
               <td>
-                <a @click="abrirModal();listarDetallesById(factura.id)" href="#" class="text-muted">
+                <a @click="abrirModal();listarDetallesById(factura.id),listarEmpresa(),facturaById(factura.id)" href="#" class="text-muted">
                   <i class="fas fa-search"></i>
                 </a>
               </td>
@@ -41,86 +41,128 @@
         </table>
       </div>
     </div>
-     <!-- Modal -->
-      <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-top" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">{{tituloModal}}</h5>
+    <!-- Modal -->
+    <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle"></h5>
               <button type="button"  @click="cerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
-              </div>
-              <div class="modal-body">
-                  <div class="c">
-                        <!-- List Table Details --> 
-                        <div class="cbody">   
-                            <table id="table_articulo" class="table table-striped" width="100%">
-                                <thead>
-                                <tr>  
-                                    <th>Codigo</th>
-                                    <th>Articulo</th>
-                                    <th>cantidad</th>
-                                    <th>Precio</th>
-                                </tr>  
-                                </thead>  
-                                <tbody>
-                                    <tr v-for="detalle in arrayDetalles" :key="detalle.id" >    
-                                        <td>{{detalle.id}}</td>    
-                                        <td>{{detalle.idArticulo}}</td> 
-                                        <td>{{detalle.cantidadArticulo}}</td>
-                                        <td>{{detalle.totalDetalle}}</td>
-                                    </tr>  
-                                </tbody>  
-                            </table>
-                            <nav>
-                                <ul class="pagination">
-                                    <li class="page-item"  v-if="pagination.current_page > 1 ">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" >1</a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page "  >
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div> 
-                    </div>
-              </div>
           </div>
+            <div class="modal-body">
+              <div class="col-12">
+                <h4>Datos Empresa</h4>
+                <div class="row my-3">
+                  <div class="col-10">
+                    <p><strong>Nombre:</strong> {{userEmpresa.nombreEmpresa}}<p>
+                    <p><strong>Cuit: </strong>{{userEmpresa.cuitEmpresa}}</p>
+                    <p><strong>Direccion: </strong>{{userEmpresa.direccionEmpresa}}</p>
+                    <p><strong>Inicio Actividad: </strong>{{userEmpresa.inicioActividades}}</p>
+                  </div>
+                  <div class="col-2">
+                    <img src="webfonts/suf.png" />
+                  </div>
+                </div>
+                
+                <hr />
+                
+                <div class="row fact-info mt-3 col-12">
+                  <div class="col-4">
+                    <h5>Tipo Factura</h5>
+                    <p>
+                      {{factura.tipofactura.tipoFactura}}
+                    </p>
+                  </div>
+                  <div class="col-4">
+                    <h5>N° de factura</h5>
+                    <h5>Fecha</h5>
+                  </div>
+                  <div class="col-4">
+                    <p>{{factura.puntoventa.numPuntoVenta}}-{{factura.numeroFactura}}<p>
+                    <p>{{factura.fechaModificacion}}</p>
+                  </div>
+                </div>
+                <div class="row my-5">
+                  <table class="table table-borderless factura">
+                    <thead>
+                      <tr>
+                        <th>Cant.</th>
+                        <th>Descripcion</th>
+                        <th>Precio Unitario</th>
+                        <th>Importe</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="detalle in arrayDetalles" :key="detalle.id" >    
+                        <td>{{detalle.cantidadArticulo}}</td>
+                        <td>{{detalle.articulo.nombreArticulo}}</td> 
+                        <td>{{detalle.articulo.precio}}</td>    
+                        <td>{{detalle.totalDetalle}}</td>
+                      </tr>  
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th></th>
+                        <th></th>
+                        <th>Total Factura</th>
+                        <th>{{factura.totalFactura}}</th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <div class="cond row">
+                  <div class="col-12 mt-3">
+                    <h4>Condiciones y formas de pago</h4>
+                    <p>El pago se debe realizar en un plazo de 15 dias.</p>
+                  </div>
+                </div>
+             </div>
           </div>
+          <div class="col-12">
+            <div class="d-flex justify-content-md-center py-3">
+              <button class="btn btn-primary" @click="descargarPDF()" >Descargar</button>
+            </div>
+          </div>  
+        </div>
       </div>
+    </div>
   </main>
 </template>
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
-      arrayValores: [],
+      arrayFacturas: [],
       arrayDetalles:[],
-       modal:0,
-       tituloModal: "Detalles Facturas",
-        pagination:{
-                  'total':0,
-                  'current_page':0,
-                  'per_page':0,
-                  'last_page':0,
-                  'from':0,
-                  'to':0,
+      userEmpresa:{},
+      factura:{
+        puntoventa:{},
+        tipofactura:{},
+      },
+      modal:0,
+      tituloModal: "Detalles Facturas",
+      pagination:{
+          'total':0,
+          'current_page':0,
+          'per_page':0,
+          'last_page':0,
+          'from':0,
+          'to':0,
       },
     };
   },
   methods: {
-    listarValores() {
+    listarFacturas() {
       let me = this;
       var url = "/allfacturas";
       axios
         .get(url)
         .then(function (response) {
           var respuesta = response.data;
-          me.arrayValores = respuesta.listadofacturas;
+          me.arrayFacturas = respuesta.listadofacturas;
         })
         .catch(function (error) {
           console.log(error);
@@ -128,6 +170,18 @@ export default {
             location.reload(true);
           }
         });
+    },
+    async listarEmpresa(){
+       let me  = this;
+       let url = "/userEmpresa";
+       try {
+           const response    = await axios.get(url);
+           const data        = response.data;
+           this.userEmpresa  = data.userEmpresa;
+        
+      } catch (error) {
+        return 'error Tipo Factura'
+      }
     },
     listarDetallesById(id) {
       let me = this;
@@ -144,6 +198,41 @@ export default {
             location.reload(true);
           }
         });
+    },
+    async facturaById(id) {
+      let me = this;
+      var url = "/getfacturasbyid";
+      try {
+        const response = await axios.post(url,{id})
+        const respuesta = response.data;
+        me.factura = respuesta.factura;
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 401) {
+            location.reload(true);
+        } 
+      }   
+    },
+    descargarPDF() {
+       let url='/descargarFactura';
+      // Obtener el contenido del modal
+      const contenido = $('.modal-body').html();
+      /* console.log(contenido); */
+      // Enviar una petición GET a la ruta de descarga del PDF con el contenido del modal como parámetro
+      //window.location.href = '{{ route("descargar-pdf") }}?contenido=' + encodeURIComponent(contenido);
+      axios.post(url,{contenido},{responseType: 'blob'})
+        .then(function (response) {
+            console.log(response.data);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'Factura.pdf');
+            document.body.appendChild(link);
+            link.click();
+         })
+          .catch(function (error) {
+            console.log(error);
+          });
     },
     abrirModal() {
       this.modal = 1;
@@ -187,7 +276,42 @@ export default {
   },
   mounted() {
     // se auto-ejecuta apenas termina de cargar el DOM
-    this.listarValores();
+    this.listarFacturas();
   },
 };
 </script>
+<style>
+.factura {
+  table-layout: fixed;
+}
+
+.fact-info > div > h5 {
+  font-weight: bold;
+}
+
+.factura > thead {
+  border-top: solid 3px #000;
+  border-bottom: 3px solid #000;
+}
+
+.factura > thead > tr > th:nth-child(2), .factura > tbod > tr > td:nth-child(2) {
+  width: 300px;
+}
+
+.factura > thead > tr > th:nth-child(n+3) {
+  text-align: right;
+}
+
+.factura > tbody > tr > td:nth-child(n+3) {
+  text-align: right;
+}
+
+.factura > tfoot > tr > th, .factura > tfoot > tr > th:nth-child(n+3) {
+  font-size: 24px;
+  text-align: right;
+}
+
+.cond {
+  border-top: solid 2px #000;
+}
+</style>

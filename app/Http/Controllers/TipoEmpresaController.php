@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TipoEmpresa;
+use App\Models\Empresa;
+use Illuminate\Support\Facades\Auth;
+use App\Strategies\Empresas\ResponsableInscriptoStrategy;
+use App\Strategies\Empresas\MonotributistaStrategy;
+use App\Strategies\Empresas\ExcentoIvaStrategy;
 
 class TipoEmpresaController extends Controller
 {
@@ -23,7 +28,32 @@ class TipoEmpresaController extends Controller
             'tiposempresas'=>$tiposempresas,
         ];
     }
-
+    /**
+     * Obtengo el tipo de factura
+     * @param int tipoEmpresa @param cliente 
+     */
+    public function getTipoFacturaEmpresa(){
+        // Traigo empresa que pertenece
+        $idEmpresaUser = Auth::user()->idEmpresa;
+        // busco al tipo empresa
+        $idTipoEmpresa = Empresa::where('id',$idEmpresaUser)->first();
+        // dependiendo tipo empresa aplico la estrategia con el tipo de factura
+        switch ($idTipoEmpresa->idTipoEmpresa) {
+            case 1:
+                return (new ResponsableInscriptoStrategy)->tipoFactura();
+                break;
+            case 2:
+                return (new ExcentoIvaStrategy)->tipoFactura();
+                break;
+            case 3:
+                return (new MonotributistaStrategy)->tipoFactura();
+                break;    
+            default:
+                return (new MonotributistaStrategy)->tipoFactura();
+                break;
+        }
+           
+    }
 
     /**
      * Store a newly created resource in storage.

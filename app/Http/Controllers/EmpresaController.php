@@ -7,60 +7,40 @@ use App\Models\Empresa;
 
 class EmpresaController extends Controller
 {
-    public function getAllEmpresas(Request $request)
-    {
+    public function getAllEmpresas(Request $request){
+   
         // Si quieren Ingresar sin un request , redirecciona al home
         if(!$request->ajax())return redirect('/home');
-
-        $empresas=Empresa::all();  //query que le pega al modelo
-
+    
+        $buscar= $request->buscar;
+    
+        $empresas=Empresa::where('nombreEmpresa','like','%'.$buscar.'%')
+                            ->orWhere('cuitEmpresa','like','%'.$buscar.'%')
+                            ->orderBy('nombreEmpresa','asc')
+                            ->paginate(3);
+    
         return[
+            'pagination'=>[
+                'total'=>$empresas->total(),
+                'current_page'=>$empresas->currentPage(),
+                'per_page'=>$empresas->perPage(),
+                'last_page'=>$empresas->lastPage(),
+                'from'=>$empresas->firstItem(),
+                'to'=>$empresas->lastItem(),
+            ],
             'empresas'=>$empresas,
         ];
-    }
-
-        /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    
+    
+        }
+        
+        public function UserEmpresa(){
+           
+            $userEmpresa = Empresa::find(Auth::user()->idEmpresa);
+    
+            return [
+    
+               'userEmpresa'=>$userEmpresa
+            ];
+         }
 }

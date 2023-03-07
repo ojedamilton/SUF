@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cliente;
+use App\Models\Empresa;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\ClientRepository;
+use App\Strategies\Clientes\ConsumidorFinalStrategy;
+use App\Strategies\Clientes\ExcentoStrategy;
+use App\Strategies\Clientes\MonotributistaStrategy;
+use App\Strategies\Clientes\ResponsableInscriptoStrategy;
 
 class ClienteController extends Controller
 {
@@ -39,6 +44,31 @@ class ClienteController extends Controller
             'clientes'=>$cliente,
             'metodo'=>$saludo,
         ];
+    }
+    
+    public function clienteTipoFactura(Request $request){  
+        // Si es un Tipo de Empresa Responsable Inscripto   
+        // Dependiendo situacion Fiscal aplico la estrategia con el tipo de factura
+        $idEmpresaUser = Auth::user()->idEmpresa;
+        // busco al tipo empresa
+        $idTipoEmpresa = Empresa::where('id',$idEmpresaUser)->first();
+
+        if ($idTipoEmpresa->idTipoEmpresa == 1) {
+        
+            switch ($request->idTipo) {
+                case 1:
+                    return (new ConsumidorFinalStrategy)->tipoFactura();
+                    break;
+                case 2:
+                    return (new ExcentoStrategy)->tipoFactura();
+                    break;
+            }
+
+        }
+        return[
+            "tipoFactura"=>false
+        ];
+
     }
 
     /**

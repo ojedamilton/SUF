@@ -97,7 +97,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </router-link>
               </li>
               <li  class="nav-item">
-                <router-link  class="nav-link" to='/#'>
+                <router-link  class="nav-link" to='/listadoEmpresa'>
                   <i class="fas fa-list nav-icon"></i>
                   <p>Listado</p>
                 </router-link>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetalleFactura;
+use Dompdf\Dompdf;
 
 class FacturaController extends Controller
 {
@@ -50,8 +51,20 @@ class FacturaController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->factura  {fecha,valor,id_cliente}
-        // $request->detalles {}
+        // Obtengo Pto Venta
+        $ptoVenta=DB::table('puntoVenta')->where('id',1)->first();
+        $factura = Factura::where('idTipoFactura',$request->factura['tipoFacturaId'])->first();
+        // ultimo Numero por cada Tipo de Factura 
+        if($factura){
+            $ultimoNum=Factura::selectRaw("id,CONCAT(LPAD(numeroFactura+1, 6, '0')) as numeroFactura")
+                            ->where("idTipoFactura",$request->factura['tipoFacturaId'])
+                            ->orderBy("numeroFactura","desc")
+                            ->pluck('numeroFactura')
+                            ->first();
+        }else{
+            $ultimoNum='000001';
+        }
+        
         // Validar los datos
         // si falla devuelve variable $errors  
         $this->validarForm($request);
@@ -62,11 +75,15 @@ class FacturaController extends Controller
             DB::beginTransaction();
             // Instancio Factura
             $factura = new Factura;
+            $factura->numeroFactura=$ultimoNum;
             $factura->fechaModificacion=$request->factura['fecha'];
             $factura->estadoFactura=1;
             $factura->idCliente=$request->factura['id_cliente'];
             $factura->idValor=$request->factura['pago'];
             $factura->idUsuario=Auth::user()->id;
+            $factura->idTipoFactura=$request->factura['tipoFacturaId'];
+            $factura->idEmpresa=Auth::user()->idEmpresa;
+            $factura->idpuntoVenta=$ptoVenta->id;
             $factura->totalFactura=$request->factura['totalFactura'];
             $factura->descuento=$request->factura['descuento'];
             $factura->save();
@@ -130,23 +147,51 @@ class FacturaController extends Controller
                'listadofacturas'=>$listadofacturas,
            ]; 
        
-    } 
+    }
+    public function getFacturasById(Request $request){
+    
+        // Si quieren Ingresar sin un request , redirecciona al home 
+        if(!$request->ajax())return redirect('/');
+
+        $factura=Factura::find($request->id);
+        $factura= Factura::with('puntoventa','tipofactura')->selectRaw("id,totalFactura,fechaModificacion,totalFactura,idPuntoVenta,idTipoFactura, CONCAT(LPAD(numeroFactura, 6, '0')) as numeroFactura")
+                                ->where('id',$request->id)
+                                ->first();
+
+       return[
+           'factura'=>$factura,
+       ]; 
+   
+} 
     public function  getDetallesById(Request $request){
        
-        //dd('llegue aca');
         // Si quieren Ingresar sin un request , redirecciona al home 
         if(!$request->ajax())return redirect('/');
 
         
         $idFactura=$request->id;
-        $detallesById=DetalleFactura::
-                         where('idFactura',$idFactura)
+        $detallesById=DetalleFactura::with('articulo')
+                         ->where('idFactura',$idFactura)
                          ->get();
 
        return[
            'detallesbyid'=>$detallesById,
        ]; 
    
+    }
+    public function descargarFactura(Request $request)
+    {
+        // Obtener el contenido del modal
+        $contenido = $request->contenido;
+
+        // Crear un objeto Dompdf y renderizar el contenido del modal como un PDF
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($contenido);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        // Descargar el PDF
+        return $dompdf->stream('contenido-modal.pdf');
     }
     /**
      * Display the specified resource.

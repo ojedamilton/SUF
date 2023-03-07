@@ -10,9 +10,9 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\SituacionFiscalController;
 use App\Http\Controllers\TipoEmpresaController;
-use App\Http\Controllers\EmpresaController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -42,15 +42,20 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 /* RUTAS -> Empresa */
-Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresa');
+Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
+Route::get('/userEmpresa', [EmpresaController::class,'userEmpresa'])->name('userempresa');
 
 /* RUTAS -> Tipo Empresa */
 Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');
+Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');
 
 /* RUTAS -> Facturacion */
 Route::post('/facturar', [FacturaController::class,'store'])->name('facturar');
 Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
 Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid');
+Route::post('/getfacturasbyid',[FacturaController::class,'getFacturasById'])->name('facturasbyid');
+Route::post('/descargarFactura',[FacturaController::class,'descargarFactura'])->name('descargarfactura');
+
 
 /* RUTAS -> Compras */
 Route::post('/comprar', [FacturaController::class,'store'])->name('comprar');
@@ -69,7 +74,7 @@ Route::get('/grupos', [GrupoController::class,'index'])->name('grupos');
 
 /*  RUTAS -> Clientes */
 Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');
-// Route::post('/crearcliente', [ClienteController::class,'store'])->name('crearcliente');
+Route::post('/clienteTipoFactura', [ClienteController::class,'clienteTipoFactura'])->name('clientetipofactura');
 
 /*  RUTAS -> Situacion Fiscal */
 Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
