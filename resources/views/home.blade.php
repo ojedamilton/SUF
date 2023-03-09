@@ -153,10 +153,10 @@
               </li>
               @endcanany
               <!-- PRODUCTOS -->
-              <li class="nav-item ">
+         {{--      <li class="nav-item ">
                 <a href="#" class="nav-link ">
                   <p>
-                    PRODUCTOS
+                    ARTICULOS
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -174,7 +174,7 @@
                     </router-link>
                   </li>
                 </ul>
-              </li>
+              </li> --}}
               <!-- USUARIOS -->
               @canany(['isAdmin'])
               <li class="nav-item">
@@ -226,7 +226,7 @@
                 </ul>
               </li>
               <!-- PROVEEDORES -->
-              <li class="nav-item ">
+            {{--   <li class="nav-item ">
                 <a href="#" class="nav-link ">
                   <p>
                     PROVEEDORES
@@ -247,7 +247,7 @@
                     </router-link>
                   </li>
                 </ul>
-              </li>
+              </li> --}}
               <!-- MEDIOS DE PAGO -->
               <li class="nav-item ">
                 <a href="#" class="nav-link ">
@@ -286,7 +286,7 @@
                       <p>Subdiario de ventas</p>
                     </a>
                   </li>
-                </ul>
+                </ul>{{-- 
                 <ul class="nav nav-treeview">
                   <li  class="nav-item">
                     <router-link  class="nav-link" to='/#'>
@@ -302,7 +302,7 @@
                       <p>Ventas por vendedor</p>
                     </a>
                   </li>
-                </ul>
+                </ul> --}}
               </li>
             </ul>
           </nav>

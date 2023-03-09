@@ -88,4 +88,4 @@ Route::get('/proveedor',[ProveedorController::class,'getAllProveedores'])->name(
 
 /*  RUTAS -> Valores */
 Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
-// Route::get('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
+Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');

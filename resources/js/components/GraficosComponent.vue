@@ -93,8 +93,8 @@ export default {
             valores:[],
             cantVentaSemanal:0,
             totalVentaSemanal:0,
-            cantClientes:0,
-            cantUsuarios:0,
+            cantClientes:10,
+            cantUsuarios:5,
             chartData:{
                     labels: []
                     ,datasets:[
@@ -113,7 +113,7 @@ export default {
             const totales = await axios.get(url);
             console.log(totales.data.articulos.data[0]); */
             this.chartData = {
-                labels: ['January','February','March','April','May'],
+                labels: ['Octubre','Noviembre','Diciembre','Enero','Febrero','Marzo'],
                 datasets:[
                     {label:'Articulos', backgroundColor: '#f87979',
                         data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]}

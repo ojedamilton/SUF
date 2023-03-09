@@ -48,7 +48,12 @@ class ValorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $medioPago= new Valor();
+        $medioPago->nombreValor=$request->nombre;
+        $medioPago->estadoValor=1;
+        $medioPago->idEmpresa=Auth::user()->idEmpresa;
+        $medioPago->save();
+        return response()->json(["success"=>"El Cliente se ha creado correctamente","status"=>201]);
     }
 
     /**
