@@ -53,7 +53,7 @@ class ValorController extends Controller
         $medioPago->estadoValor=1;
         $medioPago->idEmpresa=Auth::user()->idEmpresa;
         $medioPago->save();
-        return response()->json(["success"=>"El Cliente se ha creado correctamente","status"=>201]);
+        return response()->json(["success"=>"El Medio de pago se ha creado correctamente","status"=>201]);
     }
 
     /**

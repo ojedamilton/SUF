@@ -36,8 +36,8 @@
           {{--  <router-link to='/compras'>Compras</router-link> --}}
           </li>
         </ul>
-        <ul class="navbar-nav ml-auto">
-          <div class="nav-link">{{ $empresas->nombreEmpresa }}</div>
+        <ul class="navbar-nav ml-auto" style="display:flex !important; justify-content:center !important">
+          <strong><div class="nav-link">{{ $empresas->nombreEmpresa }}</div></strong>
         </ul>
         <ul class="navbar-nav ml-auto">
         <!-- Right navbar links -->

@@ -1,8 +1,8 @@
 <template>
   <div class="container-fluid">
     <div class="row justify-content-center">
-        <p class="text-center"><strong>ABM CLIENTE</strong></p>
       <div class="col-md-8">
+        <p class="text-center"><strong>ABM CLIENTE</strong></p>
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">Nuevo Cliente</h3>
