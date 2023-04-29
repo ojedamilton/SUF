@@ -26,66 +26,63 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    {
-        if (Auth::check()) {
-            return view('home');
-        }
-        else {
-            return view('auth.login');
-        }
-    }
-});
-
+// Rutas de Autenticacion
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+// Inicio Login con middleware Guest(Si estamos autenticados no permite ir al login)
+Route::middleware('guest')->get('/', function () {
+   return view('auth.login');  
+});
 
-/* RUTAS -> Empresa */
-Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
-Route::get('/userEmpresa', [EmpresaController::class,'userEmpresa'])->name('userempresa');
-Route::post('/createEmpresa', [EmpresaController::class,'createEmpresa'])->name('createempresa');
+// Grupo de Middleware Auth - Rutas Autenticadas
+Route::middleware('auth:web')->group(function(){
 
-/* RUTAS -> Tipo Empresa */
-Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');
-Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    // Empresa
+    Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
+    Route::get('/userEmpresa', [EmpresaController::class,'userEmpresa'])->name('userempresa');
+    Route::post('/createEmpresa', [EmpresaController::class,'createEmpresa'])->name('createempresa');
 
-/* RUTAS -> Facturacion */
-Route::post('/facturar', [FacturaController::class,'store'])->name('facturar');
-Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
-Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid');
-Route::post('/getfacturasbyid',[FacturaController::class,'getFacturasById'])->name('facturasbyid');
-Route::post('/descargarFactura',[FacturaController::class,'descargarFactura'])->name('descargarfactura');
-Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('reporteventas');
+    // Tipo Empresa 
+    Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');
+    Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');
+
+    // Facturacion
+    Route::post('/facturar', [FacturaController::class,'store'])->name('facturar');
+    Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
+    Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid');
+    Route::post('/getfacturasbyid',[FacturaController::class,'getFacturasById'])->name('facturasbyid');
+    Route::post('/descargarFactura',[FacturaController::class,'descargarFactura'])->name('descargarfactura');
+    Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('reporteventas');
+
+    // Compras
+    Route::post('/comprar', [FacturaController::class,'store'])->name('comprar');
+
+    // Articulos
+    Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
+
+    // Usuarios
+    Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
+    Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');
+    Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
+    Route::get('/showUserAuth',[UserController::class,'showUserAuth'])->name('showUserAuth');
+
+    // Grupos
+    Route::get('/grupos', [GrupoController::class,'index'])->name('grupos');
+
+    // Clientes
+    Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');
+    Route::post('/clienteTipoFactura', [ClienteController::class,'clienteTipoFactura'])->name('clientetipofactura');
+    Route::post('/crearcliente', [ClienteController::class,'crearCliente'])->name('crearcliente');
+    //Situacion Fiscal
+    Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
+
+    // Proveedores
+    Route::get('/proveedor',[ProveedorController::class,'getAllProveedores'])->name('proveedor');
+
+    // Valores
+    Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
+    Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
 
 
-/* RUTAS -> Compras */
-Route::post('/comprar', [FacturaController::class,'store'])->name('comprar');
-
-/* RUTAS -> Articulos */
-Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
-
-/*  RUTAS -> Usuarios */
-Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
-Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');
-Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
-Route::get('/showUserAuth',[UserController::class,'showUserAuth'])->name('showUserAuth');
-
-/* RUTAS -> Grupos */
-Route::get('/grupos', [GrupoController::class,'index'])->name('grupos');
-
-/*  RUTAS -> Clientes */
-Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');
-Route::post('/clienteTipoFactura', [ClienteController::class,'clienteTipoFactura'])->name('clientetipofactura');
-Route::post('/crearcliente', [ClienteController::class,'crearCliente'])->name('crearcliente');
-/*  RUTAS -> Situacion Fiscal */
-Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
-
-
-/*  RUTAS -> Proveedores */
-Route::get('/proveedor',[ProveedorController::class,'getAllProveedores'])->name('proveedor');
-// Route::get('/crearproveedor',[ProveedorController::class,'store'])->name('crearproveedor');
-
-/*  RUTAS -> Valores */
-Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
-Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
+});

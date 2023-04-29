@@ -32,12 +32,9 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
           </li>
           <li class="nav-item d-none d-sm-inline-block">
-          <h5 class="nav-link">Sistema Unificado de Facturacion</h5>
+          <h5 class="nav-link">Sistema Unificado de Facturacion: <strong>{{ $empresas->nombreEmpresa }}</strong></h5>
           {{--  <router-link to='/compras'>Compras</router-link> --}}
           </li>
-        </ul>
-        <ul class="navbar-nav ml-auto">
-          <div class="nav-link">{{ $empresas->nombreEmpresa }}</div>
         </ul>
         <ul class="navbar-nav ml-auto">
         <!-- Right navbar links -->
