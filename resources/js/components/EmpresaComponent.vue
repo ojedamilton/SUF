@@ -103,9 +103,9 @@
     methods: {
       listarTipoEmpresa() {
       let me = this;
-      var url = "/tiposempresas";
+      var url = "api/tiposempresas";
       axios
-        .get(url) // ,{ params: {},}
+        .get(url)
         .then(function (response) {
           var respuesta = response.data;
           me.arrayTiposEmpresas = respuesta.tiposempresas;

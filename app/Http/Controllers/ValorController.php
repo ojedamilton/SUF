@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Valor;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\MedioPagoRepository;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ValorController extends Controller
 {
@@ -17,27 +19,49 @@ class ValorController extends Controller
 
     }
 
+    /**
+     * Display Listing of Pay - Method 
+     * 
+     * @return \Illuminate\Http\Response $valores
+     */
     public function getAllValores(Request $request)
     {
-        // Si quieren Ingresar sin un request , redirecciona al home 
-        if(!$request->ajax())return redirect('/home');
-
+    
         $buscar= $request->buscar;
 
-        $medioPago=$this->medioPagoRepository->all($buscar,Auth::user()->idEmpresa);
+        try {
 
+            $medioPago=$this->medioPagoRepository->all($buscar,Auth::user()->idEmpresa);
 
-        return[
-            'pagination'=>[
-                'total'=>$medioPago->total(),
-                'current_page'=>$medioPago->currentPage(),
-                'per_page'=>$medioPago->perPage(),
-                'last_page'=>$medioPago->lastPage(),
-                'from'=>$medioPago->firstItem(),
-                'to'=>$medioPago->lastItem(),
-            ],
-            'valores'=>$medioPago,
-        ];
+            return response()->json([
+                'success'=>true,
+                'message'=>'Listado Medios de Pago',
+                'valores'=>$medioPago,
+                'pagination'=>[
+                    'total'=>$medioPago->total(),
+                    'current_page'=>$medioPago->currentPage(),
+                    'per_page'=>$medioPago->perPage(),
+                    'last_page'=>$medioPago->lastPage(),
+                    'from'=>$medioPago->firstItem(),
+                    'to'=>$medioPago->lastItem(),
+                ],
+            ],200);
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'success'=>false,
+                'message'=>'Error al Listar Medios de Pago',
+                'valores'=>null,
+                'pagination'=>[
+                    'total'=>1,
+                    'current_page'=>1,
+                    'per_page'=>1,
+                    'last_page'=>1,
+                    'from'=>1,
+                    'to'=>1,
+                ],
+            ],500);    
+        }
     }
 
     /**
@@ -48,13 +72,35 @@ class ValorController extends Controller
      */
     public function store(Request $request)
     {
-        $medioPago= new Valor();
-        $medioPago->nombreValor=$request->nombre;
-        $medioPago->estadoValor=1;
-        $medioPago->idEmpresa=Auth::user()->idEmpresa;
-        $medioPago->save();
-        return response()->json(["success"=>"El Medio de pago se ha creado correctamente","status"=>201]);
-    }
+        DB::beginTransaction();
+
+        try {
+        
+            $medioPago= new Valor();
+            $medioPago->nombreValor=$request->nombre;
+            $medioPago->estadoValor=1;
+            $medioPago->idEmpresa=Auth::user()->idEmpresa;
+            $medioPago->save();
+
+            DB::commit();
+
+            return response()->json([
+                "success"=>true,
+                "message"=>"El Medio de pago se ha creado correctamente",
+            ],201);
+
+        } catch (\Throwable $th) {
+            
+            DB::rollback();
+            
+            Log::error("message:".$th->getMessage());
+
+            return response()->json([
+                "success"=>false,
+                "message"=>"No se creo el Medio pago",
+            ],500);
+        }
+            }
 
     /**
      * Display the specified resource.

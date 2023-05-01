@@ -83,58 +83,34 @@
         this.validarMedioPago();
         if(this.errormediopago==1)return;
         let me=this;
-        let url = "/crearvalores";
+        let url = "api/crearvalores";
         this.loading = true;
         try {
           const response= await axios.post(url,{nombre:this.nombre})
           let respuesta = response.data;
-          if (respuesta.status == 201) {
-            let success=respuesta.success;
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: success,
-              showConfirmButton: false,
-              timer: 4000
-            });
-            //Limpio variables
-            me.nombre='';
-            this.loading=false
-          }else{
-            let errors=respuesta.errors;
-            let strError=JSON.stringify(errors);
-            // Ver array 2 indices con array adentro...
+          let message=respuesta.message;
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 4000
+          });
+          //Limpio variables
+          me.nombre='';
+          this.loading=false
+        } catch (error) {
+            let errorMessage=error.response.data.message;
             Swal.fire({
               position: 'center',
               icon: 'error',
-              html: strError,
+              title: errorMessage,
               showConfirmButton: false,
               timer: 4000
             });
-          }
-          this.loading=false
-        } catch (error) {
-            console.log('Errores de Conexion'+error);
             this.loading=false
         }
       },
-      // methodCan() {
-      //   let me = this;
-      //   var url = "/roleuser";
-      //   axios
-      //     .get(url, {
-      //       params: {},
-      //     })
-      //     .then(function (response) {
-      //       me.idCan = response.data;
-      //     })
-      //     .catch(function (error) {
-      //       console.log(error);
-      //       if (error.response.status === 401) {
-      //         location.reload(true);
-      //       }
-      //     });
-      // },
     },
     mounted() {
       // this.listarGrupos();

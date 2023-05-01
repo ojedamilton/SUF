@@ -13,26 +13,41 @@ use App\Strategies\Empresas\ExcentoIvaStrategy;
 class TipoEmpresaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the Factory type.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response $tiposempresas
      */
     public function getAllTipoEmpresa(Request $request)
     {
-        // Si quieren Ingresar sin un request , redirecciona al home
-        if(!$request->ajax())return redirect('/home');
+        try {
 
-        $tiposempresas=TipoEmpresa::all();  //query que le pega al modelo
+            $tiposempresas=TipoEmpresa::all();
 
-        return[
-            'tiposempresas'=>$tiposempresas,
-        ];
+            return response()->json([
+                "succes"=>true,
+                "message"=>"Listado Tipo de Empresas",
+                "tiposempresas"=>$tiposempresas,
+            ]);
+
+        } catch (\Throwable $th) {
+            
+            return response()->json([
+                "succes"=>false,
+                "message"=>"No se han encontrado Tipos de Empresas",
+                "tiposempresas"=>null,
+            ]);
+        }
+        
     }
+
     /**
      * Obtengo el tipo de factura
-     * @param int tipoEmpresa @param cliente 
+     * 
+     * @param int tipoEmpresa
+     * @return string tipoFactura 
      */
     public function getTipoFacturaEmpresa(){
+
         // Traigo empresa que pertenece
         $idEmpresaUser = Auth::user()->idEmpresa;
         // busco al tipo empresa

@@ -204,10 +204,10 @@ class FacturaController extends Controller
        /*  $inicio_semana_actual = $fecha_actual->startOfWeek()->startOfDay();
         $fin_semana_actual = $fecha_actual->endOfWeek()->endOfDay(); */
         //whereBetween('fechaModificacion', [$inicio_semana_actual, $fin_semana_actual])
-        $total_facturada_semana_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
+        $total_facturada_semana_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
                                                 ->where('fechaModificacion',$fecha_actual)
                                                 ->sum('totalFactura');                                       
-        $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa)->count();                                          
+        $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa??1)->count();                                          
         
 
         return [

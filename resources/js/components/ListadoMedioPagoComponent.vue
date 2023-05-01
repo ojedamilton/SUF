@@ -153,7 +153,7 @@ export default {
      methods:{
         listarMedioPago(page,buscar){
             let me = this;
-            var url= '/valores?page='+page+'&buscar='+buscar;
+            var url= 'api/valores?page='+page+'&buscar='+buscar;
             axios.get( url , {
                 params: {
                 }

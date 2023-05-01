@@ -7,7 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\EmpresaController;
@@ -43,10 +42,6 @@ Route::middleware('auth:web')->group(function(){
     Route::get('/userEmpresa', [EmpresaController::class,'userEmpresa'])->name('userempresa');
     Route::post('/createEmpresa', [EmpresaController::class,'createEmpresa'])->name('createempresa');
 
-    // Tipo Empresa 
-    Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');
-    Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');
-
     // Facturacion
     Route::post('/facturar', [FacturaController::class,'store'])->name('facturar');
     Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
@@ -57,9 +52,6 @@ Route::middleware('auth:web')->group(function(){
 
     // Compras
     Route::post('/comprar', [FacturaController::class,'store'])->name('comprar');
-
-    // Articulos
-    Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
 
     // Usuarios
     Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
@@ -79,10 +71,5 @@ Route::middleware('auth:web')->group(function(){
 
     // Proveedores
     Route::get('/proveedor',[ProveedorController::class,'getAllProveedores'])->name('proveedor');
-
-    // Valores
-    Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
-    Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
-
 
 });

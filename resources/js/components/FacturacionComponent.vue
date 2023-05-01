@@ -197,6 +197,12 @@
                             </tr>  
                           </tbody>  
                       </table>
+                      <div v-show="errorArticulos" class="form-group div-error">
+                        <div class="text-right">
+                            <div v-text="errorMostrarMsjArticulos">
+                            </div>
+                        </div>
+                      </div>
                       <nav>
                           <ul class="pagination">
                               <li class="page-item"  v-if="pagination.current_page > 1 ">
@@ -256,7 +262,9 @@ export default {  // todo lo que voy a exportar
       description: "",
       modal:0,
       errorFactura: 0,
+      errorArticulos:0,
       errorMostrarMsjFactura: [],
+      errorMostrarMsjArticulos:""
     }
   },
   computed: {  
@@ -288,18 +296,17 @@ export default {  // todo lo que voy a exportar
   methods:{  // metodos comunes impulsados por eventos
     listarValores() {
       let me = this;
-      var url = "/valores";
+      var url = "api/valores";
       axios
-        .get(url) // ,{ params: {},} 
-        .then(function (response) {
+        .get(url)  
+        .then((response)=>{
           var respuesta = response.data;
           me.arrayValores = respuesta.valores.data;
         })
-        .catch(function (error) {
+        .catch((error)=>{
           console.log(error);
-          if (error.response.status === 401) {
-            location.reload(true);
-          }
+          me.arrayValores = [];
+
         });
     },
     abrirModal(){
@@ -336,7 +343,7 @@ export default {  // todo lo que voy a exportar
     },
     async tipoFacturaEmpresa(){
       let me  = this;
-      let url = '/tipoFacturaEmpresa';
+      let url = 'api/tipoFacturaEmpresa';
       try {
            const response         = await axios.get(url);
            const data             = response.data;
@@ -376,26 +383,26 @@ export default {  // todo lo que voy a exportar
         })
         .catch(function (error) {
           console.log(error);
-          if (error.response.status === 401) {
+         /*  if (error.response.status === 401) {
             location.reload(true);
-          }
+          } */
         });
     },
     listarArticulos(page,buscarArticulo) {
       let me = this;
-      var url = "/articulos?page="+page+"&buscar="+buscarArticulo;
+      var url = "api/articulos?page="+page+"&buscar="+buscarArticulo;
       axios
-        .get(url) // ,{ params: {},} 
-        .then(function (response) {
+        .get(url)
+        .then((response)=>{
           var respuesta = response.data;
           me.arrayArticulos = respuesta.articulos.data;
           me.pagination = respuesta.pagination;
+          me.errorArticulos=0;
         })
-        .catch(function (error) {
+        .catch((error)=>{
           console.log(error);
-          if (error.response.status === 401) {
-            location.reload(true);
-          }
+          me.errorArticulos=1;
+          me.errorMostrarMsjArticulos=error.response.data.message
         });
     },
     rellenarCampos(nombre,apellido,tel,email,cliente){
@@ -559,9 +566,9 @@ export default {  // todo lo que voy a exportar
         })
         .catch(function (error) {
           console.log(error);
-          if (error.response.status === 401) {
+          /* if (error.response.status === 401) {
             location.reload(true);
-          }
+          } */
         });
     },
      cambiarPagina(page,buscar){
