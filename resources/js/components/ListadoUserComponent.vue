@@ -43,6 +43,11 @@
                                     </tr>  
                                 </tbody>  
                             </table>
+                            <div v-show="errorUser" class="form-group div-error">
+                                <div class="text-right">
+                                    <div v-text="errorMostrarMsjUser"></div>
+                                </div>
+                            </div>
                             <nav>
                                 <ul class="pagination">
                                     <li class="page-item"  v-if="pagination.current_page > 1 ">
@@ -86,12 +91,12 @@
                                             </div>
                                         </div>
                                     </div>    
-                                    <div v-show="erroruser" class="text-leftform-group row div-error">
+                                  <!--   <div v-show="erroruser" class="text-leftform-group row div-error">
                                         <div class="text-left text-error">
                                             <div v-for="error in errorMostrarMsjuser" :key="error" v-text="error">
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <button type="button" v-if="tipoAccion==1"  @click="registraroluser()" class="btn btn-success">Guardar</button>
                                     <button type="button" v-if="tipoAccion==2" @click="Actualizaroluser()" class="btn btn-success">Actualizar</button>
                                 </form> 
@@ -132,8 +137,8 @@ import axios from 'axios';
                     'to':0,
                 },
                 offset:3,
-                erroruser:0,
-                errorMostrarMsjuser:[],
+                errorUser:0,
+                errorMostrarMsjUser:[],
             }
         },
         computed:{
@@ -164,27 +169,23 @@ import axios from 'axios';
          methods:{
             listaruser(page,buscar){
                 let me = this;
-                var url= '/usuarios?page='+page+'&buscar='+buscar;
+                var url= 'api/usuarios?page='+page+'&buscar='+buscar;
                 axios.get( url , {
                     params: {
                     }
                 })
-                    .then(function (response) {
-                        var respuesta = response.data;
-                        me.arrayUser=respuesta.users.data;
-                        //respuesta.array_namesector.map(value=>{ me.arraynameSector.push(value.sector);});
-                        me.pagination= respuesta.pagination;
-
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        if(error.response.status === 401){
-                            location.reload(true)
-                        }
-                    })
-                    .then(function () {
-                        // always executed
-                    });
+                .then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayUser=respuesta.users.data;
+                    me.pagination= respuesta.pagination;
+                    me.errorUser=0
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    me.errorUser=1,
+                    me.errorMostrarMsjUser=error.response.data.message
+                    
+                });
             },
             listarRoles(){
                 let me = this;
@@ -272,15 +273,9 @@ import axios from 'axios';
                     }
                 }
             },
-            validaruser(ubicacionmodal){
-                this.erroruser=0;
-                this.errorMostrarMsjuser=[];
-                //if(!this.idRol) this.errorMostrarMsjuser.push('* El rol no puede estar vacío');
-                if(this.errorMostrarMsjuser.length) this.erroruser=1;
-            }, 
             registraroluser(){
                 this.validaruser('registrar');
-               if(this.erroruser==1 ){
+               if(this.errorUser==1 ){
                     return;
                 } 
                 let me=this;
@@ -319,7 +314,7 @@ import axios from 'axios';
             },
             Actualizaroluser(){
                 this.validaruser('actualizar');
-                if(this.erroruser==1 ){
+                if(this.errorUser==1 ){
                     return;
                 } 
                 let me=this;

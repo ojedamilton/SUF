@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserGrupo;
+use App\Models\usuarioEmpresa;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\NotificacionRegistro;
@@ -26,19 +27,18 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        // Si quieren Ingresar sin un request , redirecciona al home 
-           if(!$request->ajax())return redirect('/');
+        try {
 
-           $buscar= $request->buscar;
-           if ($buscar=='') {
-            //    $users=User::with('grupos')
-            $users = $this->userRepository->all(Auth::user()->idEmpresa);
-
-           }else{
-
+            $buscar= $request->buscar;
+            if ($buscar=='') {
+                $users = $this->userRepository->all(Auth::user()->idEmpresa);
+            }else{
                  $users = $this->userRepository->search($buscar,Auth::user()->idEmpresa);                
-           } 
-           return[
+            } 
+            return response()->json([
+               'success'=>true,
+               'message'=>'Listado de Usuarios',
+               'users'=>$users,
                'pagination'=>[
                    'total'=>$users->total(),
                    'current_page'=>$users->currentPage(),
@@ -46,13 +46,31 @@ class UserController extends Controller
                    'last_page'=>$users->lastPage(),
                    'from'=>$users->firstItem(),
                    'to'=>$users->lastItem(),
-               ],
-               'users'=>$users,
-           ];
+                ],
+           ],200);
+        } catch (\Throwable $th) {
+
+            Log::error($th->getMessage());
+            return response()->json([
+                'success'=>false,
+                'message'=>'Error al listar Usuarios',
+                'users'=>null,
+                'pagination'=>[
+                    'total'=>1,
+                    'current_page'=>1,
+                    'per_page'=>1,
+                    'last_page'=>1,
+                    'from'=>1,
+                    'to'=>1,
+                ],
+            ],500);    
+        }
+           
        
     }
     /**
      * Sendmail to new user 
+     * 
      * @param $string correo
      * @return void 
      */
@@ -70,7 +88,8 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+  
         // Valido Backend 
         $validator = Validator::make(
             $request->all(),[
@@ -79,7 +98,7 @@ class UserController extends Controller
             'grupo'=>'required',
             'password'=>'required',
             'email'=>'required|unique:users|email',
-            'empresaId'=>'required'
+            'selectedEmpresa'=>'required'
         ],[
             'email.unique'=>'El email ya existe',
             'email.required'=>'El email es requerido',
@@ -88,7 +107,7 @@ class UserController extends Controller
             'password.required'=>'La contraseña es requerida',
             'apellido.required'=>'El apellido es requerido',
             'grupo.unique'=>'El grupo es requerido',
-            'empresaId'=>'La empresa es requerida'
+            'selectedEmpresa'=>'La empresa es requerida'
         ]);
         if ($validator->fails()) {
             return response()->json(["errors" => $validator->getMessageBag(),"status"=>401]);
@@ -119,16 +138,33 @@ class UserController extends Controller
                 $arrGrupo[]=$g;
             }
             // insert a tabla usergrupo 
-            $userGrupo=UserGrupo::insert($arrGrupo);
+            $userGrupo = UserGrupo::insert($arrGrupo);
+
+            // Seteo Multiempresa
+            $selectedEmpresaIds = array_map(function($empresa) use ($user) {
+                                $selectedEmpresaIds['idUsuario']=$user->id;
+                                $selectedEmpresaIds['idEmpresa']=$empresa['id'];
+                                $selectedEmpresaIds['estado']=1;
+                                return $selectedEmpresaIds; 
+                            }, $request->selectedEmpresa);
+
+            $userEmpresas = usuarioEmpresa::insert($selectedEmpresaIds); 
+
             // Envio correos
             //$this->sendMail($request->email,$request->password);
              DB::commit();
-            return response()->json(["success"=>"El usuario se ha creado correctamente","status"=>201]);
+            return response()->json([
+                "success"=>true,
+                "message"=>"El usuario se ha creado correctamente"
+            ],201);
         } catch (\Throwable $th) {
             DB::rollBack();
             // Logeo errores
             Log::error($th->getMessage());
-            return response()->json(["errors"=>"No se pudo crear el usuario","status"=>401]);
+            return response()->json([
+                "success"=>false,
+                "message"=>"No se pudo crear el usuario"
+                ],500);
         }
        
     }

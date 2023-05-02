@@ -27,7 +27,7 @@ class UserRepository {
                                 $query->where('name','like','%'.$buscar.'%')
                                        ->orWhere('apellido','like','%'.$buscar.'%')
                                        ->orWhere('email','like','%'.$buscar.'%');
-                            })    
+                                })    
                             ->orderBy('name','asc')
                             ->paginate(10);
     }

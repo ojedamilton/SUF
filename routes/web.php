@@ -54,9 +54,7 @@ Route::middleware('auth:web')->group(function(){
     Route::post('/comprar', [FacturaController::class,'store'])->name('comprar');
 
     // Usuarios
-    Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
     Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');
-    Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
     Route::get('/showUserAuth',[UserController::class,'showUserAuth'])->name('showUserAuth');
 
     // Grupos

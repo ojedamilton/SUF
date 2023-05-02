@@ -5,12 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\ValorController;
 use App\Http\Controllers\TipoEmpresaController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes - Public
 |--------------------------------------------------------------------------
-|
+| Se pueden acceder desde un cliente externo sin registrarse 
 */
 
 // Articulos
@@ -20,10 +21,9 @@ Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('ar
 |--------------------------------------------------------------------------
 | API Routes - Privates
 |--------------------------------------------------------------------------
-|
+| Grupo de Middleware Auth - Rutas Autenticadas
 */
-
-// Grupo de Middleware Auth - Rutas Autenticadas
+ 
 Route::middleware('auth:sanctum')->group(function(){
     // Medios de Pago
     Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
@@ -31,4 +31,7 @@ Route::middleware('auth:sanctum')->group(function(){
      // Tipo Empresa 
     Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');
     Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');
+    // Usuarios
+    Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
+    Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
 });

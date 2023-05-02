@@ -34,10 +34,21 @@
                 <input type="password" class="form-control" v-model="password" name="password" id="password" placeholder="Ingrese Contraseña"/>
               </div>
               <div class="form-group">
-                <label for="exampleInputEmpresa">Empresa</label>
+               <!--  <label for="exampleInputEmpresa">Empresa</label>
                 <select class="form-control" v-model="empresaId" id="exampleInputEmpresa" name="empresas">
                 <option  v-for="empresas in arrayEmpresa" :key="empresas.id" :value="empresas.id">{{empresas.nombreEmpresa}}</option>
-              </select>
+              </select> -->
+              <div>
+                 <multiselect
+                  v-model="selectedEmpresa"
+                  :searchable="false"
+                  placeholder="Seleccione una o varias empresas"
+                  label="nombreEmpresa"
+                  :multiple="true"
+                  track-by="id"
+                  :options="arrayEmpresa">
+                </multiselect>
+              </div>
               </div>
             </div>
             <div class="loader" v-if="loading"></div>
@@ -58,7 +69,9 @@
 </template>
 <script>
   import axios from "axios";
+  import Multiselect from 'vue-multiselect'
   export default {
+    components: { Multiselect },
     props: ["path"],
     data() {
       return {
@@ -88,6 +101,8 @@
         erroruser: 0,
         empresaId: 0,
         errorMostrarMsjuser: [],
+        selectedEmpresa: [],
+        options: ['list', 'of', 'options']
       };
     },
     computed: {
@@ -97,28 +112,31 @@
     },
     methods: {
       listarEmpresas() {
-      let me = this;
-      var url = "/empresas";
-      axios
-        .get(url) // ,{ params: {},} 
-        .then(function (response) {
-          var respuesta = response.data;
-          me.arrayEmpresa = respuesta.empresas.data;
-        })
-        .catch(function (error) {
-          console.log(error);
-          if (error.response.status === 401) {
-            location.reload(true);
-          }
-        });
-    },
+
+        let me = this;
+        var url = "/empresas";
+        axios
+          .get(url) // ,{ params: {},} 
+          .then(function (response) {
+            let empresas = response.data.empresas.data;
+            me.arrayEmpresa = empresas;
+            me.options = empresas.map((empresa) => empresa.nombreEmpresa);
+          })
+          .catch(function (error) {
+            console.log(error);
+            if (error.response.status === 401) {
+              location.reload(true);
+            }
+          });
+      },
+      checkEmpresas(){
+        console.log(this.selectedEmpresa);
+      },
       listarGrupos() {
         let me = this;
         var url = "/grupos";
         axios
-          .get(url, {
-            params: {},
-          })
+          .get(url)
           .then(function (response) {
             var respuesta = response.data;
             me.arrayGrupos = respuesta.grupos;
@@ -129,9 +147,6 @@
             if (error.response.status === 401) {
               location.reload(true);
             }
-          })
-          .then(function () {
-            // always executed
           });
       },
       validaruser() {
@@ -143,7 +158,8 @@
         if(!this.email) this.errorMostrarMsjuser.push('* El email no puede estar vacío');
         if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjuser.push('* El email no es valido');
         if(!this.password) this.errorMostrarMsjuser.push('* La contraseña no puede estar vacía');
-        if(!this.empresaId) this.errorMostrarMsjuser.push('* La empresa no puede estar vacía');
+       /*  if(!this.empresaId) this.errorMostrarMsjuser.push('* La empresa no puede estar vacía'); */
+        if(this.selectedEmpresa.length==0) this.errorMostrarMsjuser.push('* La empresa select no puede estar vacía');
         if (this.errorMostrarMsjuser.length) this.erroruser = 1;
       },
       //Implemento Async-Await//
@@ -151,42 +167,45 @@
         this.validaruser();
         if(this.erroruser==1)return;
         let me=this;
-        let url = "/crearusuario";
+        let url = "api/crearusuario";
         this.loading = true;
         try {
-          const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,grupo:[...this.idGrupos],email:this.email,password:this.password,empresaId:this.empresaId})
-          let respuesta = response.data;
-          if (respuesta.status == 201) {
-            let success=respuesta.success;
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: success,
-              showConfirmButton: false,
-              timer: 4000
-            });
-            //Limpio variables
-            me.nombre='';
-            me.apellido='';
-            me.email='';
-            me.idGrupos=[];
-            me.password='';
-            this.loading=false
-          }else{
-            let errors=respuesta.errors;
-            let strError=JSON.stringify(errors);
-            // Ver array 2 indices con array adentro...
+              const response= await axios.post(url,
+                    { nombre:this.nombre,
+                      apellido:this.apellido,
+                      grupo:[...this.idGrupos],
+                      email:this.email,
+                      password:this.password,
+                      empresaId:this.empresaId,
+                      selectedEmpresa:this.selectedEmpresa
+                      
+              })
+              let respuesta = response.data;
+              let success=respuesta.message;
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: success,
+                showConfirmButton: false,
+                timer: 4000
+              });
+              //Limpio variables
+              me.nombre='';
+              me.apellido='';
+              me.email='';
+              me.idGrupos=[];
+              me.password='';
+              this.loading=false
+        } catch (error) {
+            console.log(error);
+            let strError=error.response.data.message
             Swal.fire({
               position: 'center',
               icon: 'error',
-              html: strError,
+              title: strError,
               showConfirmButton: false,
               timer: 4000
             });
-          }
-          this.loading=false
-        } catch (error) {
-          console.log('Errores de Conexion'+error);
           this.loading=false
         }
       },
@@ -304,3 +323,4 @@
       filter: alpha(opacity=40);
   }
 </style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
