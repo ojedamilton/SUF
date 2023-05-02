@@ -26,27 +26,48 @@ class ClienteController extends Controller
     }
     public function getAllClientes(Request $request)
     {
-        // Si quieren Ingresar sin un request , redirecciona al home
-        if(!$request->ajax())return redirect('/home');
+        $buscar= $request->buscar;
 
-         $buscar= $request->buscar;
+        try {
 
-         $cliente=$this->clientRepository->all($buscar,Auth::user()->idEmpresa);
+            $cliente=$this->clientRepository->all($buscar,Auth::user()->idEmpresa);
 
-        $saludo=Cliente::saludar();
 
-        return[
-            'pagination'=>[
-                'total'=>$cliente->total(),
-                'current_page'=>$cliente->currentPage(),
-                'per_page'=>$cliente->perPage(),
-                'last_page'=>$cliente->lastPage(),
-                'from'=>$cliente->firstItem(),
-                'to'=>$cliente->lastItem(),
-            ],
-            'clientes'=>$cliente,
-            'metodo'=>$saludo,
-        ];
+            return response()->json([
+                'success'=>false,
+                'message'=>'Listado de Clientes',
+                'clientes'=>$cliente,
+                'pagination'=>[
+                    'total'=>$cliente->total(),
+                    'current_page'=>$cliente->currentPage(),
+                    'per_page'=>$cliente->perPage(),
+                    'last_page'=>$cliente->lastPage(),
+                    'from'=>$cliente->firstItem(),
+                    'to'=>$cliente->lastItem(),
+                ],
+            ],200);
+            
+        } catch (\Throwable $th) {
+
+            Log::info($th->getMessage());
+
+            return response()->json([
+                'success'=>false,
+                'message'=>'No se encontraron Clientes',
+                'clientes'=>null,
+                'pagination'=>[
+                    'total'=>1,
+                    'current_page'=>1,
+                    'per_page'=>1,
+                    'last_page'=>1,
+                    'from'=>1,
+                    'to'=>1,
+                ],
+            ],500); 
+        }
+       
+
+        
     }
     
     public function clienteTipoFactura(Request $request){  
@@ -68,14 +89,14 @@ class ClienteController extends Controller
             }
 
         }
-        return[
+        return response()->json([
             "tipoFactura"=>false
-        ];
+        ]);
 
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in Client.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -84,32 +105,37 @@ class ClienteController extends Controller
     {
          // Valido Backend
          $validator = Validator::make(
-            $request->all(),[
-            'nombre'=>'required|max:50',
-            'apellido'=>'required|max:50',
-            'razonSocial'=>'required',
-            'dniCliente'=>'required|unique:clientes',
-            'direccion'=>'required',
-            'email'=>'required|email',
-            'telefono'=>'required',
-            'situacionId'=>'required'
-        ],[
-            'razonsocial'=>'La razon social es requerida',
-            'dniCliente,required'=>'El cuit es requerido',
-            'dniCliente.unique'=>'El cuit ya existe',
-            'nombre.required'=>'El nombre es requerido',
-            'email.required'=>'El email es requerido',
-            'email.email'=>'El email tiene formato erroneo',
-            'apellido.required'=>'El apellido es requerido',
-            'situacionId'=>'Situacion Fiscal es requerido',
-            'direccion'=>'La direccion es requerida',
-            'telefono'=>'El telefono es requerida',
-        ]);
+            $request->all(),
+            [
+                'nombre'=>'required|max:50',
+                'apellido'=>'required|max:50',
+                'razonSocial'=>'required',
+                'dniCliente'=>'required|unique:clientes',
+                'direccion'=>'required',
+                'email'=>'required|email',
+                'telefono'=>'required',
+                'situacionId'=>'required'
+            ],[
+                'razonsocial'=>'La razon social es requerida',
+                'dniCliente,required'=>'El cuit es requerido',
+                'dniCliente.unique'=>'El cuit ya existe',
+                'nombre.required'=>'El nombre es requerido',
+                'email.required'=>'El email es requerido',
+                'email.email'=>'El email tiene formato erroneo',
+                'apellido.required'=>'El apellido es requerido',
+                'situacionId'=>'Situacion Fiscal es requerido',
+                'direccion'=>'La direccion es requerida',
+                'telefono'=>'El telefono es requerida',
+            ]
+        );
+
         if ($validator->fails()) {
             return response()->json(["errors" => $validator->getMessageBag(),"status"=>401]);
         }
+
         // Comienzo Transaccion
         DB::beginTransaction();
+        
         try { 
             // Creo usuario en la tabla
             $cliente = new Cliente();
@@ -131,7 +157,7 @@ class ClienteController extends Controller
             DB::rollBack();
             // Logeo errores
             Log::error($th->getMessage());
-            return response()->json(["errors"=>"No se pudo crear el Cliente","status"=>401]);
+            return response()->json(["errors"=>"No se pudo crear el Cliente","status"=>500]);
         }
     }
 
