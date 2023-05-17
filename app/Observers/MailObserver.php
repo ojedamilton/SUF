@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use App\Mail\NotificacionRegistro;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\App;
 
 class MailObserver
 {
@@ -19,8 +20,14 @@ class MailObserver
     {
         // Instancia del $user recien creado
         Log::info("usuario creado: ".$user->name);
-       /*  $correo= new NotificacionRegistro($user->email,$user->getPwd());
-        Mail::to($user->email)->send($correo);  */
+
+        $environment = App::environment();
+        // Si APP_ENV <> local, se envia el correo
+        if($environment == 'testing' || $environment == 'production')
+        {
+            $correo= new NotificacionRegistro($user->email,$user->getPwd());
+            Mail::to($user->email)->send($correo); 
+        }
     }
 
     /**

@@ -9,148 +9,149 @@ use Illuminate\Support\Facades\DB;
 use App\Models\DetalleFactura;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class FacturaController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function getAllFacturas(Request $request)
     {
-        //
+
+        try {
+            $listadofacturas = Factura::orderBy('id', 'desc')
+                ->where('idEmpresa', Auth::user()->idEmpresa)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Listado de Facturas',
+                'listadofacturas' => $listadofacturas,
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al Listar Facturas',
+                'listadofacturas' => null,
+            ], 500);
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Validar Campos del Formulario
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    private function validarForm(Request $request)
     {
-        //
-    }
-    
-    private function validarForm( Request $request )
-    {
-        
-        $request->validate(
+        // Valido Backend
+        $validator = Validator::make(
+            $request->all(),
             [
-              'precio.required'=>'El campo "Precio" es obligatorio.',
-              'precio.numeric'=>'Complete el campo Precio con un número.',
-              'id_cliente.integer'=>'Seleccione un Cliente',
-              'fecha.required'=>'La fecha es requerida',
+                'factura.totalFactura.required' => 'El campo "Precio" es obligatorio.',
+                'factura.id_cliente.integer' => 'Seleccione un Cliente',
+                'factura.fecha.required' => 'La fecha es requerida',
             ]
         );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error En la Validacion al Crear Factura',
+                'factura' => null,
+                'detalle' => null,
+                'errors' => $validator->errors()
+            ], 500);
+        }
     }
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         // Obtengo Pto Venta ||Proxima iteracion
         //$ptoVenta=DB::table('puntoVenta')->where('id',1)->first();
-        $ptoVenta=1;
-        $factura = Factura::where('idTipoFactura',$request->factura['tipoFacturaId'])->first();
+        $ptoVenta = 1;
+        $factura = Factura::where('idTipoFactura', $request->factura['tipoFacturaId'])->first();
         // ultimo Numero por cada Tipo de Factura 
-        if($factura){
-            $ultimoNum=Factura::selectRaw("id,CONCAT(LPAD(numeroFactura+1, 6, '0')) as numeroFactura")
-                            ->where("idTipoFactura",$request->factura['tipoFacturaId'])
-                            ->orderBy("numeroFactura","desc")
-                            ->pluck('numeroFactura')
-                            ->first();
-        }else{
-            $ultimoNum='000001';
+        if ($factura) {
+            $ultimoNum = Factura::selectRaw("id,CONCAT(LPAD(numeroFactura+1, 6, '0')) as numeroFactura")
+                ->where("idTipoFactura", $request->factura['tipoFacturaId'])
+                ->orderBy("numeroFactura", "desc")
+                ->pluck('numeroFactura')
+                ->first();
+        } else {
+            $ultimoNum = '000001';
         }
-        
-        // Validar los datos
-        // si falla devuelve variable $errors  
-        $this->validarForm($request);
-        
+
+        // llamo al metodo validarForm
+        // $this->validarForm($request);
+
         try {
-            //dd($request);
             // Comienzo Transaccion
             DB::beginTransaction();
             // Instancio Factura
             $factura = new Factura;
-            $factura->numeroFactura=$ultimoNum;
-            $factura->fechaModificacion=$request->factura['fecha'];
-            $factura->estadoFactura=1;
-            $factura->idCliente=$request->factura['id_cliente'];
-            $factura->idValor=$request->factura['pago'];
-            $factura->idUsuario=Auth::user()->id;
-            $factura->idTipoFactura=$request->factura['tipoFacturaId'];
-            $factura->idEmpresa=Auth::user()->idEmpresa;
-            $factura->idpuntoVenta=$ptoVenta;
-            $factura->totalFactura=$request->factura['totalFactura'];
-            $factura->descuento=$request->factura['descuento'];
+            $factura->numeroFactura = $ultimoNum;
+            $factura->fechaModificacion = $request->factura['fecha'];
+            $factura->estadoFactura = 1;
+            $factura->idCliente = $request->factura['id_cliente'];
+            $factura->idValor = $request->factura['pago'];
+            $factura->idUsuario = Auth::user()->id;
+            $factura->idTipoFactura = $request->factura['tipoFacturaId'];
+            $factura->idEmpresa = Auth::user()->idEmpresa;
+            $factura->idpuntoVenta = $ptoVenta;
+            $factura->totalFactura = $request->factura['totalFactura'];
+            $factura->descuento = $request->factura['descuento'];
             $factura->save();
-            
+
             // Instancio Detalles
-            $detalleReq=$request->detalles;
+            $detalleReq = $request->detalles;
             // paso por referencia (&) asi modifico el array original
             foreach ($detalleReq as &$detalle) {
-                $detalle['idFactura']=$factura->id; 
+                $detalle['idFactura'] = $factura->id;
                 unset($detalle['nombre']);
             }
+            // Instancio DetalleFactura
             $detalleFactura = new DetalleFactura;
-            // con metodo Create paso Array
-            //dd($detalleReq); 
-            $detalleFactura->insert($detalleReq);
-            //dd($detalleReq); 
-           DB::commit();
+            //$detalleFactura::create();
+            // modificar la manera que inserto los registros y hacerlo uno por uno craendo un nuevo objeto
+            foreach ($detalleReq as $detalle) {
+                $detalleFactura->create($detalle);
+            }
+            // No me permitia auditar con el metodo insert porque es de tipo query builder y no de tipo eloquent
+            //$detalleFactura->insert($detalleReq);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Factura Creada Correctamente',
+                'factura' => $factura->id,
+                'detalle' => $detalleReq,
+            ], 200);
         } catch (\Throwable $th) {
-           DB::rollback();
-            //throw $th;
-            return 'Error en la Query'.$th;
+            DB::rollback();
+            Log::error($th->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al Crear Factura',
+                'factura' => null,
+                'detalle' => null,
+            ], 500);
         }
-
-        return 'Todo Ok';
-  
-
-        // Instanciar la factura , modelo Factura
-        /* 
-        DB::transaccion
-         fecha 
-         idusuario
-         asdadsa
-         asdsasd
-         
-         salio OK
-         id_fact
-         id_detalle
-         total 
-         cantidad
-         detalletotal falla 
-
-        finalizas
-        
-        */
-
-        // si va todo bien obtenemos ese id_factura
-        // Instanciamos el detalle de factura llamando al modelo DetalleFactura
-
     }
-    public function getAllFacturas(Request $request){
-       
-            //dd('llegue aca');
-            // Si quieren Ingresar sin un request , redirecciona al home 
-            if(!$request->ajax())return redirect('/');
 
-            $listadofacturas=Factura::
-                             orderBy('id','desc')
-                             ->where('idEmpresa',Auth::user()->idEmpresa)
-                             ->get();
-  
-           return[
-               'listadofacturas'=>$listadofacturas,
-           ]; 
-       
-    }
+   
     public function getFacturasById(Request $request){
     
         // Si quieren Ingresar sin un request , redirecciona al home 
@@ -174,8 +175,8 @@ class FacturaController extends Controller
         
         $idFactura=$request->id;
         $detallesById=DetalleFactura::with('articulo')
-                         ->where('idFactura',$idFactura)
-                         ->get();
+            ->where('idFactura',$idFactura)
+            ->get();
 
        return[
            'detallesbyid'=>$detallesById,
@@ -207,7 +208,7 @@ class FacturaController extends Controller
         $total_facturada_semana_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
                                                 ->where('fechaModificacion',$fecha_actual)
                                                 ->sum('totalFactura');                                       
-        $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa??1)->count();                                          
+        $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa)->count();                                          
         
 
         return [
@@ -218,48 +219,4 @@ class FacturaController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Factura  $factura
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Factura $factura)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Factura  $factura
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Factura $factura)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Factura  $factura
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Factura $factura)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Factura  $factura
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Factura $factura)
-    {
-        //
-    }
 }

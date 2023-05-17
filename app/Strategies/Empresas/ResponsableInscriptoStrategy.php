@@ -4,6 +4,7 @@ namespace App\Strategies\Empresas;
 
 use App\Interfaces\FacturacionInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ResponsableInscriptoStrategy implements FacturacionInterface {
    

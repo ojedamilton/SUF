@@ -348,10 +348,21 @@ export default {  // todo lo que voy a exportar
            const response         = await axios.get(url);
            const data             = response.data;
            this.arrayTipoFactura  = data.tipoFactura;
-           console.log(this.arrayTipoFactura);
+           //console.log(this.arrayTipoFactura);
         
       } catch (error) {
-        return 'error Tipo Factura'
+        
+          Toastify({
+            text: error.response.data.message,
+            duration: 6000,
+            className: "danger",
+            newWindow: true,
+            close: true,
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+              background: "linear-gradient(to right, rgb(255,195,113), rgb(255,95,109))",
+            }
+          }).showToast();
       }
     },
     async clienteTipoFactura(idTipo){

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Strategies\Empresas\ResponsableInscriptoStrategy;
 use App\Strategies\Empresas\MonotributistaStrategy;
 use App\Strategies\Empresas\ExcentoIvaStrategy;
+use Illuminate\Support\Facades\Log;
 
 class TipoEmpresaController extends Controller
 {
@@ -48,24 +49,33 @@ class TipoEmpresaController extends Controller
      */
     public function getTipoFacturaEmpresa(){
 
-        // Traigo empresa que pertenece
-        $idEmpresaUser = Auth::user()->idEmpresa;
-        // busco al tipo empresa
-        $idTipoEmpresa = Empresa::where('id',$idEmpresaUser)->first();
-        // dependiendo tipo empresa aplico la estrategia con el tipo de factura
-        switch ($idTipoEmpresa->idTipoEmpresa) {
-            case 1:
-                return (new ResponsableInscriptoStrategy)->tipoFactura();
-                break;
-            case 2:
-                return (new ExcentoIvaStrategy)->tipoFactura();
-                break;
-            case 3:
-                return (new MonotributistaStrategy)->tipoFactura();
-                break;    
-            default:
-                return (new MonotributistaStrategy)->tipoFactura();
-                break;
+        try {
+            // Traigo empresa que pertenece
+            $idEmpresaUser = Auth::user()->idEmpresa;
+            // busco al tipo empresa
+            $idTipoEmpresa = Empresa::where('id',$idEmpresaUser)->first();
+            // dependiendo tipo empresa aplico la estrategia con el tipo de factura
+            switch ($idTipoEmpresa->idTipoEmpresa) {
+                case 1:
+                    return (new ResponsableInscriptoStrategy)->tipoFactura();
+                    break;
+                case 2:
+                    return (new ExcentoIvaStrategy)->tipoFactura();
+                    break;
+                case 3:
+                    return (new MonotributistaStrategy)->tipoFactura();
+                    break;    
+                default:
+                    return (new MonotributistaStrategy)->tipoFactura();
+                    break;
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                "succes"=>false,
+                "message"=>"No se ha encontrado el Tipo de Empresa",
+                "tipoFactura"=>null,
+            ],500);
         }
            
     }

@@ -157,7 +157,7 @@ export default {
   methods: {
     listarFacturas() {
       let me = this;
-      var url = "/allfacturas";
+      var url = "api/allfacturas";
       axios
         .get(url)
         .then(function (response) {

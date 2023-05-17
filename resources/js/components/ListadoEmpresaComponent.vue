@@ -157,7 +157,7 @@ export default {
      methods:{
         listarEmpresas(page,buscar){
             let me = this;
-            var url= '/empresas?page='+page+'&buscar='+buscar;
+            var url= 'api/empresas?page='+page+'&buscar='+buscar;
             axios.get( url , {
                 params: {
                 }

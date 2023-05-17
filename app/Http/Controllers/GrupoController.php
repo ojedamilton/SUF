@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Grupo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class GrupoController extends Controller
 {
@@ -15,14 +16,27 @@ class GrupoController extends Controller
     public function index(Request $request)
     {
         // Si quieren Ingresar sin un request , redirecciona al home 
-        if(!$request->ajax())return redirect('/home');
+        //if(!$request->ajax())return redirect('/home');
 
-        //query que le pega al modelo
-        $valores=Grupo::all();
-        
-        return[
-            'grupos'=>$valores,
-        ];
+        try {
+
+            $grupos = Grupo::all();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'grupos cargados correctamente',
+                'grupos' => $grupos,
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cargar los grupos',
+                'grupos' => null,
+            ], 500);
+        }
+           
+       
     }
 
     /**

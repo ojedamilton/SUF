@@ -13,28 +13,46 @@ class EmpresaController extends Controller
 {
     public function getAllEmpresas(Request $request){
    
-        // Si quieren Ingresar sin un request , redirecciona al home
-        if(!$request->ajax())return redirect('/home');
-    
+       
         $buscar= $request->buscar;
-    
-        $empresas=Empresa::where('nombreEmpresa','like','%'.$buscar.'%')
-                            ->orWhere('cuitEmpresa','like','%'.$buscar.'%')
-                            ->orderBy('nombreEmpresa','asc')
-                            ->paginate(3);
-    
-        return[
-            'pagination'=>[
-                'total'=>$empresas->total(),
-                'current_page'=>$empresas->currentPage(),
-                'per_page'=>$empresas->perPage(),
-                'last_page'=>$empresas->lastPage(),
-                'from'=>$empresas->firstItem(),
-                'to'=>$empresas->lastItem(),
-            ],
-            'empresas'=>$empresas,
-        ];
-    
+        
+        try {
+
+            $empresas=Empresa::where('nombreEmpresa','like','%'.$buscar.'%')
+                                ->orWhere('cuitEmpresa','like','%'.$buscar.'%')
+                                ->orderBy('nombreEmpresa','asc')
+                                ->paginate(3);
+        
+            return response()->json([
+                'success'=>true,
+                'message'=>'Listado de Empresas',
+                'empresas'=>$empresas,
+                'pagination'=>[
+                    'total'=>$empresas->total(),
+                    'current_page'=>$empresas->currentPage(),
+                    'per_page'=>$empresas->perPage(),
+                    'last_page'=>$empresas->lastPage(),
+                    'from'=>$empresas->firstItem(),
+                    'to'=>$empresas->lastItem(),
+                ],
+            ],200);
+
+        } catch (\Throwable $th) {  
+            Log::error($th->getMessage());
+            return response()->json([
+                'success'=>false,
+                'message'=>'Error al listar Empresas',
+                'empresas'=>null,
+                'pagination'=>[
+                    'total'=>1,
+                    'current_page'=>1,
+                    'per_page'=>1,
+                    'last_page'=>1,
+                    'from'=>1,
+                    'to'=>1,
+                ],
+            ],500);
+        }
     
         }
         

@@ -6,6 +6,8 @@ use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\ValorController;
 use App\Http\Controllers\TipoEmpresaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\FacturaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +18,9 @@ use App\Http\Controllers\UserController;
 
 // Articulos
 Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
-
+ // Empresas
+ Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
+ 
 /*
 |--------------------------------------------------------------------------
 | API Routes - Privates
@@ -34,4 +38,7 @@ Route::middleware('auth:sanctum')->group(function(){
     // Usuarios
     Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
     Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
+    // Facturacion
+    Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
+   
 });
