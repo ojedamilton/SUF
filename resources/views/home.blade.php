@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="{{asset('css/sweetalert2.min.css')}}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{asset('css/adminlte.css')}}">
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   </head>
   <body class="hold-transition sidebar-mini">
     <div id="app" class="wrapper"> <!-- div corre vue.js -->
@@ -350,5 +352,7 @@
     <script src="{{asset('js/adminlte.js')}}"></script>
     <!-- sweetalert2 -->
     <script src="{{asset('js/sweetalert2.min.js')}}"></script>
+    <!-- Toast JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   </body>
 </html>

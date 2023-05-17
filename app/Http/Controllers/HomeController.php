@@ -21,11 +21,18 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return view home con la empresa logueada
      */
     public function index()
     {
-        $empresas = Empresa::findOrFail(Auth::user()->idEmpresa);
-        return view('home', compact('empresas'));
+        try {
+            $empresas = Empresa::findOrFail(Auth::user()->idEmpresa);
+            return view('home', compact('empresas'));
+        } catch (\Throwable $th) {
+            // retorno al logout con el mensaje de error
+            Auth::logout();
+            // redirecciono al login con el mensaje de error
+            return redirect()->route('login')->withErrors(['empresa' => 'No se ha encontrado una empresa Asociada']);
+        }
     }
 }

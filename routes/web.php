@@ -38,13 +38,11 @@ Route::middleware('auth:web')->group(function(){
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     // Empresa
-    Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
     Route::get('/userEmpresa', [EmpresaController::class,'userEmpresa'])->name('userempresa');
     Route::post('/createEmpresa', [EmpresaController::class,'createEmpresa'])->name('createempresa');
 
     // Facturacion
     Route::post('/facturar', [FacturaController::class,'store'])->name('facturar');
-    Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
     Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid');
     Route::post('/getfacturasbyid',[FacturaController::class,'getFacturasById'])->name('facturasbyid');
     Route::post('/descargarFactura',[FacturaController::class,'descargarFactura'])->name('descargarfactura');
@@ -68,6 +66,6 @@ Route::middleware('auth:web')->group(function(){
     Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
 
     // Proveedores
-    Route::get('/proveedor',[ProveedorController::class,'getAllProveedores'])->name('proveedor');
+    //Route::get('/proveedor',[ProveedorController::class,'getAllProveedores'])->name('proveedor');
 
 });

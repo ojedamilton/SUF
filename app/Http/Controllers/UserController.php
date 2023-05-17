@@ -116,13 +116,13 @@ class UserController extends Controller
         // Comienzo Transaccion
        DB::beginTransaction();
         try { 
+            
             // Creo usuario en la tabla
             $user = new User();
             $user->name=$request->nombre;
             $user->apellido=$request->apellido;
             $user->email=$request->email;
             $user->password=bcrypt($request->password);
-            $user->idEmpresa=$request->empresaId;
             $user->estadoUsuario=1;
             $user->setPwd($request->password);
             $user->save();
