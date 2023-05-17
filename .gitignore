@@ -1,5 +1,8 @@
 /node_modules
 /public/hot
+/public/js/app.js
+/public/css/app.css
+/public/mix-manifest.json
 /public/storage
 /storage/*.key
 /vendor
@@ -13,3 +16,7 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+composer.lock
+package-lock.json
+
+
