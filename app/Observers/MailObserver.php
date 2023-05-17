@@ -19,8 +19,8 @@ class MailObserver
     {
         // Instancia del $user recien creado
         Log::info("usuario creado: ".$user->name);
-        $correo= new NotificacionRegistro($user->email,$user->getPwd());
-        Mail::to($user->email)->send($correo); 
+       /*  $correo= new NotificacionRegistro($user->email,$user->getPwd());
+        Mail::to($user->email)->send($correo);  */
     }
 
     /**
