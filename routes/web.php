@@ -25,8 +25,13 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-// Rutas de Autenticacion
-Auth::routes();
+// Rutas de Autenticacion - Login
+// Se envia arreglo desactivando el registro , reset y verificación.
+Auth::routes(['login' => true,
+    'register' => true,
+    'reset' => false,
+    'verify' => false,
+]); 
 
 // Inicio Login con middleware Guest(Si estamos autenticados no permite ir al login)
 Route::middleware('guest')->get('/', function () {

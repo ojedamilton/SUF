@@ -1,10 +1,22 @@
+
 @extends('layouts.app')
 
+@section('styles')
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> 
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet"> 
+@endsection
+
+@section('navbar')
+    @include('partials.navbar')
+@endsection
+
 @section('content')
-<div class="container">
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header">{{ __('Autentificación') }}</div>
 
                 <div class="card-body">
@@ -80,6 +92,9 @@
     </div>
 </div>
 @endsection
+
+<!-- Inyectamos script en pagina Principal -->
+@push("scripts")
 <script>
     window.onload = ()=>{
         // Hacer una peticion get para obtener las empresas
@@ -100,3 +115,4 @@
             });
     };
 </script>
+@endpush
