@@ -1,5 +1,5 @@
 <template >
-    <section class="content col-lg-12">
+    <section class="content col-lg-10 mt-2 ml-5">
         <div class="container-fluid">
             <!-- Small boxes (Stat box) -->
             <div class="row" style="display: flex; justify-content: center">
@@ -70,7 +70,7 @@
                 </strong>
             </div>
             <!-- Tablero -->
-            <div class="row chart-container">
+            <div class="row chart-container ml-5 w-75 h-100">
                 <Bar :options="chartOptions" :data="chartData"></Bar>
             </div>
         </div>
