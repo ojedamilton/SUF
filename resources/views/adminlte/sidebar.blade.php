@@ -1,10 +1,9 @@
       <!-- Main Sidebar Container -->
       <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <p  class="brand-link">
+        <router-link  class="brand-link" to='/dashboard'>
           <span class="brand-text font-weight-light">{{ config('app.name')}} </span>
-        </p>
-
+        </router-link>
         <!-- Sidebar -->
         <div class="sidebar">
           <!-- Sidebar Menu -->

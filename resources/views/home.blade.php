@@ -69,7 +69,8 @@
 <!-- Scripts Render after html -->
 @push('scripts')
   <script>
-    window.location.href = 'http://localhost:8000/home#/dashboard';
+  // por que recargamos al dashboard ¿? 
+  // window.location.href = 'http://localhost:8000/home#/dashboard';
   </script>
 @endpush
 
