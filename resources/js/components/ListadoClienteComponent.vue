@@ -165,8 +165,9 @@ export default {
                 }
             })
                 .then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayCliente=respuesta.clientes.data;
+                    // destructuro la respuesta para obtener los clientes
+                    var {clientes} = response.data;
+                    me.arrayCliente=clientes.data;
                     //respuesta.array_namesector.map(value=>{ me.arraynameSector.push(value.sector);});
                     me.pagination= respuesta.pagination;
 
