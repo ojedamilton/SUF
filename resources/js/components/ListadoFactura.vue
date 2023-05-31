@@ -1,138 +1,61 @@
 <template>
   <main class="container">
-    <div class="card">
-      <div class="card-header border-0">
-        <h3 class="card-title">Listado de Facturas</h3>
-        <div class="card-tools">
-          <a href="#" class="btn btn-tool btn-sm">
-            <i class="fas fa-download"></i>
-          </a>
-          <a href="#" class="btn btn-tool btn-sm">
-            <i class="fas fa-bars"></i>
-          </a>
+      <div class="card">
+        <div class="card-header border-0">
+          <h3 class="card-title">Listado de Facturas</h3>
+          <div class="card-tools">
+            <a href="#" class="btn btn-tool btn-sm">
+              <i class="fas fa-download"></i>
+            </a>
+            <a href="#" class="btn btn-tool btn-sm">
+              <i class="fas fa-bars"></i>
+            </a>
+          </div>
+        </div>
+        <div class="card-body table-responsive p-0">
+          <table class="table table-striped table-valign-middle">
+            <thead>
+              <tr>
+                <th>Nro Factura</th>
+                <th>Precio</th>
+                <th>Fecha</th>
+                <th>Ver</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="factura in arrayFacturas" :key="factura.id">
+                <td>
+                  {{ factura.id }}
+                </td>
+                <td>$ {{ factura.totalFactura }}</td>
+                <td>
+                  {{ factura.fechaModificacion }}
+                </td>
+                <td>
+                  <a @click="abrirModal(); listarDetallesById(factura.id), listarEmpresa(), facturaById(factura.id)" href="home#/listadofacturacion" class="text-muted">
+                    <i class="fas fa-search"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <div class="card-body table-responsive p-0">
-        <table class="table table-striped table-valign-middle">
-          <thead>
-            <tr>
-              <th>Nro Factura</th>
-              <th>Precio</th>
-              <th>Fecha</th>
-              <th>Ver</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="factura in arrayFacturas" :key="factura.id">
-              <td>
-                {{ factura.id }}
-              </td>
-              <td>$ {{ factura.totalFactura }}</td>
-              <td>
-                {{ factura.fechaModificacion }}
-              </td>
-              <td>
-                <a @click="abrirModal();listarDetallesById(factura.id),listarEmpresa(),facturaById(factura.id)" href="#" class="text-muted">
-                  <i class="fas fa-search"></i>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+
     <!-- Modal -->
-    <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-top" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle"></h5>
-              <button type="button"  @click="cerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-            <div class="modal-body">
-              <div class="col-12">
-                <h4>Datos Empresa</h4>
-                <div class="row my-3">
-                  <div class="col-10">
-                    <p><strong>Nombre:</strong> {{userEmpresa.nombreEmpresa}}<p>
-                    <p><strong>Cuit: </strong>{{userEmpresa.cuitEmpresa}}</p>
-                    <p><strong>Direccion: </strong>{{userEmpresa.direccionEmpresa}}</p>
-                    <p><strong>Inicio Actividad: </strong>{{userEmpresa.inicioActividades}}</p>
-                  </div>
-                  <div class="col-2">
-                    <img src="webfonts/suf.png" />
-                  </div>
-                </div>
-                
-                <hr />
-                
-                <div class="row fact-info mt-3 col-12">
-                  <div class="col-4">
-                    <h5>Tipo Factura</h5>
-                    <p>
-                      {{factura.tipofactura.tipoFactura}}
-                    </p>
-                  </div>
-                  <div class="col-4">
-                    <h5>N° de factura</h5>
-                    <h5>Fecha</h5>
-                  </div>
-                  <div class="col-4">
-                    <p>{{factura.puntoventa.numPuntoVenta}}-{{factura.numeroFactura}}<p>
-                    <p>{{factura.fechaModificacion}}</p>
-                  </div>
-                </div>
-                <div class="row my-5">
-                  <table class="table table-borderless factura">
-                    <thead>
-                      <tr>
-                        <th>Cant.</th>
-                        <th>Descripcion</th>
-                        <th>Precio Unitario</th>
-                        <th>Importe</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="detalle in arrayDetalles" :key="detalle.id" >    
-                        <td>{{detalle.cantidadArticulo}}</td>
-                        <td>{{detalle.articulo.nombreArticulo}}</td> 
-                        <td>{{detalle.articulo.precio}}</td>    
-                        <td>{{detalle.totalDetalle}}</td>
-                      </tr>  
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <th></th>
-                        <th></th>
-                        <th>Total Factura</th>
-                        <th>{{factura.totalFactura}}</th>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-                <div class="cond row">
-                  <div class="col-12 mt-3">
-                    <h4>Condiciones y formas de pago</h4>
-                    <p>El pago se debe realizar en un plazo de 15 dias.</p>
-                  </div>
-                </div>
-             </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex justify-content-md-center py-3">
-              <button class="btn btn-primary" @click="downloadPage()" >Descargar</button>
-            </div>
-          </div>  
-        </div>
-      </div>
-    </div>
+    <ModalFactura :modalFlag="modal" @cambiar-modal="cerrarModal" :userEmpresa="userEmpresa" :factura="factura" :arrayDetalles="arrayDetalles"/>
+
   </main>
 </template>
 <script>
 import axios from 'axios';
+// importamos el componente
+import ModalFactura from './partials/ModalFactura.vue';
 export default {
+  components: {
+    // registramos el componente para poder usarlo
+    ModalFactura,
+  },
   data() {
     return {
       arrayFacturas: [],
@@ -170,6 +93,16 @@ export default {
             location.reload(true);
           }
         });
+    },
+    abrirModal() {
+      this.modal = 1;
+    },
+    /**
+     * Este metodo se ejecuta desde el componente hijo @cambiar-modal
+     * @param {boolean} val
+     */
+    cerrarModal(val) {
+      this.modal = val;
     },
     async listarEmpresa(){
        let me  = this;
@@ -234,15 +167,6 @@ export default {
             console.log(error);
           });
     },
-     downloadPage() {
-      window.print();
-    },
-    abrirModal() {
-      this.modal = 1;
-    },
-    cerrarModal() {
-      this.modal = 0;
-    },
     cambiarPagina(page,buscar){
         let me = this;
         //Actualizar pagina actual
@@ -281,6 +205,12 @@ export default {
     // se auto-ejecuta apenas termina de cargar el DOM
     this.listarFacturas();
   },
+  watch: {
+    // se usa para escuchar cambios en las variables
+    cerrarModal: function (val) {
+      console.log("cerre el modal desde el padre");
+    },
+  },
 };
 </script>
 <style>
@@ -316,5 +246,15 @@ export default {
 
 .cond {
   border-top: solid 2px #000;
+}
+.modal-content{
+  width: 100%;
+  position: absolute !important;
+}
+.mostrar{
+  display: list-item !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  background-color: #3c29297a !important;
 }
 </style>

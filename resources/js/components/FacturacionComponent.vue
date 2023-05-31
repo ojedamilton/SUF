@@ -232,19 +232,19 @@ export default {  // todo lo que voy a exportar
     return {
       arrayValores: [],
       arrayClientes: [],
-      arrayArticulos:[],
-      arrayDetalles:[],
-      arrayTipoFactura:[],
-      buscarCliente:'',
-      descuento:0,
-      buscarArticulo:'',
-      pagination:{
-                  'total':0,
-                  'current_page':0,
-                  'per_page':0,
-                  'last_page':0,
-                  'from':0,
-                  'to':0,
+      arrayArticulos: [],
+      arrayDetalles: [],
+      arrayTipoFactura: [],
+      buscarCliente: '',
+      descuento: 0,
+      buscarArticulo: '',
+      pagination: {
+        'total': 0,
+        'current_page': 0,
+        'per_page': 0,
+        'last_page': 0,
+        'from': 0,
+        'to': 0,
       },
       offset:3,
       telefono:'',
@@ -267,33 +267,35 @@ export default {  // todo lo que voy a exportar
       errorMostrarMsjArticulos:""
     }
   },
-  computed: {  
-    // se usa para hacer logica extensa en el template 
-    isActived: function(){
-            return this.pagination.current_page;
-        },
-        pagesNumber: function (){
-            if(!this.pagination.to){
-                return[]
-            }
-            var from= this.pagination.current_page - this.offset;
-            if(from < 1){
-                from = 1;
-            }
-            var to = from + (this.offset * 2);
-            if(to >= this.pagination.last_page){
-                to = this.pagination.last_page;
-            }
 
-            var pagesArray=[];
-            while(from <= to){
-                pagesArray.push(from);
-                from++;
-            }
-            return pagesArray;
-        }
+  // se usa para hacer logica extensa en el template 
+  computed: {
+    isActived: function () {
+      return this.pagination.current_page;
+    },
+    pagesNumber: function () {
+      if (!this.pagination.to) {
+        return []
+      }
+      var from = this.pagination.current_page - this.offset;
+      if (from < 1) {
+        from = 1;
+      }
+      var to = from + (this.offset * 2);
+      if (to >= this.pagination.last_page) {
+        to = this.pagination.last_page;
+      }
+
+      var pagesArray = [];
+      while (from <= to) {
+        pagesArray.push(from);
+        from++;
+      }
+      return pagesArray;
+    }
   },
-  methods:{  // metodos comunes impulsados por eventos
+  // metodos comunes impulsados por eventos
+  methods:{  
     listarValores() {
       let me = this;
       var url = "api/valores";
@@ -438,19 +440,27 @@ export default {  // todo lo que voy a exportar
        //debugger
       //this.arrayDetalles.splice(0,1);
     },
-    eliminarItem(id){
+
+    /**
+     * Se encarga de eliminar cada Item del detalle de la factura
+     *
+     * @param {integer} id
+     * 
+     * @returns {void}
+     */
+    eliminarItem(id) {
       var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
       console.log(parsedobj)
-      this.arrayDetalles.splice(id,1)
-      const restaTotal =  parsedobj.reduce((acum,elem,i)=>{
-        console.log(id,i);
-          if (id != i) {
-           acum=acum+elem.totalDetalle
-           return acum 
-          }else{
-            return acum
-          }
-      },0)
+      this.arrayDetalles.splice(id, 1)
+      const restaTotal = parsedobj.reduce((acum, elem, i) => {
+        console.log(id, i);
+        if (id != i) {
+          acum = acum + elem.totalDetalle
+          return acum
+        } else {
+          return acum
+        }
+      }, 0)
       console.log(restaTotal)
       const totalFactura = document.querySelector('#subTotalFactura')
       totalFactura.textContent = restaTotal
@@ -530,6 +540,12 @@ export default {  // todo lo que voy a exportar
          totalFactura.textContent = total;
        } */
     },
+  
+    /**
+     * Se encarga de Facturar todo el detalle de la factura
+     *
+     * @returns {void}
+     */
     facturarTodo(){
       this.validarFactura();
       if(this.errorFactura==1)return; 
@@ -590,7 +606,8 @@ export default {  // todo lo que voy a exportar
         me.listarArticulos(page,buscar);
     },
   },
-  mounted() {  // se auto-ejecuta apenas termina de cargar el DOM
+  // se auto-ejecuta apenas termina de cargar el DOM
+  mounted() {  
    this.listarValores();
    this.listarClientes();
    let date = new Date();
