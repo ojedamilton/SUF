@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\usuarioEmpresa;
 
-class UsuarioEmpresas extends Seeder
+class UsuarioEmpresasSeeder extends Seeder
 {
     /**
      * Run the database seeds.

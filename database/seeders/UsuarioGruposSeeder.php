@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\UserGrupo;
 
-class UsuarioGrupos extends Seeder
+class UsuarioGruposSeeder extends Seeder
 {
     /**
      * Run the database seeds.
