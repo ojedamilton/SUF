@@ -240,7 +240,7 @@ export default {
 }
 
 .factura > tfoot > tr > th, .factura > tfoot > tr > th:nth-child(n+3) {
-  font-size: 24px;
+  font-size: 19px;
   text-align: right;
 }
 

@@ -1,4 +1,5 @@
 <script>
+import PrintJS from 'print-js';
 export default {
   props: ["path","modalFlag","userEmpresa","factura","arrayDetalles"],
   data() {
@@ -17,7 +18,17 @@ export default {
       this.$emit('cambiar-modal', 0);
     },
     downloadPage() {
-      window.print();
+      PrintJS({
+        printable: 'modal-body', // ID del elemento que deseas imprimir (el contenido del modal)
+        type: 'html',
+        targetStyles: ['*'],
+        style: `
+          .modal-header,
+          .modal-footer {
+            display: none;
+          }
+        `
+      });
     },
   },
   // Escucho cambios que se produzcan en el padre
@@ -39,7 +50,7 @@ export default {
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-              <div class="modal-body">
+              <div class="modal-body" id="modal-body">
                 <div class="col-12">
                   <h4>Datos Empresa</h4>
                   <div class="row my-3">
@@ -72,7 +83,7 @@ export default {
                       <p>{{factura.fechaModificacion}}</p>
                     </div>
                   </div>
-                  <div class="row my-5">
+                  <div class="row my-4">
                     <table class="table table-borderless factura">
                       <thead>
                         <tr>
@@ -86,11 +97,17 @@ export default {
                         <tr v-for="detalle in arrayDetalles" :key="detalle.id" >    
                           <td>{{detalle.cantidadArticulo}}</td>
                           <td>{{detalle.articulo.nombreArticulo}}</td> 
-                          <td>{{detalle.articulo.precio}}</td>    
+                          <td>{{detalle.precioVenta}}</td>    
                           <td>{{detalle.totalDetalle}}</td>
                         </tr>  
                       </tbody>
                       <tfoot>
+                        <tr>
+                          <th></th>
+                          <th></th>
+                          <th>Descuento</th>
+                          <th>{{ (factura.totalFactura - (factura.totalFactura / (1 - (factura.descuento / 100)))).toFixed(2) }}</th>
+                        </tr>
                         <tr>
                           <th></th>
                           <th></th>
@@ -120,6 +137,7 @@ export default {
 <style>
 .modal-content{
   width: 100%;
+  margin-top:30px;
   position: absolute !important;
 }
 .mostrar{
