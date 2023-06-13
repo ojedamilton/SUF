@@ -16,8 +16,9 @@
           <table class="table table-striped table-valign-middle">
             <thead>
               <tr>
-                <th>Nro Factura</th>
-                <th>Precio</th>
+                <th>Tipo Factura</th>
+                <th>N° Factura</th>
+                <th>Total Factura</th>
                 <th>Fecha</th>
                 <th>Ver</th>
               </tr>
@@ -25,7 +26,10 @@
             <tbody>
               <tr v-for="factura in arrayFacturas" :key="factura.id">
                 <td>
-                  {{ factura.id }}
+                  {{ tipoFactura(factura.idTipoFactura) }}
+                </td>
+                <td>
+                  {{ factura.numeroFactura }}
                 </td>
                 <td>$ {{ factura.totalFactura }}</td>
                 <td>
@@ -174,7 +178,17 @@ export default {
         //Enviar la petición para visualizar la data de esa página
         //me.listarArticulos(page,buscar);
     },
-  },
+    tipoFactura(idTipoFactura) {
+      if (idTipoFactura === 1) {
+        return 'A';
+      } else if (idTipoFactura === 2) {
+        return 'B';
+      } else if (idTipoFactura === 3) {
+        return 'C';
+      }
+      return '';
+    }
+   },
    computed: {  
     // se usa para hacer logica extensa en el template 
     isActived: function(){

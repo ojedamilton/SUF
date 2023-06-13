@@ -18,17 +18,25 @@ export default {
       this.$emit('cambiar-modal', 0);
     },
     downloadPage() {
-      PrintJS({
-        printable: 'modal-body', // ID del elemento que deseas imprimir (el contenido del modal)
-        type: 'html',
-        targetStyles: ['*'],
-        style: `
-          .modal-header,
-          .modal-footer {
-            display: none;
-          }
-        `
-      });
+      const modalBody = document.getElementById('modal-body');
+      const originalOverflow = modalBody.style.overflow;
+
+      try {
+        // Mostrar todo el contenido del modal
+        modalBody.style.overflow = 'visible';
+
+        PrintJS({
+          printable: 'modal-body',
+          type: 'html',
+          targetStyles: ['*'],
+          ignoreElements: ['modal-header', 'modal-footer'], // Opcional: Ignorar los elementos de encabezado y pie de página
+        });
+      } catch (error) {
+        // Manejar el error, si lo deseas
+      } finally {
+        // Restaurar el estado original del desplazamiento después de la impresión o la cancelación
+        modalBody.style.overflow = originalOverflow;
+      }
     },
   },
   // Escucho cambios que se produzcan en el padre
@@ -105,8 +113,20 @@ export default {
                         <tr>
                           <th></th>
                           <th></th>
-                          <th>Descuento</th>
-                          <th>{{ (factura.totalFactura - (factura.totalFactura / (1 - (factura.descuento / 100)))).toFixed(2) }}</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                        <tr>
+                          <th></th>
+                          <th></th>
+                          <th class="font-weight-normal">Subtotal</th>
+                          <th class="font-weight-normal">{{ (factura.totalFactura / (1 - this.factura.descuento / 100)).toFixed(2) }}</th>
+                        </tr>
+                        <tr>
+                          <th></th>
+                          <th></th>
+                          <th class="font-weight-normal">Descuento</th>
+                          <th class="font-weight-normal">{{ (factura.totalFactura - (factura.totalFactura / (1 - (factura.descuento / 100)))).toFixed(2) }}</th>
                         </tr>
                         <tr>
                           <th></th>

@@ -109,7 +109,7 @@
               </tr>
               <tr>
                 <td>
-                    <label class="text-end" colspan="4" for="descuento">Descuento</label>
+                    <label class="text-end font-weight-normal" colspan="4" for="descuento">Descuento</label>
                 </td>
                 <td class="text-end" colspan="6" >
                    <select @change="obtenerDescuento()" v-model="descuento" name="descuento" id="descuento">
@@ -128,12 +128,12 @@
               </tr>
               <tr>
                 <td class="text-end" colspan="4">SUBTOTAL $</td>
-                <td id="subTotalFactura" colspan="2" class="text-end">0.00</td>
+                <td id="subTotalFactura" colspan="2" class="text-end">0</td>
                 <td></td>
               </tr>
               <tr>
-                  <td class="text-end" colspan="4">TOTAL $</td>
-                <td id="totalFactura" colspan="3" class="text-end">0.00</td>
+                <td class="text-end font-weight-bold" colspan="4">TOTAL $</td>
+                <td id="totalFactura" colspan="3" class="text-end font-weight-bold">0</td>
               </tr>
             </tbody>
           </table>
@@ -424,22 +424,49 @@ export default {  // todo lo que voy a exportar
         this.buscarCliente=nombre+' '+apellido;
         this.idCliente=cliente;
     },
-    rellenarDetalleFactura(id,nombre){
-       let precio = parseInt(document.getElementById('precio_'+id).value);
-       const valorCantidad =parseInt(document.getElementById(id).value)     
-       const detalleObjeto ={}
-       detalleObjeto.idArticulo=id
-       detalleObjeto.nombre=nombre
-       detalleObjeto.precioVenta=parseInt(precio)
-       detalleObjeto.cantidadArticulo=valorCantidad
-       detalleObjeto.totalDetalle=valorCantidad*precio
-       // const detalleParse= JSON.parse(JSON.stringify(detalleObjeto))
-       const detalleParse = {...detalleObjeto} // Sacar Observer
-       this.arrayDetalles.push(detalleParse);
-       //console.log(this.arrayDetalles.splice(this.arrayDetalles.lenght));
-       //debugger
-      //this.arrayDetalles.splice(0,1);
+    // rellenarDetalleFactura(id,nombre){
+    //    let precio = parseInt(document.getElementById('precio_'+id).value);
+    //    const valorCantidad =parseInt(document.getElementById(id).value)     
+    //    const detalleObjeto ={}
+    //    detalleObjeto.idArticulo=id
+    //    detalleObjeto.nombre=nombre
+    //    detalleObjeto.precioVenta=parseInt(precio)
+    //    detalleObjeto.cantidadArticulo=valorCantidad
+    //    detalleObjeto.totalDetalle=valorCantidad*precio
+    //    // const detalleParse= JSON.parse(JSON.stringify(detalleObjeto))
+    //    const detalleParse = {...detalleObjeto} // Sacar Observer
+    //    this.arrayDetalles.push(detalleParse);
+    //    //console.log(this.arrayDetalles.splice(this.arrayDetalles.lenght));
+    //    //debugger
+    //   //this.arrayDetalles.splice(0,1);
+    // },
+    rellenarDetalleFactura(id, nombre) {
+      let precio = parseInt(document.getElementById('precio_'+id).value);
+      let existe = false;
+      this.arrayDetalles.forEach((detalle, index) => {
+        if (detalle.idArticulo === id && detalle.precioVenta === precio) {
+          // Si el artículo y el precio coinciden en los detalles, se modifica la cantidad
+          this.arrayDetalles[index].cantidadArticulo += this.cantidadArtModal;
+          this.arrayDetalles[index].totalDetalle =
+            this.arrayDetalles[index].cantidadArticulo * precio;
+          existe = true;
+        }
+      });
+
+      if (!existe) {
+        // Si el artículo no existe en los detalles o el precio no coincide, se agrega un nuevo detalle
+        const nuevoDetalle = {
+          idArticulo: id,
+          nombre: nombre,
+          cantidadArticulo: this.cantidadArtModal,
+          precioVenta: precio,
+          totalDetalle: this.cantidadArtModal * precio,
+        };
+        this.arrayDetalles.push(nuevoDetalle);
+      }
     },
+
+
 
     /**
      * Se encarga de eliminar cada Item del detalle de la factura
@@ -573,8 +600,8 @@ export default {  // todo lo que voy a exportar
         }) 
         .then(function (response) {
           var respuesta = response.data;
-          document.querySelector('#subTotalFactura').textContent='0.00';
-          document.querySelector('#totalFactura').textContent='0.00';
+          document.querySelector('#subTotalFactura').textContent='0';
+          document.querySelector('#totalFactura').textContent='0';
           me.arrayDetalles=[];
           me.buscar='';
           me.telefono='';
