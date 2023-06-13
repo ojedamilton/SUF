@@ -42,7 +42,7 @@ export default {
 </script>
 <template>
     <div class="modal fade" :class="{'mostrar': modalLocal}" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable pt-5" >
           <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle"></h5>
