@@ -69,8 +69,13 @@
 <!-- Scripts Render after html -->
 @push('scripts')
   <script>
-  // por que recargamos al dashboard ¿? 
+  // por que recargamos al dashboard ¿? Porque esta el Dashboar con las graficos!
   // window.location.href = 'http://localhost:8000/home#/dashboard';
+  document.addEventListener('DOMContentLoaded', function() {
+    var dashboardLink = document.getElementById('dashboard-link');
+    dashboardLink.dispatchEvent(new Event('click'));
+});
+
   </script>
 @endpush
 

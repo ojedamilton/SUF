@@ -214,7 +214,7 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li   class="nav-item">
-                    <router-link  class="nav-link" to='/dashboard'>
+                    <router-link  class="nav-link" id="dashboard-link" to='/dashboard'>
                       <i class="far fa-chart-bar nav-icon"></i>
                       <p>Subdiario de ventas</p>
                     </a>
