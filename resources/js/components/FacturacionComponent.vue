@@ -442,11 +442,12 @@ export default {  // todo lo que voy a exportar
     // },
     rellenarDetalleFactura(id, nombre) {
       let precio = parseInt(document.getElementById('precio_'+id).value);
+      let valorCantidad = parseInt(document.getElementById(id).value);
       let existe = false;
       this.arrayDetalles.forEach((detalle, index) => {
         if (detalle.idArticulo === id && detalle.precioVenta === precio) {
           // Si el artículo y el precio coinciden en los detalles, se modifica la cantidad
-          this.arrayDetalles[index].cantidadArticulo += this.cantidadArtModal;
+          this.arrayDetalles[index].cantidadArticulo += valorCantidad;
           this.arrayDetalles[index].totalDetalle =
             this.arrayDetalles[index].cantidadArticulo * precio;
           existe = true;
@@ -458,9 +459,9 @@ export default {  // todo lo que voy a exportar
         const nuevoDetalle = {
           idArticulo: id,
           nombre: nombre,
-          cantidadArticulo: this.cantidadArtModal,
+          cantidadArticulo: valorCantidad,
           precioVenta: precio,
-          totalDetalle: this.cantidadArtModal * precio,
+          totalDetalle: valorCantidad * precio,
         };
         this.arrayDetalles.push(nuevoDetalle);
       }
