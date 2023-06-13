@@ -118,17 +118,17 @@ class FacturaController extends Controller
 
             // Instancio Detalles
             $detalleReq = $request->detalles;
-            // paso por referencia (&) asi modifico el array original
-            foreach ($detalleReq as &$detalle) {
-                $detalle['idFactura'] = $factura->id;
-                unset($detalle['nombre']);
+            // Agrego Id Factura a cada detalle y elimino el nombre
+            foreach ($detalleReq as $key=>$detalle) {
+                $detalleReq[$key]['idFactura'] = $factura->id;
+                unset($detalleReq[$key]['nombre']);
             }
             // Instancio DetalleFactura
             $detalleFactura = new DetalleFactura;
             //$detalleFactura::create();
             // modificar la manera que inserto los registros y hacerlo uno por uno craendo un nuevo objeto
-            foreach ($detalleReq as $detalle) {
-                $detalleFactura->create($detalle);
+            foreach ($detalleReq as $detalleF) {
+                $detalleFactura->create($detalleF);
             }
             // No me permitia auditar con el metodo insert porque es de tipo query builder y no de tipo eloquent
             //$detalleFactura->insert($detalleReq);
