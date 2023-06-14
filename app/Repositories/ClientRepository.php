@@ -17,6 +17,7 @@ class ClientRepository {
     public function all($buscar,$idEmpresa){
 
         return $this->model->where('idEmpresa',$idEmpresa)
+                            ->where('estadoCliente',1)
                             ->where(function($query) use ($buscar){
                                 $query->where('nombreCliente', 'like', '%'.$buscar.'%')
                                     ->orWhere('apellidoCliente', 'like', '%'.$buscar.'%')
