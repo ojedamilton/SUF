@@ -162,26 +162,42 @@ class ClienteController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+
+            $cliente = Cliente::find($request->idCliente);
+            $cliente->nombreCliente=$request->nombreCliente;
+            $cliente->apellidoCliente=$request->apellidoCliente;
+            $cliente->emailCliente=$request->emailCliente;
+            $cliente->dniCliente=$request->cuitCliente;
+            $cliente->telefonoCliente=intval($request->telefonoCliente);
+            $cliente->direccionCliente=$request->direccionCliente;
+            $cliente->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"El Cliente se ha actualizado correctamente",
+                "cliente"=>$cliente
+            ],200);
+
+        } catch (\Throwable $th) {
+            
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json(["errors"=>"No se pudo actualizar el Cliente","status"=>500],500);
+        }
+
     }
 
     /**
@@ -190,8 +206,30 @@ class ClienteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+            $cliente = Cliente::find($request->idCliente);
+            $cliente->estadoCliente = 0;
+            $cliente->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"El Cliente se ha eliminado correctamente",
+                "cliente"=>$cliente
+            ],200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success"=>false,
+                "errors"=>"No se pudo eliminar el Cliente"
+            ],500);
+        }
     }
 }

@@ -67,6 +67,8 @@ Route::middleware('auth:web')->group(function(){
     Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');
     Route::post('/clienteTipoFactura', [ClienteController::class,'clienteTipoFactura'])->name('clientetipofactura');
     Route::post('/crearcliente', [ClienteController::class,'crearCliente'])->name('crearcliente');
+    Route::put('/updateCliente', [ClienteController::class,'update'])->name('updateCliente');
+    Route::post('/deleteCliente', [ClienteController::class,'destroy'])->name('deleteCliente');
     //Situacion Fiscal
     Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
 
