@@ -73,7 +73,7 @@
                                     <label class='col-md-2 form-control-label mb-0'>Nombre</label>
     
                                     <div class='col-md-10'>
-                                        <input id='Nombre' class='form-control' type='text' name='' placeholder='Ingrese una nombrecliente..'  v-model='nombreCliente' >
+                                        <input id='Nombre' class='form-control' type='text' name='' placeholder='Ingrese un nombre..'  v-model='nombreCliente' >
                                     </div>
                                 </div>
     
@@ -82,7 +82,7 @@
                                     <label class='col-md-2 form-control-label mb-0'>Apellido</label>
     
                                     <div class='col-md-10'>
-                                        <input id='apellidoCliente' class='form-control' type='text' name='' placeholder='Ingrese una apellidoCliente..'  v-model='apellidoCliente' >
+                                        <input id='apellidoCliente' class='form-control' type='text' name='' placeholder='Ingrese un apellido..'  v-model='apellidoCliente' >
                                     </div>
                                 </div>
     
@@ -91,7 +91,7 @@
                                     <label class='col-md-2 form-control-label mb-0'>Cuit</label>
     
                                     <div class='col-md-10'>
-                                        <input id='cuitCliente' class='form-control' type='text' name='' placeholder='Ingrese una cuitCliente..'  v-model='cuitCliente' >
+                                        <input id='cuitCliente' class='form-control' type='text' name='' placeholder='Ingrese un cuit..'  v-model='cuitCliente' >
                                     </div>
                                 </div>
     
@@ -100,7 +100,7 @@
                                     <label class='col-md-2 form-control-label mb-0'>Email</label>
     
                                     <div class='col-md-10'>
-                                        <input id='emailCliente' class='form-control' type='text' name='' placeholder='Ingrese una emailCliente..' v-model='emailCliente' >
+                                        <input id='emailCliente' class='form-control' type='text' name='' placeholder='Ingrese un email..' v-model='emailCliente' >
                                     </div>
                                 </div>
 
@@ -109,7 +109,7 @@
                                     <label class='col-md-2 form-control-label mb-0'>Dirección</label>
     
                                     <div class='col-md-10'>
-                                        <input id='emailCliente' class='form-control' type='text' name='' placeholder='Ingrese una direccionCliente..' v-model='direccionCliente' >
+                                        <input id='emailCliente' class='form-control' type='text' name='' placeholder='Ingrese una direccion..' v-model='direccionCliente' >
                                     </div>
                                 </div>
 
@@ -118,7 +118,7 @@
                                     <label class='col-md-2 form-control-label mb-0'>Telefono</label>
     
                                     <div class='col-md-10'>
-                                        <input id='Telefono' class='form-control' type='text' name='' placeholder='Ingrese una telefonoCliente..'  v-model='telefonoCliente' >
+                                        <input id='Telefono' class='form-control' type='text' name='' placeholder='Ingrese una telefono..'  v-model='telefonoCliente' >
                                     </div>
                                 </div>
 
@@ -143,9 +143,9 @@
 </template>
 <script>
 import axios from 'axios';
-import ModalReutilizable from './partials/ModalReutilizable.vue';
+// import ModalReutilizable from './partials/ModalReutilizable.vue';
 export default {
-  components: { ModalReutilizable },
+//   components: { ModalReutilizable },
     props:['path'],
     data(){
         return{

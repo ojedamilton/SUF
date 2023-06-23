@@ -10,25 +10,23 @@
                            <!--  <button v-if="idCan.includes('new')" type="button" class="btn btn-success" @click="abrirModal('user','registrar')" >Nuevo</button><br><br> -->
                         </div>
                         <!-- Find a result -->
-                        <input type="text" v-model="buscar"  @keyup="listarMedioPago(1,buscar)" class="form-control" placeholder="Texto a buscar">
+                        <input type="text" v-model="buscar"  @keyup="listarValores(1,buscar)" class="form-control" placeholder="Texto a buscar">
                     </div>
                     <!-- List Table users -->
                     <div class="card-body">
                         <table id="table_valores" class="table table-striped" width="100%">
                             <thead>
-                            <tr>
-                                <th>NOMBRE</th>
-                                <th>ACCIÓN</th>
-                                <!-- <th>PERMISOS</th> -->
-
-                            </tr>
+                                <tr>
+                                    <th>NOMBRE</th>
+                                    <th>ACCIÓN</th>
+                                </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="valores in arrayMedioPago" :key="valores.id">
+                                <tr v-for="valores in arrayValores" :key="valores.id">
                                     <td>{{valores.nombreValor}}</td>
                                     <td>
-                                        <a><i class="fas fa-edit"></i></a>
-                                        <a><i class="fas fa-trash-alt"></i></a>
+                                        <a class="pr-2" @click="editarModal(valores);" href="#"><i class="fas fa-edit text-warning"></i></a>
+                                        <a class="pr-2" @click="eliminarValor(valores.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -49,41 +47,41 @@
                     </div>
                 </div>
             </div>
-            <!-- Modal -->
-            <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" user="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+             <!-- Modal -->
+             <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" user="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" user="document">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <!-- Le defino el titulo al modal -->
                             <h5 class="modal-title" id="exampleModalLongTitle">{{tituloModal}}</h5>
+                            <!-- [x] para cerrar modal -->
                             <button type="button"  @click="cerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label">Rol</label>
-                                    <div class="col-md-10">
-                                        <div v-for=" roles in arrayRoles" :key="roles.id" class="custom-control custom-checkbox">
-                                            <div v-if="idRoleUser.includes(roles.id)">
-                                                <input v-model="idRoleUser" class="custom-control-input" type="checkbox"  ref="input_nombre" :value="roles.id" :id="roles.name" checked="checked" > <!-- cheked="" -->
-                                                <label :for="roles.name" class="custom-control-label">{{roles.name}}</label>
-                                            </div>
-                                           <div v-else>
-                                              <input class="custom-control-input" v-model="idRoleUser" type="checkbox" :value="roles.id"   ref="input_nombre" :id="roles.name"> 
-                                              <label :for="roles.name" class="custom-control-label">{{roles.name}}</label>
-                                            </div>
-                                        </div>
+                        <div class='modal-body'>
+                            <form action='' method='' enctype='multipart/form-data' class='form-horizontal'>
+
+                                <!-- Nombre -->
+                                <div class='form-group row align-items-center'>
+                                    <label class='col-md-2 form-control-label mb-0'>Nombre</label>
+    
+                                    <div class='col-md-10'>
+                                        <input id='Nombre' class='form-control' type='text' name='' placeholder='Ingrese un nombre..'  v-model='nombreValor' >
                                     </div>
                                 </div>
-                                <div v-show="errormediopago" class="text-leftform-group row div-error">
-                                    <div class="text-left text-error">
-                                        <div v-for="error in errorMostrarMsjuser" :key="error" v-text="error">
-                                        </div>
+
+                                <!-- Errores Validación -->
+                                <div v-show='errorvalores' class='form-group row align-items-center div-error'>
+                                    <div class='text-center text-error'>
+                                        <div v-for='error in errorMostrarMsjuser' :key='error' v-text='error'></div>
                                     </div>
                                 </div>
-                                <button type="button" v-if="tipoAccion==1"  @click="registraroluser()" class="btn btn-success">Guardar</button>
-                                <button type="button" v-if="tipoAccion==2" @click="Actualizaroluser()" class="btn btn-success">Actualizar</button>
+                                <!-- Guardo los Cambios -->
+                                <div class='d-flex flex-column justify-content-center align-items-center'>
+    
+                                    <button class='btn btn-success text-center w-33' type='button' v-if='tipoAccion == 2' @click="ActualizarValor()">Editar Cambios</button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -94,15 +92,13 @@
 </template>
 <script>
 import axios from 'axios';
+// import ModalReutilizable from './partials/ModalReutilizable.vue';
 export default {
+//   components: { ModalReutilizable },
     props:['path'],
     data(){
         return{
-            idCliente:0,
-            idRol:[],
-            idRoleUser:[],
-            idRolVmodle:[],
-            idRolBack:0,
+            idValor:0,
             modal:0,
             idCan:'',
             tituloModal:'',
@@ -110,8 +106,7 @@ export default {
             description:'',
             tipoAccion:0,
             buscar:'',
-            arrayMedioPago:[],
-            arrayRoles:[],
+            arrayValores:[],
             pagination:{
                 'total':0,
                 'current_page':0,
@@ -121,7 +116,7 @@ export default {
                 'to':0,
             },
             offset:3,
-            errormediopago:0,
+            errorvalores:0,
             errorMostrarMsjuser:[],
         }
     },
@@ -151,23 +146,33 @@ export default {
         }
     },
      methods:{
-        listarMedioPago(page,buscar){
+
+        /**
+         * Listo todos los Medios de pago , si hay una busqueda la agrego
+         * Traigo los activos en 1 ya que la baja es logica.
+         * Deberiamos crear una Columna Status para ver sus estados.
+         * 
+         * @param integer $page
+         * @param string $buscar
+         * @return void
+         */
+         listarValores(page,buscar){
             let me = this;
-            var url= 'api/valores?page='+page+'&buscar='+buscar;
+            var url= '/valores?page='+page+'&buscar='+buscar;
             axios.get( url , {
                 params: {
                 }
             })
                 .then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayMedioPago=respuesta.valores.data;
-                    //respuesta.array_namesector.map(value=>{ me.arraynameSector.push(value.sector);});
-                    me.pagination= respuesta.pagination;
+                    // destructuro la respuesta para obtener los medios de pago
+                    var {valores} = response.data;
+                    me.arrayValores=valores.data;
+                    me.pagination= response.data.pagination;
 
                 })
                 .catch(function (error) {
                     console.log(error);
-                    if(error.response.status === 401){
+                    if(error.status === 401){
                         location.reload(true)
                     }
                 })
@@ -175,179 +180,97 @@ export default {
                     // always executed
                 });
         },
-        listarRoles(){
-            let me = this;
-            var url= '/role?destino=rolpermiso';
-            axios.get( url , {
-                params: {
-                }
-            })
-                .then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayRoles=respuesta.rolepermiso;
-                    console.log(respuesta.role.data[1].name);
-                    //me.idRolUser=respuesta.role.data[1].name;
-                    me.pagination= respuesta.pagination;
 
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    if(error.response.status === 401){
-                        location.reload(true)
-                    }
-                })
-                .then(function () {
-                    // always executed
-                });
-        },
-        methodCan(){
-            let me=this;
-            var url= '/roleuser';
-            axios.get(url,{
-                 params: {
-                }
-            }).then(function (response){
-            me.idCan=response.data; 
-            }).catch(function(error){
-                console.log(error);
-                if(error.response.status === 401){
-                    location.reload(true)
-                }
-            });
-
-        },
-         cambiarPagina(page,buscar){
+        /**
+         * Cambiar de pagina en la tabla
+         * 
+         * @param integer page
+         * @param string buscar
+         * @return void
+         */
+        cambiarPagina(page,buscar){
             let me = this;
             //Actualizar pagina actual
             me.pagination.current_page=page;
             //Enviar la petición para visualizar la data de esa página
-            me.listarMedioPago(page,buscar);
+            me.listarValores(page,buscar);
         },
-         cerrarModal(){
-            this.modal=0;
-            this.nombreuser="";
-            this.description="";
-        },
-         abrirModal(modelo, accion, data=[]){
-            let self = this
-          /*   Vue.nextTick()
-                .then(function () {
-                    self.$refs.input_nombre.focus();
-            }); */
-            switch(modelo){
-                case "user":
-                {
-                    switch(accion){
-                        case "registrar":{
-                            this.modal=1;
-                            this.tituloModal='Registrar Usuario';
-                            this.nombreuser='';
-                            this.description='';
-                            this.tipoAccion=1;
-                            break;
-                        }
-                        case "actualizar":{
-                            this.modal=1;
-                            this.tituloModal='Asignar Rol Usuario';
-                            this.idUser=data['id'];
-                            this.idRol=data['idrol'];
-                            this.idRoleUser=[];
-                            data['roles'].forEach(element => this.idRoleUser.push(element['id']));
-                            this.idRolBack=data['idrol'];
-                            this.tipoAccion=2;
-                            break;
-                        }
-                    }
-                }
-            }
-        },
-        validarmediopago(ubicacionmodal){
-            this.errormediopago=0;
-            this.errorMostrarMsjuser=[];
-            //if(!this.idRol) this.errorMostrarMsjuser.push('* El rol no puede estar vacío');
-            if(this.errorMostrarMsjuser.length) this.errormediopago=1;
-        }, 
-        registraroluser(){
-            this.validarmediopago('registrar');
-           if(this.errormediopago==1 ){
-                return;
-            }
-            let me=this;
-            var url= '/nuevorolusuario';
-            axios.post(url,{
-                'model_id':this.idUser,
-                'role_id':this.idRol,
-                'idRoleUser':this.idRoleUser,
-            }).then(function (response){
-                if (response.data ==='duplicado') {
-                    swal.fire({
-                            title:'Duplicado!',
-                            text:'El registro esta Duplicado.',
-                            icon:'error',
-                            timer: 1500,
-                            timerProgressBar: true,
-                    })
-                }else{
-                    me.cerrarModal();
-                    me.listarMedioPago( 1,me.buscar);
-                    swal.fire({
-                                title:'Creado!',
-                                text:'El Rol fue Creado.',
-                                icon:'success',
-                                timer: 1500,
-                                timerProgressBar: true,
-                    })
-                }
-            }).catch(function(error){
-                console.log(error);
-                if(error.response.status === 401){
-                    location.reload(true)
-                }
-            });
 
+        /**
+         * Cierro el modal , Le cambio el Flag a 0
+         * 
+         * @return void
+         */
+        cerrarModal(){
+            this.modal=0;
         },
-        Actualizaroluser(){
-            this.validarmediopago('actualizar');
-            if(this.errormediopago==1 ){
+
+        /**
+         * Sobreescribe en las variables que defini anteriormente en el data()return{}
+         * Al abrir el modal ya tienen en su v-model estas variables para tomar ese valor
+         * 
+         * @param array  $valores 
+         * @return void
+         */
+        editarModal(valores){
+            this.modal=1;
+            this.tituloModal='Editar Medio de Pago';
+            this.idValor=valores['id'];
+            this.nombreValor=valores['nombreValor'];
+            this.tipoAccion=2;     
+        },
+
+        /**
+         * Valido datos de medio de pago
+         * Envio por metodo put los datos
+         * verificar /updateValores en web.php
+         * Controlador ValorController.php metodo update()
+         * 
+         * @return SwalFire modal de confirmación
+         */
+        ActualizarValor(){
+            this.validarValores();
+            if(this.errorRole==1 ){
                 return;
-            }
+            } 
             let me=this;
-            var url = '/updaterolusuario';
+            var url = '/updateValor';
             axios.put(url,{
-                'model_id':this.idUser,
-                'role_id':this.idRoleUser,
-                //'role_id_back':this.idRolBack,
-                'idRoleUser':this.idRoleUser,
+                'nombreValor':this.nombreValor,
+                'idValor':this.idValor,
             }).then(function (response){
-                if (response.data ==='duplicado') {
-                    swal.fire({
-                            title:'Duplicado!',
-                            text:'El registro esta Duplicado.',
-                            icon:'error',
-                            timer: 1500,
-                            timerProgressBar: true,
-                    })
-                }
-                else {
-                    me.cerrarModal();
-                    me.listarMedioPago( me.pagination.current_page,me.buscar);
-                    me.methodCan();
-                    swal.fire({
-                                title:'Editado!',
-                                text:'El Rol fue Editado.',
-                                icon:'success',
-                                timer: 1500,
-                                timerProgressBar: true,
-                    })
-                }
+                // Ciero el modal
+                me.cerrarModal();
+                // Listo Valor asi se Actuaiza la tabla
+                me.listarValores( me.pagination.current_page,me.buscar);
+                // Creo el mensaje de exito
+                swal.fire({
+                    title:'Editado!',
+                    text:'El Medio de Pago fue Editado.',
+                    icon:'success',
+                    timer: 1500,
+                    timerProgressBar: true,
+                })
+                
             }).catch(function(error){
                 console.log(error);
-                if(error.response.status === 401){
+                if(error.status === 401){
                     location.reload(true)
                 }
             });
         },
-         eliminaruser(idUser){
+
+        /**
+         * Pop-up de confirmación para eliminar
+         * Aceptar: envio por metodo post el idvalor
+         * Cancelar : mensaje de cancelación y no se hace nada
+         * Verificar /deleteValor en web.php
+         * Controlador ValorController.php metodo destroy()
+         * 
+         * @param integer idvalor
+         * @return SwalFire modal de confirmación
+         */
+        eliminarValor(idvalor){
             const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-primary',
@@ -364,15 +287,14 @@ export default {
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true,
             }).then((result) => {
-                if (result.value) {
+                if (result.value) {  
                     let me=this;
-                    var url = '/deleterolusuario';
+                    var url = '/deleteValor';
                     axios.post(url,{
-                        'id':idUser,
+                        'idValor':idvalor,
                     }).then(function (response){
                         me.cerrarModal();
-                        me.listarMedioPago(me.pagination.current_page,me.buscar);
-                        me.methodCan();
+                        me.listarValores(me.pagination.current_page,me.buscar);
                         swal.fire({
                             title:'Eliminado!',
                             text:'El registro fue Eliminado.',
@@ -382,9 +304,9 @@ export default {
                         })
                     }).catch(function(error){
                         console.log(error);
-                        if(error.response.status === 401){
-                            location.reload(true)
-                        }
+                        if(error.status === 401){
+                        location.reload(true)
+                    }
                     });
                 }else if(result.dismiss === Swal.DismissReason.cancel){
                     swal.fire({
@@ -394,14 +316,23 @@ export default {
                         timer: 1500,
                         timerProgressBar: true,
                     })
-                }
-            })
-        }
+                }  
+            })          
+        },
+        /**
+         * Valido datos de medios de pago que no esten vacios
+         * 
+         * @return void
+         */
+         validarValores(){
+            this.errorvalores=0;
+            this.errorMostrarMsjuser=[];
+            if(!this.nombreValor) this.errorMostrarMsjuser.push('* El nombre no puede estar vacío');
+            if(this.errorMostrarMsjuser.length) this.errorvalores=1;
+        },
     },
     mounted() {
-          this.listarMedioPago(1,this.buscar);
-        //   this.listarRoles();
-        //   this.methodCan();
+          this.listarValores(1,this.buscar);
     }
 }
 </script>

@@ -120,9 +120,33 @@ class ValorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    
+
+    public function update(Request $request)
     {
-        //
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+
+            $valor = Valor::find($request->idValor);
+            $valor->nombreValor=$request->nombreValor;
+            $valor->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"El Medio de Pago se ha actualizado correctamente",
+                "valores"=>$valor
+            ],200);
+
+        } catch (\Throwable $th) {
+            
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json(["errors"=>"No se pudo actualizar el Medio de Pago","status"=>500],500);
+        }
+
     }
 
     /**
@@ -131,8 +155,30 @@ class ValorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+            $valor = Valor::find($request->idValor);
+            $valor->estadoValor = 0;
+            $valor->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"El Medio de Pago se ha eliminado correctamente",
+                "valores"=>$valor
+            ],200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success"=>false,
+                "errors"=>"No se pudo eliminar el Medio de Pago"
+            ],500);
+        }
     }
 }

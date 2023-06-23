@@ -17,6 +17,7 @@ class MedioPagoRepository {
     public function all($buscar,$idEmpresa){
 
         return $this->model->where('idEmpresa',$idEmpresa)
+                            ->where('estadoValor',1)
                             ->where('nombreValor','like','%'.$buscar.'%')
                             ->orderBy('nombreValor','asc')
                             ->paginate(10);
