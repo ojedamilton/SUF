@@ -73,7 +73,6 @@ Route::middleware('auth:web')->group(function(){
     Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
 
     //Medios de Pago
-    Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
     Route::put('/updateValor', [ValorController::class,'update'])->name('updateValor');
     Route::post('/deleteValor', [ValorController::class,'destroy'])->name('deleteValor');
 

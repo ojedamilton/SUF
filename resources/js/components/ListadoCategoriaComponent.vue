@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class=" row justify-content-center">
             <div class="col-md-8">
-                <p class="text-center"><strong>LISTADO MEDIO DE PAGO</strong></p>
+                <p class="text-center"><strong>LISTADO CATEGORIAS</strong></p>
                 <div class="card">
                     <div class="card-header">
                         <!-- Add users -->
@@ -10,11 +10,11 @@
                            <!--  <button v-if="idCan.includes('new')" type="button" class="btn btn-success" @click="abrirModal('user','registrar')" >Nuevo</button><br><br> -->
                         </div>
                         <!-- Find a result -->
-                        <input type="text" v-model="buscar"  @keyup="listarValores(1,buscar)" class="form-control" placeholder="Texto a buscar">
+                        <input type="text" v-model="buscar"  @keyup="listarCategoria(1,buscar)" class="form-control" placeholder="Texto a buscar">
                     </div>
                     <!-- List Table users -->
                     <div class="card-body">
-                        <table id="table_valores" class="table table-striped" width="100%">
+                        <table id="table_categoria" class="table table-striped" width="100%">
                             <thead>
                                 <tr>
                                     <th>NOMBRE</th>
@@ -22,11 +22,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="valores in arrayValores" :key="valores.id">
-                                    <td>{{valores.nombreValor}}</td>
+                                <tr v-for="categorias in arrayCategoria" :key="categorias.id">
+                                    <td>{{categorias.nombreCategoria}}</td>
                                     <td>
-                                        <a class="pr-2" @click="editarModal(valores);" href="#"><i class="fas fa-edit text-warning"></i></a>
-                                        <a class="pr-2" @click="eliminarValor(valores.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
+                                        <a class="pr-2" @click="editarModal(categorias);" href="#"><i class="fas fa-edit text-warning"></i></a>
+                                        <a class="pr-2" @click="eliminarCategoria(categorias.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -67,12 +67,12 @@
                                     <label class='col-md-2 form-control-label mb-0'>Nombre</label>
     
                                     <div class='col-md-10'>
-                                        <input id='Nombre' class='form-control' type='text' name='' placeholder='Ingrese un nombre..'  v-model='nombreValor' >
+                                        <input id='Nombre' class='form-control' type='text' name='' placeholder='Ingrese un nombre..'  v-model='nombreCategoria' >
                                     </div>
                                 </div>
 
                                 <!-- Errores Validación -->
-                                <div v-show='errorvalores' class='form-group row align-items-center div-error'>
+                                <div v-show='errorcategoria' class='form-group row align-items-center div-error'>
                                     <div class='text-center text-error'>
                                         <div v-for='error in errorMostrarMsjuser' :key='error' v-text='error'></div>
                                     </div>
@@ -80,7 +80,7 @@
                                 <!-- Guardo los Cambios -->
                                 <div class='d-flex flex-column justify-content-center align-items-center'>
     
-                                    <button class='btn btn-success text-center w-33' type='button' v-if='tipoAccion == 2' @click="ActualizarValor()">Editar Cambios</button>
+                                    <button class='btn btn-success text-center w-33' type='button' v-if='tipoAccion == 2' @click="ActualizarCategoria()">Editar Cambios</button>
                                 </div>
                             </form>
                         </div>
@@ -98,15 +98,15 @@ export default {
     props:['path'],
     data(){
         return{
-            idValor:0,
+            idCategoria:0,
             modal:0,
             idCan:'',
             tituloModal:'',
-            nombreValor:'',
+            nombreCategoria:'',
             description:'',
             tipoAccion:0,
             buscar:'',
-            arrayValores:[],
+            arrayCategoria:[],
             pagination:{
                 'total':0,
                 'current_page':0,
@@ -116,7 +116,7 @@ export default {
                 'to':0,
             },
             offset:3,
-            errorvalores:0,
+            errorcategoria:0,
             errorMostrarMsjuser:[],
         }
     },
@@ -148,7 +148,7 @@ export default {
      methods:{
 
         /**
-         * Listo todos los Medios de pago , si hay una busqueda la agrego
+         * Listo todas las categorias , si hay una busqueda la agrego
          * Traigo los activos en 1 ya que la baja es logica.
          * Deberiamos crear una Columna Status para ver sus estados.
          * 
@@ -156,17 +156,17 @@ export default {
          * @param string $buscar
          * @return void
          */
-         listarValores(page,buscar){
+         listarCategoria(page,buscar){
             let me = this;
-            var url= '/api/valores?page='+page+'&buscar='+buscar;
+            var url= '/api/categoria?page='+page+'&buscar='+buscar;
             axios.get( url , {
                 params: {
                 }
             })
                 .then(function (response) {
-                    // destructuro la respuesta para obtener los medios de pago
-                    var {valores} = response.data;
-                    me.arrayValores=valores.data;
+                    // destructuro la respuesta para obtener las categorias
+                    var {categorias} = response.data;
+                    me.arrayCategoria=categorias.data;
                     me.pagination= response.data.pagination;
 
                 })
@@ -193,7 +193,7 @@ export default {
             //Actualizar pagina actual
             me.pagination.current_page=page;
             //Enviar la petición para visualizar la data de esa página
-            me.listarValores(page,buscar);
+            me.listarCategoria(page,buscar);
         },
 
         /**
@@ -207,51 +207,51 @@ export default {
 
         /**
          * Sobreescribe en las variables que defini anteriormente en el data()return{}
-         * Al abrir el modal ya tienen en su v-model estas variables para tomar ese valor
+         * Al abrir el modal ya tienen en su v-model estas variables para tomar esa categoria
          * 
-         * @param array  $valores 
+         * @param array  $categorias 
          * @return void
          */
-        editarModal(valores){
+        editarModal(categorias){
             this.modal=1;
-            this.tituloModal='Editar Medio de Pago';
-            this.idValor=valores['id'];
-            this.nombreValor=valores['nombreValor'];
-            this.tipoAccion=2;     
+            this.tituloModal='Editar Categoria';
+            this.idCategoria=categorias['id'];
+            this.nombreCategoria=categorias['nombreCategoria'];
+            this.tipoAccion=2;
         },
 
         /**
-         * Valido datos de medio de pago
+         * Valido datos de Categoria
          * Envio por metodo put los datos
-         * verificar /updateValores en web.php
-         * Controlador ValorController.php metodo update()
-         * 
+         * verificar /updateCategoria en web.php
+         * Controlador CategoriaController.php metodo update()
+         *
          * @return SwalFire modal de confirmación
          */
-        ActualizarValor(){
-            this.validarValores();
+        ActualizarCategoria(){
+            this.validarCategoria();
             if(this.errorRole==1 ){
                 return;
-            } 
+            }
             let me=this;
-            var url = '/updateValor';
+            var url = '/updateCategoria';
             axios.put(url,{
-                'nombreValor':this.nombreValor,
-                'idValor':this.idValor,
+                'nombreCategoria':this.nombreCategoria,
+                'idCategoria':this.idCategoria,
             }).then(function (response){
                 // Ciero el modal
                 me.cerrarModal();
-                // Listo Valor asi se Actuaiza la tabla
-                me.listarValores( me.pagination.current_page,me.buscar);
+                // Listo Categoria asi se Actuaiza la tabla
+                me.listarCategoria( me.pagination.current_page,me.buscar);
                 // Creo el mensaje de exito
                 swal.fire({
                     title:'Editado!',
-                    text:'El Medio de Pago fue Editado.',
+                    text:'La categoria fue Editada.',
                     icon:'success',
                     timer: 1500,
                     timerProgressBar: true,
                 })
-                
+
             }).catch(function(error){
                 console.log(error);
                 if(error.status === 401){
@@ -262,15 +262,15 @@ export default {
 
         /**
          * Pop-up de confirmación para eliminar
-         * Aceptar: envio por metodo post el idvalor
+         * Aceptar: envio por metodo post el idCategoria
          * Cancelar : mensaje de cancelación y no se hace nada
-         * Verificar /deleteValor en web.php
-         * Controlador ValorController.php metodo destroy()
-         * 
-         * @param integer idvalor
+         * Verificar /deleteCategoria en web.php
+         * Controlador CategoriaController.php metodo destroy()
+         *
+         * @param integer idCategoria
          * @return SwalFire modal de confirmación
          */
-        eliminarValor(idvalor){
+        eliminarCategoria(idCategoria){
             const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-primary',
@@ -287,14 +287,14 @@ export default {
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true,
             }).then((result) => {
-                if (result.value) {  
+                if (result.value) {
                     let me=this;
-                    var url = '/deleteValor';
+                    var url = '/deleteCategoria';
                     axios.post(url,{
-                        'idValor':idvalor,
+                        'idCategoria':idCategoria,
                     }).then(function (response){
                         me.cerrarModal();
-                        me.listarValores(me.pagination.current_page,me.buscar);
+                        me.listarCategoria(me.pagination.current_page,me.buscar);
                         swal.fire({
                             title:'Eliminado!',
                             text:'El registro fue Eliminado.',
@@ -316,23 +316,23 @@ export default {
                         timer: 1500,
                         timerProgressBar: true,
                     })
-                }  
-            })          
+                }
+            })
         },
         /**
-         * Valido datos de medios de pago que no esten vacios
-         * 
+         * Valido datos de categorias que no esten vacios
+         *
          * @return void
          */
-         validarValores(){
-            this.errorvalores=0;
+         validarCategoria(){
+            this.errorcategoria=0;
             this.errorMostrarMsjuser=[];
-            if(!this.nombreValor) this.errorMostrarMsjuser.push('* El nombre no puede estar vacío');
-            if(this.errorMostrarMsjuser.length) this.errorvalores=1;
+            if(!this.nombreCategoria) this.errorMostrarMsjuser.push('* El nombre no puede estar vacío');
+            if(this.errorMostrarMsjuser.length) this.errorcategoria=1;
         },
     },
     mounted() {
-          this.listarValores(1,this.buscar);
+          this.listarCategoria(1,this.buscar);
     }
 }
 </script>

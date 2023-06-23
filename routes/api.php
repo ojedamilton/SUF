@@ -8,6 +8,7 @@ use App\Http\Controllers\TipoEmpresaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\CategoriaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,10 @@ Route::middleware('auth:sanctum')->group(function(){
     // Medios de Pago
     Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
     Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
-     // Tipo Empresa 
+    // Categorias
+    Route::get('/categoria',[CategoriaController::class,'getAllCategoria'])->name('categoria');
+    Route::post('/crearcategoria',[CategoriaController::class,'store'])->name('crearcategoria');
+    // Tipo Empresa
     Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');
     Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');
     // Usuarios

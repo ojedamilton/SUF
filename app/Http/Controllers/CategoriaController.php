@@ -12,10 +12,48 @@ class CategoriaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getAllCategoria(Request $request)
     {
-        //
+
+
+            try {
+
+                $categorias=Categoria::all();
+
+                return response()->json([
+                    'success'=>true,
+                    'message'=>'Listado Categorias',
+                    'categorias'=>$categorias,
+                    'pagination'=>[
+                        'total'=>$categorias->total(),
+                        'current_page'=>$categorias->currentPage(),
+                        'per_page'=>$categorias->perPage(),
+                        'last_page'=>$categorias->lastPage(),
+                        'from'=>$categorias->firstItem(),
+                        'to'=>$categorias->lastItem(),
+                    ],
+                ],200);
+            } catch (\Throwable $th) {
+    
+                return response()->json([
+                    'success'=>false,
+                    'message'=>'Error al Listar Categorias',
+                    'categorias'=>null,
+                    'pagination'=>[
+                        'total'=>1,
+                        'current_page'=>1,
+                        'per_page'=>1,
+                        'last_page'=>1,
+                        'from'=>1,
+                        'to'=>1,
+                    ],
+                ],500);
+            }
+        
     }
+
+
+    
 
     /**
      * Show the form for creating a new resource.

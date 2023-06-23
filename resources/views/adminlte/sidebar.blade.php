@@ -85,29 +85,6 @@
                 </ul>
               </li>
               @endcanany
-              <!-- PRODUCTOS -->
-         {{--      <li class="nav-item ">
-                <a href="#" class="nav-link ">
-                  <p>
-                    ARTICULOS
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
-                      <i class="fas fa-cubes nav-icon"></i>
-                      <p>Nuevo Producto</p>
-                    </router-link>
-                  </li>
-                  <li  class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
-                      <i class="fas fa-list nav-icon"></i>
-                      <p>Listado</p>
-                    </router-link>
-                  </li>
-                </ul>
-              </li> --}}
               <!-- USUARIOS -->
               @canany(['isAdmin'])
               <li class="nav-item">
@@ -159,7 +136,7 @@
                 </ul>
               </li>
               <!-- PROVEEDORES -->
-            {{--   <li class="nav-item ">
+              <li class="nav-item ">
                 <a href="#" class="nav-link ">
                   <p>
                     PROVEEDORES
@@ -180,7 +157,42 @@
                     </router-link>
                   </li>
                 </ul>
-              </li> --}}
+              </li>
+              <!-- PRODUCTOS -->
+              <li class="nav-item ">
+                <a href="#" class="nav-link ">
+                  <p>
+                    ARTICULOS
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <router-link  class="nav-link" to='/nuevaCategoria'>
+                      <i class="fas fa-cubes nav-icon"></i>
+                      <p>Nueva Categoria</p>
+                    </router-link>
+                  </li>
+                  <li  class="nav-item">
+                    <router-link  class="nav-link" to='/listadoCategoria'>
+                      <i class="fas fa-list nav-icon"></i>
+                      <p>Listado Categoria</p>
+                    </router-link>
+                  </li>
+                  <li class="nav-item">
+                    <router-link  class="nav-link" to='/#'>
+                      <i class="fas fa-cube nav-icon"></i>
+                      <p>Nuevo Articulo</p>
+                    </router-link>
+                  </li>
+                  <li  class="nav-item">
+                    <router-link  class="nav-link" to='/#'>
+                      <i class="fas fa-list nav-icon"></i>
+                      <p>Listado Articulos</p>
+                    </router-link>
+                  </li>
+                </ul>
+              </li>
               <!-- MEDIOS DE PAGO -->
               <li class="nav-item ">
                 <a href="#" class="nav-link ">

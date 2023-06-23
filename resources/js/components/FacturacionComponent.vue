@@ -320,7 +320,7 @@ export default {  // todo lo que voy a exportar
     validarFactura() {
       this.errorFactura = 0;
       this.errorMostrarMsjFactura = [];
-      if(!this.buscarCliente) this.errorMostrarMsjFactura.push('* El nombre de Clienteeee no puede estar vacío');
+      if(!this.buscarCliente) this.errorMostrarMsjFactura.push('* El nombre de cliente no puede estar vacío');
       if(!this.telefono) this.errorMostrarMsjFactura.push('* El telefono no puede estar vacío');
       if(!this.fecha) this.errorMostrarMsjFactura.push('* La fecha no puede estar vacío');
       if(!this.pagoId) this.errorMostrarMsjFactura.push('* El metodo de pago no puede estar vacío');
