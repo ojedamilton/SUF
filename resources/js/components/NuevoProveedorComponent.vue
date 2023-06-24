@@ -113,13 +113,13 @@
         this.validarProveedor();
         if(this.errorproveedor==1)return;
         let me=this;
-        let url = "/crearproveedor";
+        let url = "api/createProveedor";
         this.loading = true;
         try {
           const response= await axios.post(url,{nombre:this.nombre,apellido:this.apellido,cuit:this.cuit,email:this.email,direccion:this.direccion,telefono:this.telefono})
           let respuesta = response.data;
-          if (respuesta.status == 201) {
-            let success=respuesta.success;
+          if (response.status == 201) {
+            let success=respuesta.message;
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -153,23 +153,6 @@
             this.loading=false
         }
       },
-      // methodCan() {
-      //   let me = this;
-      //   var url = "/roleuser";
-      //   axios
-      //     .get(url, {
-      //       params: {},
-      //     })
-      //     .then(function (response) {
-      //       me.idCan = response.data;
-      //     })
-      //     .catch(function (error) {
-      //       console.log(error);
-      //       if (error.response.status === 401) {
-      //         location.reload(true);
-      //       }
-      //     });
-      // },
     },
     mounted() {
       // this.listarGrupos();

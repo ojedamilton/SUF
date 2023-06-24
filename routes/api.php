@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProveedorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,5 +49,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
     // Facturacion
     Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
+    // Proveedor
+    Route::get('/proveedores',[ProveedorController::class,'index'])->name('proveedores');
+    Route::post('/createProveedor',[ProveedorController::class,'store'])->name('crearproveedor');
+    Route::put('/updateProveedor',[ProveedorController::class,'update'])->name('editarproveedor');
+    Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');
    
 });
