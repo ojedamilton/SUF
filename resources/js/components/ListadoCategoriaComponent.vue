@@ -234,7 +234,7 @@ export default {
                 return;
             }
             let me=this;
-            var url = '/updateCategoria';
+            var url = '/api/updateCategoria';
             axios.put(url,{
                 'nombreCategoria':this.nombreCategoria,
                 'idCategoria':this.idCategoria,
@@ -289,7 +289,7 @@ export default {
             }).then((result) => {
                 if (result.value) {
                     let me=this;
-                    var url = '/deleteCategoria';
+                    var url = '/api/deleteCategoria';
                     axios.post(url,{
                         'idCategoria':idCategoria,
                     }).then(function (response){

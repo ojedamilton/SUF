@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class CategoriaController extends Controller
 {
@@ -15,10 +17,14 @@ class CategoriaController extends Controller
     public function getAllCategoria(Request $request)
     {
 
+        $buscar= $request->buscar;
 
             try {
 
-                $categorias=Categoria::all();
+                $categorias = Categoria::where('estadoCategoria',1)
+                                        ->where('nombreCategoria', 'LIKE', "%$buscar%")
+                                        ->orderBy('nombreCategoria', 'asc')
+                                        ->paginate(10);
 
                 return response()->json([
                     'success'=>true,
@@ -60,40 +66,44 @@ class CategoriaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
-    }
+        DB::beginTransaction();
+
+        try {
+        
+            $categorias= new Categoria();
+            $categorias->nombreCategoria=$request->nombre;
+            $categorias->estadoCategoria=1;
+            $categorias->save();
+
+            DB::commit();
+
+            return response()->json([
+                "success"=>true,
+                "message"=>"La categoria se ha creado correctamente",
+            ],201);
+
+        } catch (\Throwable $th) {
+            
+            DB::rollback();
+            
+            Log::error("message:".$th->getMessage());
+
+            return response()->json([
+                "success"=>false,
+                "message"=>"No se creo la categoria",
+            ],500);
+        }
+            }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Categoria  $categoria
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Categoria $categoria)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Categoria  $categoria
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Categoria $categoria)
+    public function show($id)
     {
         //
     }
@@ -102,22 +112,68 @@ class CategoriaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Categoria  $categoria
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Categoria $categoria)
+    
+
+    public function update(Request $request)
     {
-        //
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+
+            $categorias = Categoria::find($request->idCategoria);
+            $categorias->nombreCategoria=$request->nombreCategoria;
+            $categorias->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"La categoiria se ha actualizado correctamente",
+                "categorias"=>$categorias
+            ],200);
+
+        } catch (\Throwable $th) {
+            
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json(["errors"=>"No se pudo actualizar la categoria","status"=>500],500);
+        }
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Categoria  $categoria
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Categoria $categoria)
+    public function destroy(Request $request)
     {
-        //
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+            $categorias = Categoria::find($request->idCategoria);
+            $categorias->estadoCategoria = 0;
+            $categorias->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"La categoria se ha eliminado correctamente",
+                "categorias"=>$categorias
+            ],200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success"=>false,
+                "errors"=>"No se pudo eliminar la categoria"
+            ],500);
+        }
     }
 }

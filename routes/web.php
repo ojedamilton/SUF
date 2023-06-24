@@ -71,10 +71,7 @@ Route::middleware('auth:web')->group(function(){
     Route::post('/deleteCliente', [ClienteController::class,'destroy'])->name('deleteCliente');
     //Situacion Fiscal
     Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
-
-    //Medios de Pago
-    Route::put('/updateValor', [ValorController::class,'update'])->name('updateValor');
-    Route::post('/deleteValor', [ValorController::class,'destroy'])->name('deleteValor');
+    
 
     // Proveedores
     //Route::get('/proveedor',[ProveedorController::class,'getAllProveedores'])->name('proveedor');
