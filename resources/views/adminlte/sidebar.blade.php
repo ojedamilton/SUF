@@ -151,7 +151,7 @@
                     </router-link>
                   </li>
                   <li  class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
+                    <router-link  class="nav-link" to='/listadoProveedor'>
                       <i class="fas fa-list nav-icon"></i>
                       <p>Listado</p>
                     </router-link>
