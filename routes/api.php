@@ -33,9 +33,13 @@ Route::middleware('auth:sanctum')->group(function(){
     // Medios de Pago
     Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
     Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
+    Route::put('/updateValor', [ValorController::class,'update'])->name('updateValor');
+    Route::post('/deleteValor', [ValorController::class,'destroy'])->name('deleteValor');
     // Categorias
     Route::get('/categoria',[CategoriaController::class,'getAllCategoria'])->name('categoria');
     Route::post('/crearcategoria',[CategoriaController::class,'store'])->name('crearcategoria');
+    Route::put('/updateCategoria', [CategoriaController::class,'update'])->name('updateCategoria');
+    Route::post('/deleteCategoria', [CategoriaController::class,'destroy'])->name('deleteCategoria');
     // Tipo Empresa
     Route::get('/tiposempresas', [TipoEmpresaController::class,'getAllTipoEmpresa'])->name('tiposempresas');
     Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');

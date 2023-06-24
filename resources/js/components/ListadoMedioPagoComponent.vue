@@ -234,7 +234,7 @@ export default {
                 return;
             } 
             let me=this;
-            var url = '/updateValor';
+            var url = '/api/updateValor';
             axios.put(url,{
                 'nombreValor':this.nombreValor,
                 'idValor':this.idValor,
@@ -289,7 +289,7 @@ export default {
             }).then((result) => {
                 if (result.value) {  
                     let me=this;
-                    var url = '/deleteValor';
+                    var url = '/api/deleteValor';
                     axios.post(url,{
                         'idValor':idvalor,
                     }).then(function (response){
