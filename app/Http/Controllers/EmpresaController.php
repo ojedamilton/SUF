@@ -119,4 +119,70 @@ class EmpresaController extends Controller
         }
     }
 
+    public function update(Request $request)
+    {
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+
+            $empresa = Empresa::find($request->idEmpresa);
+            $empresa->nombreEmpresa=$request->nombre;
+            $empresa->razonSocial=$request->razonsocial;
+            $empresa->cuitEmpresa=$request->cuitEmpresa;
+            $empresa->ingresosBrutosEmpresa=$request->ingresosbrutos;
+            $empresa->telEmpresa=$request->telefono;
+            $empresa->direccionEmpresa=$request->direccion;
+            $empresa->inicioActividades=$request->inicioActivades;
+            $empresa->idTipoEmpresa=$request->tipoId;
+            $empresa->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"La Empresa se ha actualizado correctamente",
+                "empresa"=>$empresa
+            ],200);
+
+        } catch (\Throwable $th) {
+            
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json(["errors"=>"No se pudo actualizar la Empresa","status"=>500],500);
+        }
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+            $empresa = Empresa::find($request->idEmpresa);
+            $empresa->estadoEmpresa = 0;
+            $empresa->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"La Empresa se ha eliminado correctamente",
+                "empresa"=>$empresa
+            ],200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success"=>false,
+                "errors"=>"No se pudo eliminar la Empresa"
+            ],500);
+        }
+    }
 }
