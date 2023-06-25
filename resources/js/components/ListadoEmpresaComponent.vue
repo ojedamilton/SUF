@@ -10,7 +10,7 @@
                            <!--  <button v-if="idCan.includes('new')" type="button" class="btn btn-success" @click="abrirModal('user','registrar')" >Nuevo</button><br><br> -->
                         </div>
                         <!-- Find a result -->
-                        <input type="text" v-model="buscar"  @keyup="listarEmpresas(1,buscar)" class="form-control" placeholder="Texto a buscar">
+                        <input type="text" v-model="buscar"  @keyup="listarEmpresa(1,buscar)" class="form-control" placeholder="Texto a buscar">
                     </div>
                     <!-- List Table users -->
                     <div class="card-body">
@@ -312,7 +312,7 @@ export default {
             this.inicioActividades=empresa['inicioActividades']
             this.direccionEmpresa=empresa['direccionEmpresa'];
             this.idTipoEmpresa=empresa['idTipoEmpresa']
-            this.tipoAccion=2;     
+            this.tipoAccion=2;
         },
 
         /**
@@ -325,9 +325,9 @@ export default {
          */
         ActualizarEmpresa(){
             this.validarEmpresa();
-            if(this.errorRole==1 ){
+            if(this.errorempresa ==1 ){
                 return;
-            } 
+            }
             let me=this;
             var url = '/api/updateEmpresa';
             axios.put(url,{
@@ -429,14 +429,14 @@ export default {
         validarEmpresa(){
             this.errorempresa = 0;
             this.errorMostrarMsj = [];
-            if(!this.nombre) this.errorMostrarMsj.push('* El nombre no puede estar vacío');
-            if(!this.razonsocial) this.errorMostrarMsj.push('* La razón social no puede estar vacía');
-            if(!this.cuit) this.errorMostrarMsj.push('* El cuit no puede estar vacío');
-            if(!this.ingresosbrutos) this.errorMostrarMsj.push('* El ingreso bruto no puede estar vacío');
-            if(!this.direccion) this.errorMostrarMsj.push('* La direccion no puede estar vacía');
-            if(!this.telefono) this.errorMostrarMsj.push('* El teléfono no puede estar vacío');
-            if(!this.inicioactividades) this.errorMostrarMsj.push('* La fecha no puede estar vacía');
-            if(!this.tipoId) this.errorMostrarMsj.push('* El tipo de empresa no puede estar vacío');
+            if(!this.nombreEmpresa) this.errorMostrarMsj.push('* El nombre no puede estar vacío');
+            if(!this.razonSocial) this.errorMostrarMsj.push('* La razón social no puede estar vacía');
+            if(!this.cuitEmpresa) this.errorMostrarMsj.push('* El cuit no puede estar vacío');
+            if(!this.ingresosBrutosEmpresa) this.errorMostrarMsj.push('* El ingreso bruto no puede estar vacío');
+            if(!this.direccionEmpresa) this.errorMostrarMsj.push('* La direccion no puede estar vacía');
+            if(!this.telEmpresa) this.errorMostrarMsj.push('* El teléfono no puede estar vacío');
+            if(!this.inicioActividades) this.errorMostrarMsj.push('* El inicio de actividades no puede estar vacío');
+            if(!this.idTipoEmpresa) this.errorMostrarMsj.push('* El tipo de empresa no puede estar vacío');
             if (this.errorMostrarMsj.length) this.errorempresa = 1;
         },
     },

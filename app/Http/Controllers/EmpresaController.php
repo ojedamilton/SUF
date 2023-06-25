@@ -18,10 +18,13 @@ class EmpresaController extends Controller
         
         try {
 
-            $empresas=Empresa::where('nombreEmpresa','like','%'.$buscar.'%')
-                                ->orWhere('cuitEmpresa','like','%'.$buscar.'%')
-                                ->orderBy('nombreEmpresa','asc')
-                                ->paginate(3);
+            $empresas = Empresa::where(function ($query) use ($buscar) {
+                $query->where('nombreEmpresa', 'like', '%' . $buscar . '%')
+                    ->orWhere('cuitEmpresa', 'like', '%' . $buscar . '%');
+            })
+                ->where('estadoEmpresa', 1)
+                ->orderBy('nombreEmpresa', 'asc')
+                ->paginate(5);
         
             return response()->json([
                 'success'=>true,
@@ -127,14 +130,14 @@ class EmpresaController extends Controller
         try { 
 
             $empresa = Empresa::find($request->idEmpresa);
-            $empresa->nombreEmpresa=$request->nombre;
-            $empresa->razonSocial=$request->razonsocial;
+            $empresa->nombreEmpresa=$request->nombreEmpresa;
+            $empresa->razonSocial=$request->razonSocial;
             $empresa->cuitEmpresa=$request->cuitEmpresa;
-            $empresa->ingresosBrutosEmpresa=$request->ingresosbrutos;
-            $empresa->telEmpresa=$request->telefono;
-            $empresa->direccionEmpresa=$request->direccion;
-            $empresa->inicioActividades=$request->inicioActivades;
-            $empresa->idTipoEmpresa=$request->tipoId;
+            $empresa->ingresosBrutosEmpresa=$request->ingresosBrutosEmpresa;
+            $empresa->telEmpresa=$request->telEmpresa;
+            $empresa->direccionEmpresa=$request->direccionEmpresa;
+            $empresa->inicioActividades=$request->inicioActividades;
+            $empresa->idTipoEmpresa=$request->idTipoEmpresa;
             $empresa->save();
             DB::commit();
             return response()->json([
