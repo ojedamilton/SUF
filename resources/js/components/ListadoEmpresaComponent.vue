@@ -20,7 +20,7 @@
                                 <th>NOMBRE</th>
                                 <th>RAZON SOCIAL</th>
                                 <th>CUIT</th>
-                                <th>TIPO EMPRESA</th>
+                                <th>TIPO DE EMPRESA</th>
                                 <th>ACCIÓN</th>
                                 <!-- <th>PERMISOS</th> -->
 
@@ -31,7 +31,11 @@
                                     <td>{{empresa.nombreEmpresa}}</td>
                                     <td>{{empresa.razonSocial}}</td>
                                     <td>{{empresa.cuitEmpresa}}</td>
-                                    <td>{{ tipoEmpresa(empresa.idTipoEmpresa) }}</td>
+                                    <td>
+                                        <template v-for="tipo in arrayTiposEmpresas">
+                                            <span v-if="tipo.id === empresa.idTipoEmpresa">{{ tipo.nombreTipoEmpresa }}</span>
+                                        </template>
+                                        </td>
                                     <td>
                                         <a class="pr-2" @click="editarModal(empresa);" href="#"><i class="fas fa-edit text-warning"></i></a>
                                         <a class="pr-2" @click="eliminarEmpresa(empresa.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
@@ -81,7 +85,7 @@
     
                                 <!-- Razon Social -->
                                 <div class='form-group row align-items-center'>
-                                    <label class='col-md-2 form-control-label mb-0'>Razon Social</label>
+                                    <label class='col-md-2 form-control-label mb-0'>Razón Social</label>
     
                                     <div class='col-md-10'>
                                         <input id='razonSocial' class='form-control' type='text' name='' placeholder='Ingrese una razon social..'  v-model='razonSocial' >
@@ -117,28 +121,30 @@
 
                                 <!-- Telefono -->
                                 <div class='form-group row align-items-center'>
-                                    <label class='col-md-2 form-control-label mb-0'>Telefono</label>
+                                    <label class='col-md-2 form-control-label mb-0'>Teléfono</label>
     
                                     <div class='col-md-10'>
-                                        <input id='Telefono' class='form-control' type='text' name='' placeholder='Ingrese un telefono..'  v-model='telEmpresa' >
+                                        <input id='Telefono' class='form-control' type='tel' name='' placeholder='Ingrese un telefono..'  v-model='telEmpresa' >
                                     </div>
                                 </div>
 
                                 <!-- Inicio Actividades -->
                                 <div class='form-group row align-items-center'>
-                                    <label class='col-md-2 form-control-label mb-0'>Inicio Actividades</label>
+                                    <label class='col-md-2 form-control-label mb-0'>Inicio de Actividades</label>
     
                                     <div class='col-md-10'>
-                                        <input id='Actividades' class='form-control' type='text' name='' placeholder='Ingrese una fecha..'  v-model='inicioActividades' >
+                                        <input id='Actividades' class='form-control' type='date' name='' placeholder='Ingrese una fecha..'  v-model='inicioActividades' >
                                     </div>
                                 </div>
 
-                                <!-- Telefono -->
+                                <!-- Tipo Empresa -->
                                 <div class='form-group row align-items-center'>
-                                    <label class='col-md-2 form-control-label mb-0'>Tipo Empresa</label>
+                                    <label class='col-md-2 form-control-label mb-0'>Tipo de Empresa</label>
     
                                     <div class='col-md-10'>
-                                        <input id='Telefono' class='form-control' type='text' name='' placeholder='Ingrese una telefono..'  v-model='idTipoEmpresa' >
+                                        <select class="form-control" v-model="idTipoEmpresa" id="tiposempresas" name="">
+                                        <option  v-for="tiposempresas in arrayTiposEmpresas" :key="tiposempresas.id" :value="tiposempresas.id">{{tiposempresas.nombreTipoEmpresa}}</option>
+                                    </select>
                                     </div>
                                 </div>
 
@@ -180,7 +186,7 @@ export default {
             direccionEmpresa:'',
             telEmpresa:'',
             inicioActividades:'',
-            idTipoEmpresa:'',
+            arrayTiposEmpresas:'',
             description:'',
             tipoAccion:0,
             buscar:'',
@@ -194,6 +200,7 @@ export default {
                 'to':0,
             },
             offset:3,
+            idTipoEmpresa:0,
             errorempresa:0,
             errorMostrarMsj:[],
         }
@@ -234,16 +241,22 @@ export default {
          * @param string $buscar
          * @return void
          */
-         tipoEmpresa(idTipoEmpresa) {
-            if (idTipoEmpresa === 1) {
-                return 'Responsable inscripto';
-            } else if (idTipoEmpresa === 2) {
-                return 'Excento Iva';
-            } else if (idTipoEmpresa === 3) {
-                return 'Monotributista';
-            }
-            return '';
-        },
+    listarTipoEmpresa() {
+      let me = this;
+      var url = "api/tiposempresas";
+      axios
+        .get(url)
+        .then(function (response) {
+          var respuesta = response.data;
+          me.arrayTiposEmpresas = respuesta.tiposempresas;
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (error.response.status === 401) {
+            location.reload(true);
+          }
+        });
+    },
         listarEmpresa(page,buscar){
             let me = this;
             var url= '/api/empresas?page='+page+'&buscar='+buscar;
@@ -442,6 +455,7 @@ export default {
     },
     mounted() {
           this.listarEmpresa(1,this.buscar);
+          this.listarTipoEmpresa();
     }
 }
 </script>

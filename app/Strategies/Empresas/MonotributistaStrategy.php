@@ -3,13 +3,15 @@
 namespace App\Strategies\Empresas;
 
 use App\Interfaces\FacturacionInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MonotributistaStrategy implements FacturacionInterface {
 
     public function tipoFactura() {
         try {
             // Lógica para generar tipofactura C
-            $tipoFactura = DB::table('tipoFacturas')->where('idTipoFactura',3)->first();
+            $tipoFactura = DB::table('tipoFacturas')->where('idTipoFactura',3)->get();
             return response()->json([
                 "success"=>true,
                 "message"=>"Tipo de Factura segun Empresa",
