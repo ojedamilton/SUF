@@ -18,10 +18,13 @@ class EmpresaController extends Controller
         
         try {
 
-            $empresas=Empresa::where('nombreEmpresa','like','%'.$buscar.'%')
-                                ->orWhere('cuitEmpresa','like','%'.$buscar.'%')
-                                ->orderBy('nombreEmpresa','asc')
-                                ->paginate(3);
+            $empresas = Empresa::where(function ($query) use ($buscar) {
+                $query->where('nombreEmpresa', 'like', '%' . $buscar . '%')
+                    ->orWhere('cuitEmpresa', 'like', '%' . $buscar . '%');
+            })
+                ->where('estadoEmpresa', 1)
+                ->orderBy('nombreEmpresa', 'asc')
+                ->paginate(5);
         
             return response()->json([
                 'success'=>true,
@@ -119,4 +122,70 @@ class EmpresaController extends Controller
         }
     }
 
+    public function update(Request $request)
+    {
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+
+            $empresa = Empresa::find($request->idEmpresa);
+            $empresa->nombreEmpresa=$request->nombreEmpresa;
+            $empresa->razonSocial=$request->razonSocial;
+            $empresa->cuitEmpresa=$request->cuitEmpresa;
+            $empresa->ingresosBrutosEmpresa=$request->ingresosBrutosEmpresa;
+            $empresa->telEmpresa=$request->telEmpresa;
+            $empresa->direccionEmpresa=$request->direccionEmpresa;
+            $empresa->inicioActividades=$request->inicioActividades;
+            $empresa->idTipoEmpresa=$request->idTipoEmpresa;
+            $empresa->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"La Empresa se ha actualizado correctamente",
+                "empresa"=>$empresa
+            ],200);
+
+        } catch (\Throwable $th) {
+            
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json(["errors"=>"No se pudo actualizar la Empresa","status"=>500],500);
+        }
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+            $empresa = Empresa::find($request->idEmpresa);
+            $empresa->estadoEmpresa = 0;
+            $empresa->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"La Empresa se ha eliminado correctamente",
+                "empresa"=>$empresa
+            ],200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success"=>false,
+                "errors"=>"No se pudo eliminar la Empresa"
+            ],500);
+        }
+    }
 }

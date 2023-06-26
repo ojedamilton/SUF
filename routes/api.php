@@ -22,6 +22,8 @@ use App\Http\Controllers\ProveedorController;
 Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
  // Empresas
  Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
+ Route::put('/updateEmpresa', [EmpresaController::class,'update'])->name('updateEmpresa');
+ Route::post('/deleteEmpresa', [EmpresaController::class,'destroy'])->name('deleteEmpresa');
  
 /*
 |--------------------------------------------------------------------------
