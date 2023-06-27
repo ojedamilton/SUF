@@ -128,7 +128,7 @@
         if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsj.push('* El email no es valido');
         if(!this.direccion) this.errorMostrarMsj.push('* La direccion no puede estar vacía');
         if(!this.telefono) this.errorMostrarMsj.push('* El teléfono no puede estar vacío');
-        if(!this.razonsocial) this.errorMostrarMsj.push('* La razón social no puede estar vacía');
+        if(!this.razonsocial && this.situacionId != 1) this.errorMostrarMsj.push('* La razón social no puede estar vacía');
         if(!this.situacionId) this.errorMostrarMsj.push('* La situacion fiscal no puede estar vacía');
         if (this.errorMostrarMsj.length) this.errorcliente = 1;
       },
