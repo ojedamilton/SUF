@@ -20,6 +20,8 @@
                                 <th>NOMBRE</th>
                                 <th>RAZON SOCIAL</th>
                                 <th>CUIT</th>
+                                <th>DIRECCIÓN</th>
+                                <th>TELÉFONO</th>
                                 <th>TIPO DE EMPRESA</th>
                                 <th>ACCIÓN</th>
                                 <!-- <th>PERMISOS</th> -->
@@ -31,6 +33,8 @@
                                     <td>{{empresa.nombreEmpresa}}</td>
                                     <td>{{empresa.razonSocial}}</td>
                                     <td>{{empresa.cuitEmpresa}}</td>
+                                    <td>{{empresa.direccionEmpresa}}</td>
+                                    <td>{{empresa.telEmpresa}}</td>
                                     <td>
                                         <template v-for="tipo in arrayTiposEmpresas">
                                             <span v-if="tipo.id === empresa.idTipoEmpresa">{{ tipo.nombreTipoEmpresa }}</span>
@@ -304,6 +308,7 @@ export default {
          */
         cerrarModal(){
             this.modal=0;
+            this.errorempresa=0;
         },
 
         /**
