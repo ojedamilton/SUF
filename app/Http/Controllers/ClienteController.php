@@ -109,23 +109,23 @@ class ClienteController extends Controller
             [
                 'nombre'=>'required|max:50',
                 'apellido'=>'required|max:50',
-                'razonSocial'=>'required',
+                'razonSocial' => $request->situacionId != 1 ? 'required' : '',
                 'dniCliente'=>'required|unique:clientes',
                 'direccion'=>'required',
                 'email'=>'required|email',
                 'telefono'=>'required',
                 'situacionId'=>'required'
             ],[
-                'razonsocial'=>'La razon social es requerida',
-                'dniCliente,required'=>'El cuit es requerido',
+                'razonsocial.required'=>'La razon social es requerida',
+                'dniCliente.required'=>'El cuit es requerido',
                 'dniCliente.unique'=>'El cuit ya existe',
                 'nombre.required'=>'El nombre es requerido',
                 'email.required'=>'El email es requerido',
                 'email.email'=>'El email tiene formato erroneo',
                 'apellido.required'=>'El apellido es requerido',
                 'situacionId'=>'Situacion Fiscal es requerido',
-                'direccion'=>'La direccion es requerida',
-                'telefono'=>'El telefono es requerida',
+                'direccion.required'=>'La direccion es requerida',
+                'telefono.required'=>'El telefono es requerido',
             ]
         );
 
@@ -172,33 +172,63 @@ class ClienteController extends Controller
     {
         // Comienzo Transaccion
         DB::beginTransaction();
-
+    
         try { 
-
+            // Valido Backend
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'nombreCliente' => 'required|max:50',
+                    'apellidoCliente' => 'required|max:50',
+                    'razonSocial' => $request->idSituacion != 1 ? 'required' : '',
+                    'cuitCliente' => 'required|unique:clientes,dniCliente,' . $request->idCliente,
+                    'direccionCliente' => 'required',
+                    'emailCliente' => 'required|email',
+                    'telefonoCliente' => 'required',
+                    'idSituacion' => 'required'
+                ],
+                [
+                    'razonSocial.required' => 'La razón social es requerida',
+                    'cuitCliente.required' => 'El cuit es requerido',
+                    'cuitCliente.unique' => 'El cuit ya existe',
+                    'nombreCliente.required' => 'El nombre es requerido',
+                    'emailCliente.required' => 'El email es requerido',
+                    'emailCliente.email' => 'El email tiene formato erróneo',
+                    'apellidoCliente.required' => 'El apellido es requerido',
+                    'idSituacion.required' => 'Situación Fiscal es requerida',
+                    'direccionCliente.required' => 'La dirección es requerida',
+                    'telefonoCliente.required' => 'El teléfono es requerido',
+                ]
+            );
+    
+            if ($validator->fails()) {
+                return response()->json(["errors" => $validator->getMessageBag(), "status" => 401]);
+            }
+    
             $cliente = Cliente::find($request->idCliente);
-            $cliente->nombreCliente=$request->nombreCliente;
-            $cliente->apellidoCliente=$request->apellidoCliente;
-            $cliente->emailCliente=$request->emailCliente;
-            $cliente->dniCliente=$request->cuitCliente;
-            $cliente->telefonoCliente=intval($request->telefonoCliente);
-            $cliente->direccionCliente=$request->direccionCliente;
+            $cliente->nombreCliente = $request->nombreCliente;
+            $cliente->apellidoCliente = $request->apellidoCliente;
+            $cliente->emailCliente = $request->emailCliente;
+            $cliente->dniCliente = $request->cuitCliente;
+            $cliente->telefonoCliente = intval($request->telefonoCliente);
+            $cliente->direccionCliente = $request->direccionCliente;
+            $cliente->razonSocial = $request->razonSocial;
+            $cliente->idSituacion = $request->idSituacion;
             $cliente->save();
             DB::commit();
             return response()->json([
-                "success"=>true,
-                "message"=>"El Cliente se ha actualizado correctamente",
-                "cliente"=>$cliente
-            ],200);
-
+                "success" => true,
+                "message" => "El Cliente se ha actualizado correctamente",
+                "cliente" => $cliente
+            ], 200);
         } catch (\Throwable $th) {
-            
             DB::rollBack();
             // Logeo errores
             Log::error($th->getMessage());
-            return response()->json(["errors"=>"No se pudo actualizar el Cliente","status"=>500],500);
+            return response()->json(["errors" => "No se pudo actualizar el Cliente", "status" => 500], 500);
         }
-
     }
+    
 
     /**
      * Remove the specified resource from storage.

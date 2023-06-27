@@ -203,6 +203,7 @@ export default {
          */
         cerrarModal(){
             this.modal=0;
+            this.errorcategoria=0;
         },
 
         /**
@@ -230,7 +231,7 @@ export default {
          */
         ActualizarCategoria(){
             this.validarCategoria();
-            if(this.errorRole==1 ){
+            if(this.errorcategoria==1 ){
                 return;
             }
             let me=this;

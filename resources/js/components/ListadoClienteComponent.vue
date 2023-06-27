@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class=" row justify-content-center">
             <div class="col-md-8">
-                <p class="text-center"><strong>ABM CLIENTE</strong></p>
+                <p class="text-center"><strong>LISTADO CLIENTES</strong></p>
                 <div class="card">
                     <div class="card-header">
                         <!-- Find a result -->
@@ -19,6 +19,8 @@
                                     <th>EMAIL</th>
                                     <th>DIRECCIÓN</th>
                                     <th>TELEFONO</th>
+                                    <th>RAZON SOCIAL</th>
+                                    <th>SITUACIÓN FISCAL</th>
                                     <th>ACCIÓN</th>
                                 </tr>
                             </thead>
@@ -30,6 +32,12 @@
                                     <td>{{clientes.emailCliente}}</td>
                                     <td>{{clientes.direccionCliente}}</td>
                                     <td>{{clientes.telefonoCliente}}</td>
+                                    <td>{{clientes.razonSocial}}</td>
+                                    <td>
+                                        <template v-for="situacion in arraySituacionFiscal">
+                                            <span v-if="situacion.id === clientes.idSituacion">{{ situacion.nombreSituacion }}</span>
+                                        </template>
+                                        </td>
                                     <td>
                                         <a class="pr-2" @click="editarModal(clientes);" href="#"><i class="fas fa-edit text-warning"></i></a>
                                         <a class="pr-2" @click="eliminarCliente(clientes.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
@@ -115,10 +123,30 @@
 
                                 <!-- Telefono -->
                                 <div class='form-group row align-items-center'>
-                                    <label class='col-md-2 form-control-label mb-0'>Telefono</label>
+                                    <label class='col-md-2 form-control-label mb-0'>Teléfono</label>
     
                                     <div class='col-md-10'>
                                         <input id='Telefono' class='form-control' type='text' name='' placeholder='Ingrese una telefono..'  v-model='telefonoCliente' >
+                                    </div>
+                                </div>
+
+                                <!-- Razon Social -->
+                                <div class='form-group row align-items-center'>
+                                    <label class='col-md-2 form-control-label mb-0'>Razón Social</label>
+    
+                                    <div class='col-md-10'>
+                                        <input id='Telefono' class='form-control' type='text' name='' placeholder='Ingrese una razon social..'  v-model='razonSocial' >
+                                    </div>
+                                </div>
+
+                                <!-- Situacion Fiscal -->
+                                <div class='form-group row align-items-center'>
+                                    <label class='col-md-2 form-control-label mb-0'>Situación Fiscal</label>
+    
+                                    <div class='col-md-10'>
+                                        <select class="form-control" v-model="idSituacion" id="situacionfiscal" name="">
+                                        <option  v-for="situacionfiscal in arraySituacionFiscal" :key="situacionfiscal.id" :value="situacionfiscal.id">{{situacionfiscal.nombreSituacion}}</option>
+                                    </select>
                                     </div>
                                 </div>
 
@@ -159,6 +187,8 @@ export default {
             emailCliente:'',
             direccionCliente:'',
             telefonoCliente:'',
+            razonSocial:'',
+            arraySituacionFiscal:'',
             description:'',
             tipoAccion:0,
             buscar:'',
@@ -172,6 +202,7 @@ export default {
                 'to':0,
             },
             offset:3,
+            idSituacion:0,
             errorcliente:0,
             errorMostrarMsjuser:[],
         }
@@ -212,6 +243,22 @@ export default {
          * @param string $buscar
          * @return void
          */
+         listarSituacion() {
+            let me = this;
+            var url = "/situacionfiscal";
+            axios
+                .get(url) // ,{ params: {},} 
+                .then(function (response) {
+                var respuesta = response.data;
+                me.arraySituacionFiscal = respuesta.situacionfiscal;
+                })
+                .catch(function (error) {
+                console.log(error);
+                if (error.response.status === 401) {
+                    location.reload(true);
+                }
+                });
+            },
         listarcliente(page,buscar){
             let me = this;
             var url= '/clientes?page='+page+'&buscar='+buscar;
@@ -259,6 +306,7 @@ export default {
          */
         cerrarModal(){
             this.modal=0;
+            this.errorcliente=0;
         },
 
         /**
@@ -278,6 +326,8 @@ export default {
             this.emailCliente=cliente['emailCliente'];
             this.telefonoCliente=cliente['telefonoCliente'];
             this.direccionCliente=cliente['direccionCliente'];
+            this.razonSocial=cliente['razonSocial'];
+            this.idSituacion=cliente['idSituacion'];
             this.tipoAccion=2;     
         },
 
@@ -291,7 +341,7 @@ export default {
          */
         ActualizarCliente(){
             this.validarCliente();
-            if(this.errorRole==1 ){
+            if(this.errorcliente==1 ){
                 return;
             } 
             let me=this;
@@ -303,6 +353,8 @@ export default {
                 'emailCliente':this.emailCliente,
                 'telefonoCliente':this.telefonoCliente,
                 'direccionCliente':this.direccionCliente,
+                'razonSocial':this.razonSocial,
+                'idSituacion':this.idSituacion,
                 'idCliente':this.idCliente,
             }).then(function (response){
                 // Ciero el modal
@@ -393,13 +445,21 @@ export default {
         validarCliente(){
             this.errorcliente=0;
             this.errorMostrarMsjuser=[];
-            if(!this.nombreCliente) this.errorMostrarMsjuser.push('* El nombre de Cliente no puede estar vacío');
-            if(!this.apellidoCliente) this.errorMostrarMsjuser.push('* El apellido de Cliente no puede estar vacío');
+            if(!this.nombreCliente) this.errorMostrarMsjuser.push('* El nombre no puede estar vacío');
+            if(!this.apellidoCliente) this.errorMostrarMsjuser.push('* El apellido no puede estar vacío');
+            if(!this.cuitCliente) this.errorMostrarMsjuser.push('* El cuit no puede estar vacío');
+            if(!this.emailCliente) this.errorMostrarMsjuser.push('* El email no puede estar vacío');
+            if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.emailCliente)) this.errorMostrarMsjuser.push('* El email no es valido');
+            if(!this.direccionCliente) this.errorMostrarMsjuser.push('* La direccion no puede estar vacía');
+            if(!this.telefonoCliente) this.errorMostrarMsjuser.push('* El teléfono no puede estar vacío');
+            if(!this.razonSocial && this.idSituacion != 1) this.errorMostrarMsjuser.push('* La razón social no puede estar vacía');
+            if(!this.idSituacion) this.errorMostrarMsjuser.push('* La situacion fiscal no puede estar vacía');
             if(this.errorMostrarMsjuser.length) this.errorcliente=1;
         },
     },
     mounted() {
           this.listarcliente(1,this.buscar);
+          this.listarSituacion();
     }
 }
 </script>

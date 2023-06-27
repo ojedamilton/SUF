@@ -203,6 +203,7 @@ export default {
          */
         cerrarModal(){
             this.modal=0;
+            this.errorvalores=0;
         },
 
         /**
@@ -230,7 +231,7 @@ export default {
          */
         ActualizarValor(){
             this.validarValores();
-            if(this.errorRole==1 ){
+            if(this.errorvalores==1 ){
                 return;
             } 
             let me=this;
