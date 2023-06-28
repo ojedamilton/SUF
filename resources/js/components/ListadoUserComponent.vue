@@ -21,7 +21,6 @@
                                     <th>APELLIDO</th>
                                     <th>EMAIL</th>
                                     <th>GRUPO/S</th>
-                                    <th>EMPRESA/S</th>
                                     <th>ACCIÓN</th>
                                     <!-- <th>PERMISOS</th> -->
 
@@ -33,16 +32,14 @@
                                         <td>{{user.apellido}}</td>
                                         <td>{{user.email}}</td>
                                         <td>
-                                            <span v-for="grupo in user.grupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
-                                        </td> 
+                                            <span v-for="grupo in arrayGrupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
+                                        </td>
+
                                         <!-- <td>
                                             <template v-for="grupo in arrayGrupos">
                                                 <span v-if="grupo.id === user.id">{{ grupo.nombreGrupo }}</span>
                                             </template>
                                         </td> -->
-                                        <td>
-                                            <span v-for="empresa in user.empresas" :key="empresa.id" class="badge badge-primary">{{ empresa.name }}</span>
-                                        </td>
                                         <td>
                                             <a class="pr-2" @click="editarModal(user);" href="#"><i class="fas fa-edit text-warning"></i></a>
                                             <a class="pr-2" @click="eliminarUsuario(user.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
@@ -89,21 +86,21 @@
                                 <!-- Nombre -->
                                 <div class='form-group row align-items-center'>
                                     <label for="nombreUsuario" class='col-md-2 form-control-label mb-0'>Nombre</label>
-    
+
                                     <div class='col-md-10'>
                                         <input id='nombreUsuario' class='form-control' type='text' name='nombreUsuario' placeholder='Ingrese un nombre..'  v-model='nombreUsuario' >
                                     </div>
                                 </div>
-    
+
                                 <!-- Apellido -->
                                 <div class='form-group row align-items-center'>
                                     <label for="apellidoUsuario" class='col-md-2 form-control-label mb-0'>Apellido</label>
-    
+
                                     <div class='col-md-10'>
                                         <input id='apellidoUsuario' class='form-control' type='text' name='apellidoUsuario' placeholder='Ingrese un apellido..'  v-model='apellidoUsuario' >
                                     </div>
                                 </div>
-    
+
                                 <!-- Grupo/s -->
                                 <div class="form-group">
                                     <label>Grupo/s</label>
@@ -112,7 +109,6 @@
                                         <label :for="grupo.nombreGrupo" class="custom-control-label">{{ grupo.nombreGrupo }}</label>
                                     </div>
                                 </div>
-                               
 
                                 <!-- Empresas -->
                                 <div class='form-group row align-items-center'>
@@ -223,7 +219,6 @@ export default {
          * @param string $buscar
          * @return void
          */
-        
         listarUsuarios(page,buscar){
             let me = this;
             var url= 'api/usuarios?page='+page+'&buscar='+buscar;
@@ -241,7 +236,6 @@ export default {
                 console.log(error);
                 me.erroruser=1,
                 me.errorMostrarMsjuser=error.response.data.message
-                
             });
         },
         listarEmpresas() {
@@ -266,7 +260,7 @@ export default {
         },
         listarGrupos() {
             let me = this;
-            var url = "/grupos";
+            let url = '/api/grupos';
             axios
                 .get(url)
                 .then(function (response) {
@@ -281,7 +275,6 @@ export default {
                 }
             });
         },
-
         /**
          * Cambiar de pagina en la tabla
          * 
@@ -294,7 +287,7 @@ export default {
             //Actualizar pagina actual
             me.pagination.current_page=page;
             //Enviar la petición para visualizar la data de esa página
-            me.listarUsuario(page,buscar);
+            me.listarUsuarios(page,buscar);
         },
 
         /**
@@ -378,7 +371,7 @@ export default {
          * @param integer idusuario
          * @return SwalFire modal de confirmación
          */
-        eliminarUsuario(idusuario){
+        eliminarUsuario(idUser){
             const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-primary',

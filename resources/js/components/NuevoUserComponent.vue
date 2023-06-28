@@ -187,7 +187,7 @@ export default {
     },
     listarGrupos() {
       let me = this;
-      var url = "/grupos";
+      var url = "/api/grupos";
       axios
         .get(url)
         .then(function (response) {

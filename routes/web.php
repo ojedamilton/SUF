@@ -8,7 +8,6 @@ use App\Http\Controllers\ValorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\FacturaController;
-use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\SituacionFiscalController;
 use App\Http\Controllers\TipoEmpresaController;
@@ -59,9 +58,6 @@ Route::middleware('auth:web')->group(function(){
     // Usuarios
     Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');
     Route::get('/showUserAuth',[UserController::class,'showUserAuth'])->name('showUserAuth');
-
-    // Grupos
-    Route::get('/grupos', [GrupoController::class,'index'])->name('grupos');
 
     // Clientes
     Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');

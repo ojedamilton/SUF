@@ -10,6 +10,8 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\GrupoController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +35,8 @@ Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('ar
 */
  
 Route::middleware('auth:sanctum')->group(function(){
+    // Grupos
+    Route::get('/grupos', [GrupoController::class,'index'])->name('grupos');
     // Medios de Pago
     Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
     Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
