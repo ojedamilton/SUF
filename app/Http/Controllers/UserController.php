@@ -20,8 +20,8 @@ class UserController extends Controller
     private $userRepository;
     
     public function __construct(UserRepository $userRepository){
-     
-      $this->userRepository = $userRepository;
+
+        $this->userRepository = $userRepository;
 
     }
 
@@ -30,24 +30,22 @@ class UserController extends Controller
         try {
 
             $buscar= $request->buscar;
-            if ($buscar=='') {
-                $users = $this->userRepository->all(Auth::user()->idEmpresa);
-            }else{
-                 $users = $this->userRepository->search($buscar,Auth::user()->idEmpresa);                
-            } 
+
+            $users = $this->userRepository->getUsersByEmpresa(Auth::user()->idEmpresa, $buscar);
+
             return response()->json([
-               'success'=>true,
-               'message'=>'Listado de Usuarios',
-               'users'=>$users,
-               'pagination'=>[
-                   'total'=>$users->total(),
-                   'current_page'=>$users->currentPage(),
-                   'per_page'=>$users->perPage(),
-                   'last_page'=>$users->lastPage(),
-                   'from'=>$users->firstItem(),
-                   'to'=>$users->lastItem(),
+                'success'=>true,
+                'message'=>'Listado de Usuarios',
+                'users'=>$users,
+                'pagination'=>[
+                    'total'=>$users->total(),
+                    'current_page'=>$users->currentPage(),
+                    'per_page'=>$users->perPage(),
+                    'last_page'=>$users->lastPage(),
+                    'from'=>$users->firstItem(),
+                    'to'=>$users->lastItem(),
                 ],
-           ],200);
+            ],200);
         } catch (\Throwable $th) {
 
             Log::error($th->getMessage());
@@ -65,8 +63,8 @@ class UserController extends Controller
                 ],
             ],500);    
         }
-           
-       
+
+
     }
     /**
      * Sendmail to new user 

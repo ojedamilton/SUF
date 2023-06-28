@@ -4,31 +4,23 @@ namespace App\Repositories;
 
 use App\Models\User;
 
-class UserRepository {
+class UserRepository
+{
+    public function getUsersByEmpresa($idEmpresa, $buscar = null)
+    {
+        $query = User::whereHas('empresas', function ($query) use ($idEmpresa) {
+            $query->where('idEmpresa', $idEmpresa);
+        });
 
-    private $model;
+        if (!empty($buscar)) {
+            $query->where(function ($query) use ($buscar) {
+                $query->where('name', 'like', '%' . $buscar . '%')
+                    ->orWhere('apellido', 'like', '%' . $buscar . '%')
+                    ->orWhere('email', 'like', '%' . $buscar . '%');
+            });
+        }
 
-    public function __construct(){
-
-        $this->model = new User();
-    }
-    
-    public function all($idEmpresa){
-
-        return $this->model->where('idEmpresa',$idEmpresa)
-                            ->orderBy('id','desc')
-                            ->paginate(10);
-    }
-
-    public function search($buscar,$idEmpresa){
-
-        return $this->model->where('idEmpresa',$idEmpresa)
-                            ->where(function($query) use ($buscar){
-                                $query->where('name','like','%'.$buscar.'%')
-                                       ->orWhere('apellido','like','%'.$buscar.'%')
-                                       ->orWhere('email','like','%'.$buscar.'%');
-                                })    
-                            ->orderBy('name','asc')
-                            ->paginate(10);
+        return $query->orderBy('name', 'asc')
+            ->paginate(10);
     }
 }
