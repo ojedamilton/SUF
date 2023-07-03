@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\DetalleFactura;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
 use App\Observers\MailObserver;
+use App\Observers\StockObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         User::observe(MailObserver::class);
+        DetalleFactura::observe(StockObserver::class);
     }
 }

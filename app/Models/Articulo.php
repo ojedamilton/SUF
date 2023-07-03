@@ -25,4 +25,9 @@ class Articulo extends Model
     {
         return $this->hasMany(DetalleFactura::class, 'id');
     }
+
+    public function stock()
+    {
+        return $this->hasOne(Stock::class, 'idArticulo');
+    }
 }
