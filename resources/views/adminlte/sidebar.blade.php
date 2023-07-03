@@ -231,23 +231,24 @@
                       <p>Subdiario de ventas</p>
                     </a>
                   </li>
-                </ul>{{-- 
+                </ul>
+              </li>
+              <!-- STOCKS -->
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <p>
+                    STOCKS
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
                 <ul class="nav nav-treeview">
                   <li  class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
-                      <i class="far fa-chart-bar nav-icon"></i>
-                      <p>Ventas por cliente</p>
+                    <router-link  class="nav-link" to='/inventarioStock'>
+                      <i class="fa fa-database"></i>
+                      <p>Inventario</p>
                     </a>
                   </li>
                 </ul>
-                <ul class="nav nav-treeview">
-                  <li  class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
-                      <i class="far fa-chart-bar nav-icon"></i>
-                      <p>Ventas por vendedor</p>
-                    </a>
-                  </li>
-                </ul> --}}
               </li>
             </ul>
           </nav>

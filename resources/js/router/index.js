@@ -15,6 +15,7 @@ import ListadoCategoria from "../components/ListadoCategoriaComponent.vue";
 import NuevoMedioPago from "../components/NuevoMedioPagoComponent.vue";
 import ListadoMedioPago from "../components/ListadoMedioPagoComponent.vue";
 import GraficosView from "../components/GraficosComponent.vue";
+import InventarioStock from "../components/InventarioStockComponent.vue";
 
 const routes = [
     {
@@ -111,6 +112,11 @@ const routes = [
         path: "/listadoMedioPago",
         name: "listadoMedioPago",
         component: ListadoMedioPago,
+    },
+    {
+        path: "/inventarioStock",
+        name: "inventarioStock",
+        component: InventarioStock,
     },
 ];
 
