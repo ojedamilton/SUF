@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetalleFactura;
+use App\Models\Stock;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +25,8 @@ class FacturaController extends Controller
     {
 
         try {
-            $listadofacturas = Factura::orderBy('id', 'desc')
+            $listadofacturas = Factura::with('detallesfactura', 'detallesfactura.articulo','detallesfactura.articulo.stock')
+                ->orderBy('id', 'desc')
                 ->where('idEmpresa', Auth::user()->idEmpresa)
                 ->get();
 
@@ -94,11 +96,18 @@ class FacturaController extends Controller
         } else {
             $ultimoNum = '000001';
         }
-
         // llamo al metodo validarForm
         // $this->validarForm($request);
-
+        
         try {
+            // Valido El stock de cada articulo
+            foreach ($request->detalles as $detalle) {
+                $stock = Stock::where('idArticulo', $detalle['idArticulo'])->first();
+                if ($stock->cantidad < $detalle['cantidadArticulo']) {
+                   // Enviar Throw Exception
+                    throw new \Exception("No hay Stock Suficiente para el Articulo: " . $detalle['nombre']);
+                }
+            }
             // Comienzo Transaccion
             DB::beginTransaction();
             // Instancio Factura
@@ -133,6 +142,8 @@ class FacturaController extends Controller
             // No me permitia auditar con el metodo insert porque es de tipo query builder y no de tipo eloquent
             //$detalleFactura->insert($detalleReq);
             DB::commit();
+            // Hago un refresh de la instancia para que me traiga los detalles
+            $detalleFactura->refresh();
             return response()->json([
                 'success' => true,
                 'message' => 'Factura Creada Correctamente',

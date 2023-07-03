@@ -30,12 +30,14 @@ class ArticuloController extends Controller
 
             $buscar= $request->buscar;
             if (!$buscar) {
-                $articulo=Articulo::orderBy('id','asc')->paginate(5);
+                $articulo=Articulo::with('stock')
+                    ->orderBy('id','asc')->paginate(5);
             }else{
-                $articulo=Articulo::where('nombreArticulo','like','%'.$buscar.'%')
-                                    ->orWhere('id','like','%'.$buscar.'%')
-                                    ->orderBy('nombreArticulo','asc')
-                                    ->paginate(5);     
+                $articulo=Articulo::with('stock')
+                    ->where('nombreArticulo','like','%'.$buscar.'%')
+                    ->orWhere('id','like','%'.$buscar.'%')
+                    ->orderBy('nombreArticulo','asc')
+                    ->paginate(5);     
             }
               
             return response()->json([

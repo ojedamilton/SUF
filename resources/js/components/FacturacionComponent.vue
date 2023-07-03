@@ -185,14 +185,17 @@
                             <tr v-for="articulo in arrayArticulos" :key="articulo.id" >    
                                 <td>{{articulo.id}}</td>    
                                 <td>{{articulo.nombreArticulo}}</td> 
-                                <td class="col-2">
+                                <td class="col-2" >
                                   <input class="form-control form-control-sm" :value="articulo.precio" type="number" name="precio" :id="'precio_'+articulo.id">
                                 </td>
-                                <td class="col-2">
+                                <td class="col-2" >
                                   <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
                                   </td>
-                                <td>
-                                  <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
+                                <td v-if="articulo.stock.cantidad != 0">
+                                  <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio,articulo.stock.cantidad),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
+                                </td>
+                                <td v-else>
+                                  <button disabled class="btn btn-danger">SinStock</button> 
                                 </td>
                             </tr>  
                           </tbody>  
@@ -350,7 +353,6 @@ export default {  // todo lo que voy a exportar
            const response         = await axios.get(url);
            const data             = response.data;
            this.arrayTipoFactura  = data.tipoFactura;
-           //console.log(this.arrayTipoFactura);
         
       } catch (error) {
         
@@ -440,7 +442,11 @@ export default {  // todo lo que voy a exportar
     //    //debugger
     //   //this.arrayDetalles.splice(0,1);
     // },
-    rellenarDetalleFactura(id, nombre) {
+    rellenarDetalleFactura(id, nombre,p,cantidad) {
+      // resultado del return en validarStock()
+      let resultStock = this.validarStock(id,cantidad);
+      // Valido Stock antes de agregar el detalle
+      if (resultStock==false) return;
       let precio = parseInt(document.getElementById('precio_'+id).value);
       let valorCantidad = parseInt(document.getElementById(id).value);
       let existe = false;
@@ -466,8 +472,64 @@ export default {  // todo lo que voy a exportar
         this.arrayDetalles.push(nuevoDetalle);
       }
     },
-
-
+    /**
+     * Se encarga de validar el stock del articulo
+     *
+     * @param {integer} idArticulo - id del articulo
+     * @param {integer} cantidad - cantidad del articulo
+     * 
+     * @returns {boolean} IsValid - true si hay stock, false si no hay stock
+     */
+    validarStock(idArticulo,cantidad){
+      // Cantidad que se desea agregar desde el modal
+      let valorCantidadModal = parseInt(document.getElementById(idArticulo).value);
+      // Isvalid 
+      let isValid = false;
+      // is In ArrayArticulos
+      let isInArrayArticulos = false;
+      // Busco el idArticulo en el arrayArticulos
+      this.arrayDetalles.forEach((detalleLinea, index) => {
+        if (detalleLinea.idArticulo == idArticulo) {
+          isInArrayArticulos = true;
+          // obtengo la cantidad del articulo
+          let cantidadLinea = parseInt(detalleLinea.cantidadArticulo);
+          // Sumo las cantidades del arrayDetalles y del valorCantidadModal
+          // Si son mayor al stock, muestro mensaje de error
+          if ((cantidadLinea + valorCantidadModal) > cantidad) {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'No hay suficiente stock',
+              showConfirmButton: false,
+              timer: 3000
+            });
+            isValid = false;
+          } else {
+            isValid = true;
+          }
+        }else {
+          isInArrayArticulos = false;
+        }
+      });
+      // Si no existe el articulo en el arrayDetalles
+      // Valido solo con la cantidad del Modal
+      if (isInArrayArticulos==false) {
+        if (valorCantidadModal > cantidad) {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'No hay suficiente stock',
+            showConfirmButton: false,
+            timer: 3000
+          });
+          isValid =  false;
+        }else{
+          isValid = true;
+        } 
+      }
+      // Retorno el valor de isValid
+      return isValid;
+    },
 
     /**
      * Se encarga de eliminar cada Item del detalle de la factura
@@ -620,10 +682,14 @@ export default {  // todo lo que voy a exportar
           totalFactura='0'; */
         })
         .catch(function (error) {
-          console.log(error);
-          /* if (error.response.status === 401) {
-            location.reload(true);
-          } */
+         let errorMessage=error.response.data.message;
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: errorMessage,
+              showConfirmButton: false,
+              timer: 3000
+            });
         });
     },
      cambiarPagina(page,buscar){
