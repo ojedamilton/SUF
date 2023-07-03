@@ -10,6 +10,7 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\StockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,5 +55,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/createProveedor',[ProveedorController::class,'store'])->name('crearproveedor');
     Route::put('/updateProveedor',[ProveedorController::class,'update'])->name('editarproveedor');
     Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');
+    // Stocks
+    Route::get('/stocks/{page}/{buscar}',[StockController::class,'index'])->name('stocks');
+    Route::put('/updateInventario',[StockController::class,'update'])->name('stocks.update');
    
 });
