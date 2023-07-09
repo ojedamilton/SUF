@@ -3,8 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Articulo;
+use App\Models\ArticuloProveedores;
+use App\Models\Proveedor;
+use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class ArticuloController extends Controller
 {
@@ -93,7 +99,64 @@ class ArticuloController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         // Valido Backend
+         $validator = Validator::make(
+            $request->all(),
+            [
+                'nombre'=>'required|max:50',
+                'precioC'=>'required|numeric',
+                'precioV'=>'required',
+                'categoriaId'=>'required',
+                'proveedorId'=>'required'
+            ],[
+                'nombre.required'=>'El nombre es requerido',
+                'nombre.max'=>'El nombre no debe superar los 50 caracteres',
+                'precioC'=>'precio Compra es requerido',
+                'precioC.numeric'=>'precio Compra debe ser numerico',
+                'precioV'=>'precio venta es requerido',
+                'categoriaId'=>'La Categoria es requerida',
+                'proveedorId'=>'El Proveedor es requerido',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(["errors" => $validator->getMessageBag(),"status"=>401]);
+        }
+
+        // Comienzo Transaccion
+        DB::beginTransaction();
+        
+        try { 
+            // Creo Articulo en la tabla
+            $articulo = new Articulo();
+            $articulo->nombrearticulo=$request->nombre;
+            $articulo->precio=$request->precioV;
+            $articulo->precioCompra=$request->precioC;
+            $articulo->idCategoria=$request->categoriaId;
+            $articulo->estadoArticulo=1;
+            $articulo->save();
+
+            // Relaciono con Tabla Pivot Articulo-Proveedor
+            $proveedor = new ArticuloProveedores();
+            $proveedor->idArticulo=$articulo->id;
+            $proveedor->idProveedor=$request->proveedorId;
+            $proveedor->save();
+
+            // Inserto Stock en mi modelo Stock
+            $stock = new Stock();
+            $stock->idArticulo=$articulo->id;
+            $stock->cantidad=$request->stock;
+            $stock->cantidadMinima=$request->stockMinimo;
+            $stock->save();
+
+            DB::commit();
+            return response()->json(["success"=>"El Articulo se ha creado correctamente","status"=>201]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json(["errors"=>"No se pudo crear el Articulo","status"=>500]);
+        }
     }
 
     /**

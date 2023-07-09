@@ -58,5 +58,7 @@ Route::middleware('auth:sanctum')->group(function(){
     // Stocks
     Route::get('/stocks/{page}/{buscar}',[StockController::class,'index'])->name('stocks');
     Route::put('/updateInventario',[StockController::class,'update'])->name('stocks.update');
+    // Articulos
+    Route::post('/crearArticulo',[ArticuloController::class,'store'])->name('crearArticulos');
    
 });

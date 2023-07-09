@@ -22,9 +22,9 @@ class CategoriaController extends Controller
             try {
 
                 $categorias = Categoria::where('estadoCategoria',1)
-                                        ->where('nombreCategoria', 'LIKE', "%$buscar%")
-                                        ->orderBy('nombreCategoria', 'asc')
-                                        ->paginate(10);
+                    ->where('nombreCategoria', 'LIKE', "%$buscar%")
+                    ->orderBy('nombreCategoria', 'asc')
+                    ->paginate(10);
 
                 return response()->json([
                     'success'=>true,

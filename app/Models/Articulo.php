@@ -16,7 +16,6 @@ class Articulo extends Model
         'id',
         'precio',
         'nombreArticulo',
-        'stock',
         'idCategoria',
         'estadoValor',
     ];

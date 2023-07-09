@@ -180,7 +180,7 @@
                     </router-link>
                   </li>
                   <li class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
+                    <router-link  class="nav-link" to='/nuevoArticulo'>
                       <i class="fas fa-cube nav-icon"></i>
                       <p>Nuevo Articulo</p>
                     </router-link>

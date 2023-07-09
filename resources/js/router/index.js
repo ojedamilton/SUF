@@ -16,6 +16,7 @@ import NuevoMedioPago from "../components/NuevoMedioPagoComponent.vue";
 import ListadoMedioPago from "../components/ListadoMedioPagoComponent.vue";
 import GraficosView from "../components/GraficosComponent.vue";
 import InventarioStock from "../components/InventarioStockComponent.vue";
+import NuevoArticulo from "../components/NuevoArticuloComponent.vue";
 
 const routes = [
     {
@@ -93,11 +94,11 @@ const routes = [
         name: "listadoCategoria",
         component: ListadoCategoria,
     },
-    // {
-    //     path: "/nuevoArticulo",
-    //     name: "nuevoArticulo",
-    //     component: NuevoArticulo,
-    // },
+    {
+        path: "/nuevoArticulo",
+        name: "nuevoArticulo",
+        component: NuevoArticulo,
+    },
     // {
     //     path: "/listadoArticulo",
     //     name: "listadoArticulo",
