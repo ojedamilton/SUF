@@ -9,7 +9,8 @@ class UserRepository
     public function getUsersByEmpresa($idEmpresa, $buscar = null)
     {
         $query = User::whereHas('empresas', function ($query) use ($idEmpresa) {
-            $query->where('idEmpresa', $idEmpresa);
+            $query->where('idEmpresa', $idEmpresa)
+                  ->where('estadoUsuario',1);
         });
 
         if (!empty($buscar)) {
@@ -24,3 +25,5 @@ class UserRepository
             ->paginate(10);
     }
 }
+
+

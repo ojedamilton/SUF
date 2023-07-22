@@ -169,6 +169,15 @@ class EmpresaController extends Controller
 
         try { 
             $empresa = Empresa::find($request->idEmpresa);
+
+            if ($empresa->id == 1) {
+                return response()->json([
+                    "success" => false,
+                    "errors" => "No se puede eliminar esta empresa."
+                ], 400);
+            }
+
+
             $empresa->estadoEmpresa = 0;
             $empresa->save();
             DB::commit();
