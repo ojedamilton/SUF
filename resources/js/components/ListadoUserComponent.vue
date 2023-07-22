@@ -21,6 +21,7 @@
                                     <th>APELLIDO</th>
                                     <th>EMAIL</th>
                                     <th>GRUPO/S</th>
+                                    <th>EMPRESA/S</th>
                                     <th>ACCIÓN</th>
                                     <!-- <th>PERMISOS</th> -->
 
@@ -32,18 +33,23 @@
                                         <td>{{user.apellido}}</td>
                                         <td>{{user.email}}</td>
                                         <td>
-                                            <span v-for="grupo in arrayGrupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
-                                        </td>
-
+                                            <span v-for="grupo in user.grupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
+                                        </td> 
                                         <!-- <td>
+                                            <span v-for="grupo in usuario.grupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
+                                        </td> 
+                                        < <td>
                                             <template v-for="grupo in arrayGrupos">
-                                                <span v-if="grupo.id === user.id">{{ grupo.nombreGrupo }}</span>
+                                                <span v-if="grupo.id === usuario.id">{{ grupo.nombreGrupo }}</span>
                                             </template>
                                         </td> -->
                                         <td>
-                                            <a class="pr-2" @click="editarModal(user);" href="#"><i class="fas fa-edit text-warning"></i></a>
-                                            <a class="pr-2" @click="eliminarUsuario(user.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
+                                            <span v-for="empresa in user.empresas" :key="empresa.id" class="badge badge-primary">{{ empresa.name }}</span>
                                         </td>
+                                        <td>
+                                            <a class="pr-2" @click="editarModal(usuario);" href="#"><i class="fas fa-edit text-warning"></i></a>
+                                            <a class="pr-2" @click="eliminarUsuario(usuario.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
+                                        </td> 
                                     </tr>  
                                 </tbody>  
                             </table>
@@ -104,8 +110,15 @@
                                 <!-- Grupo/s -->
                                 <div class="form-group">
                                     <label>Grupo/s</label>
-                                    <div v-for="grupo in arrayGrupos" :key="grupo.id" class='custom-control custom-checkbox form-group row align-items-center'>
-                                        <input class="custom-control-input" v-model="idGrupos" type="checkbox" :value="grupo.id" ref="input_nombre" :id="grupo.nombreGrupo"/>
+                                    <div v-for="grupo in arrayGrupos" :key="grupo.id" class="custom-control custom-checkbox">
+                                        <input
+                                        class="custom-control-input"
+                                        v-model="idGrupos"
+                                        :value="grupo.id"
+                                        :checked="idGrupos.includes(grupo.id)"
+                                        type="checkbox"
+                                        :id="grupo.nombreGrupo"
+                                        />
                                         <label :for="grupo.nombreGrupo" class="custom-control-label">{{ grupo.nombreGrupo }}</label>
                                     </div>
                                 </div>
@@ -311,12 +324,11 @@ export default {
             this.modal=1;
             this.tituloModal='Editar Usuario';
             this.idUser=usuario['id'];
-            this.nombreUsuario=usuario['nombreUsuario'];
-            this.apellidoUsuario=usuario['apellidoUsuario'];
-            [...this.idGrupos]=usuario['idGrupos'];
-            // this.empresaId=usuario['empresaId'];
-            this.selectedEmpresa=usuario['selectedEmpresa'];
-            this.tipoAccion=2;     
+            this.nombreUsuario=usuario['name'];
+            this.apellidoUsuario=usuario['apellido'];
+            // this.selectedEmpresa=usuario['selectedEmpresa'];
+            // this.idGrupos = usuario.grupos.map(grupo => grupo.id);
+            this.tipoAccion=2;
         },
 
         /**
@@ -333,7 +345,7 @@ export default {
                 return;
             } 
             let me=this;
-            var url = '/updateUsuario';
+            var url = '/api/updateUsuario';
             axios.put(url,{
                 'nombreUsuario':this.nombreUsuario,
                 'apellidoUsuario':this.apellidoUsuario,
@@ -390,9 +402,9 @@ export default {
             }).then((result) => {
                 if (result.value) {  
                     let me=this;
-                    var url = '/deleteUsuario';
+                    var url = '/api/deleteUsuario';
                     axios.post(url,{
-                        'idUser':idUser,
+                        'id':idUser,
                     }).then(function (response){
                         me.cerrarModal();
                         me.listarUsuarios(me.pagination.current_page,me.buscar);

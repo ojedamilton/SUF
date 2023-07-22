@@ -199,8 +199,39 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+            $user = User::find($request->id);
+
+            if ($user->id == 1) {
+                return response()->json([
+                    "success" => false,
+                    "errors" => "No se puede eliminar este usuario."
+                ], 400);
+            }
+
+
+            $user->estadoUsuario = 0;
+            $user->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"La Empresa se ha eliminado correctamente",
+                "empresa"=>$user
+            ],200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success"=>false,
+                "errors"=>"No se pudo eliminar el usuario"
+            ],500);
+        }
     }
 }
