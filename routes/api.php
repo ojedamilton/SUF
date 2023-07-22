@@ -33,6 +33,11 @@ Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('ar
 */
  
 Route::middleware('auth:sanctum')->group(function(){
+    // Grupos 
+    Route::get('/grupos',[GrupoController::class,'index'])->name('grupos');
+    // Empresa
+    Route::put('/updateEmpresa', [EmpresaController::class,'update'])->name('updateEmpresa');
+    Route::post('/deleteEmpresa', [EmpresaController::class,'destroy'])->name('deleteEmpresa');
     // Medios de Pago
     Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
     Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
@@ -57,6 +62,5 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/proveedores',[ProveedorController::class,'index'])->name('proveedores');
     Route::post('/createProveedor',[ProveedorController::class,'store'])->name('crearproveedor');
     Route::put('/updateProveedor',[ProveedorController::class,'update'])->name('editarproveedor');
-    Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');
-   
+    Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');   
 });

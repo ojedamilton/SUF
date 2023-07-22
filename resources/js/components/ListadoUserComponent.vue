@@ -1,7 +1,7 @@
 <template>
         <div class="container-fluid">
             <div class=" row justify-content-center">
-                <div class="col-md-8"> 
+                <div class="col-md-8">
                     <p class="text-center"><strong>LISTADO USUARIO</strong></p>
                     <div class="card">
                         <div class="card-header">
@@ -10,48 +10,45 @@
                                <!--  <button v-if="idCan.includes('new')" type="button" class="btn btn-success" @click="abrirModal('user','registrar')" >Nuevo</button><br><br> -->
                             </div>
                             <!-- Find a result -->
-                            <input type="text" v-model="buscar"  @keyup="listarUsuarios(1,buscar)" class="form-control" placeholder="Texto a buscar">     
-                        </div> 
-                        <!-- List Table users --> 
-                        <div class="card-body">   
+                            <input type="text" v-model="buscar"  @keyup="listarUsuarios(1,buscar)" class="form-control" placeholder="Texto a buscar">
+                        </div>
+                        <!-- List Table users -->
+                        <div class="card-body">
                             <table id="table_user" class="table table-striped" width="100%">
                                 <thead>
-                                <tr>  
+                                <tr>
                                     <th>NOMBRE</th>
                                     <th>APELLIDO</th>
                                     <th>EMAIL</th>
-                                    <th>GRUPO/S</th>
-                                    <th>EMPRESA/S</th>
+                                    <!-- <th>GRUPO/S</th>
+                                    <th>EMPRESA/S</th> -->
                                     <th>ACCIÓN</th>
                                     <!-- <th>PERMISOS</th> -->
 
-                                </tr>  
-                                </thead>  
+                                </tr>
+                                </thead>
                                 <tbody>
-                                    <tr v-for="user in arrayUser" :key="user.id">    
+                                    <tr v-for="user in arrayUser" :key="user.id">
                                         <td>{{user.name}}</td>
                                         <td>{{user.apellido}}</td>
                                         <td>{{user.email}}</td>
-                                        <td>
-                                            <span v-for="grupo in user.grupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
-                                        </td> 
                                         <!-- <td>
                                             <span v-for="grupo in usuario.grupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
-                                        </td> 
-                                        < <td>
+                                        </td>
+                                        <td>
                                             <template v-for="grupo in arrayGrupos">
                                                 <span v-if="grupo.id === usuario.id">{{ grupo.nombreGrupo }}</span>
                                             </template>
-                                        </td> -->
-                                        <td>
-                                            <span v-for="empresa in user.empresas" :key="empresa.id" class="badge badge-primary">{{ empresa.name }}</span>
                                         </td>
                                         <td>
-                                            <a class="pr-2" @click="editarModal(usuario);" href="#"><i class="fas fa-edit text-warning"></i></a>
-                                            <a class="pr-2" @click="eliminarUsuario(usuario.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
-                                        </td> 
-                                    </tr>  
-                                </tbody>  
+                                            <span v-for="empresa in user.empresas" :key="empresa.id" class="badge badge-primary">{{ empresa.name }}</span>
+                                        </td> -->
+                                        <td>
+                                            <a class="pr-2" @click="editarModal(user);" href="#"><i class="fas fa-edit text-warning"></i></a>
+                                            <a class="pr-2" @click="eliminarUsuario(user.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                             <div v-show="erroruser" class="form-group div-error">
                                 <div class="text-right">
@@ -71,9 +68,9 @@
                                     </li>
                                 </ul>
                             </nav>
-                        </div> 
+                        </div>
                     </div>
-                </div>    
+                </div>
                <!-- Modal -->
             <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" user="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" user="document">
@@ -110,19 +107,13 @@
                                 <!-- Grupo/s -->
                                 <div class="form-group">
                                     <label>Grupo/s</label>
-                                    <div v-for="grupo in arrayGrupos" :key="grupo.id" class="custom-control custom-checkbox">
-                                        <input
-                                        class="custom-control-input"
-                                        v-model="idGrupos"
-                                        :value="grupo.id"
-                                        :checked="idGrupos.includes(grupo.id)"
-                                        type="checkbox"
-                                        :id="grupo.nombreGrupo"
-                                        />
+                                    <div v-for="grupo in arrayGrupos" :key="grupo.id" class='custom-control custom-checkbox form-group row align-items-center'>
+                                        <input class="custom-control-input" v-model="idGrupos" type="checkbox" :value="grupo.id" ref="input_nombre" :id="grupo.nombreGrupo"/>
                                         <label :for="grupo.nombreGrupo" class="custom-control-label">{{ grupo.nombreGrupo }}</label>
                                     </div>
                                 </div>
 
+                                
                                 <!-- Empresas -->
                                 <div class='form-group row align-items-center'>
                                     <label class='col-md-2 form-control-label mb-0'>Empresa/s</label>
@@ -147,7 +138,7 @@
                                 </div>
                                 <!-- Guardo los Cambios -->
                                 <div class='d-flex flex-column justify-content-center align-items-center'>
-    
+
                                     <button class='btn btn-success text-center w-33' type='button' v-if='tipoAccion == 2' @click="ActualizarUsuario()">Editar Cambios</button>
                                 </div>
                             </form>
@@ -227,7 +218,7 @@ export default {
          * Listo todos los Usuarios , si hay una busqueda la agrego
          * Traigo los activos en 1 ya que la baja es logica.
          * Deberiamos crear una Columna Status para ver sus estados.
-         * 
+         *
          * @param integer $page
          * @param string $buscar
          * @return void
@@ -290,7 +281,7 @@ export default {
         },
         /**
          * Cambiar de pagina en la tabla
-         * 
+         *
          * @param integer page
          * @param string buscar
          * @return void
@@ -305,7 +296,7 @@ export default {
 
         /**
          * Cierro el modal , Le cambio el Flag a 0
-         * 
+         *
          * @return void
          */
         cerrarModal(){
@@ -316,8 +307,8 @@ export default {
         /**
          * Sobreescribe en las variables que defini anteriormente en el data()return{}
          * Al abrir el modal ya tienen en su v-model estas variables para tomar ese valor
-         * 
-         * @param array  $user 
+         *
+         * @param array  $user
          * @return void
          */
         editarModal(usuario){
@@ -336,14 +327,14 @@ export default {
          * Envio por metodo put los datos
          * verificar /updateUsuario en web.php
          * Controlador UserController.php metodo update()
-         * 
+         *
          * @return SwalFire modal de confirmación
          */
         ActualizarUsuario(){
             this.validarUsuario();
             if(this.erroruser==1 ){
                 return;
-            } 
+            }
             let me=this;
             var url = '/api/updateUsuario';
             axios.put(url,{
@@ -364,7 +355,7 @@ export default {
                     timer: 1500,
                     timerProgressBar: true,
                 })
-                
+
             }).catch(function(error){
                 console.log(error);
                 if(error.status === 401){
@@ -379,7 +370,7 @@ export default {
          * Cancelar : mensaje de cancelación y no se hace nada
          * Verificar /deleteUsuario en web.php
          * Controlador UserController.php metodo destroy()
-         * 
+         *
          * @param integer idusuario
          * @return SwalFire modal de confirmación
          */
@@ -400,7 +391,7 @@ export default {
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true,
             }).then((result) => {
-                if (result.value) {  
+                if (result.value) {
                     let me=this;
                     var url = '/api/deleteUsuario';
                     axios.post(url,{
@@ -429,12 +420,12 @@ export default {
                         timer: 1500,
                         timerProgressBar: true,
                     })
-                }  
-            })          
+                }
+            })
         },
         /**
          * Valido datos de usuario que no esten vacios
-         * 
+         *
          * @return void
          */
          validarUsuario() {
