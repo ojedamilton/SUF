@@ -35,7 +35,7 @@
               </div>
               <div class="form-group">
                 <label for="exampleInputInicioActividades">Inicio de Actividades</label>
-                <input type="date" class="form-control" v-model="inicioactividades" name="inicioactividades" id="exampleInputInicioActividades"/>
+                <input type="date" class="form-control" v-model="inicioActividades" name="inicioActividades" id="exampleInputInicioActividades"/>
               </div>
               <div class="form-group">
                 <label for="exampleInputSituacion">Tipo de Empresa</label>
@@ -73,7 +73,7 @@
         ingresosbrutos:"",
         direccion:"",
         telefono:"",
-        inicioactividades:"",
+        inicioActividades:"",
         arrayTiposEmpresas:[],
         loading: false,
         modal: 0,
@@ -126,7 +126,7 @@
         if(!this.ingresosbrutos) this.errorMostrarMsj.push('* El ingreso bruto no puede estar vacío');
         if(!this.direccion) this.errorMostrarMsj.push('* La direccion no puede estar vacía');
         if(!this.telefono) this.errorMostrarMsj.push('* El teléfono no puede estar vacío');
-        if(!this.inicioactividades) this.errorMostrarMsj.push('* La fecha no puede estar vacía');
+        if(!this.inicioActividades) this.errorMostrarMsj.push('* La fecha no puede estar vacía');
         if(!this.tipoId) this.errorMostrarMsj.push('* El tipo de empresa no puede estar vacío');
         if (this.errorMostrarMsj.length) this.errorempresa = 1;
       },
@@ -138,7 +138,7 @@
         let url = "/createEmpresa";
         this.loading = true;
         try {
-          const response= await axios.post(url,{nombre:this.nombre,razonsocial:this.razonsocial,cuitEmpresa:this.cuit,ingresosbrutos:this.ingresosbrutos,direccion:this.direccion,telefono:this.telefono,inicioActividades:this.inicioactividades,tipoId:this.tipoId})
+          const response= await axios.post(url,{nombre:this.nombre,razonsocial:this.razonsocial,cuitEmpresa:this.cuit,ingresosbrutos:this.ingresosbrutos,direccion:this.direccion,telefono:this.telefono,inicioActividades:this.inicioActividades,tipoId:this.tipoId})
           let respuesta = response.data;
           if (respuesta.status == 201) {
             let success=respuesta.success;
