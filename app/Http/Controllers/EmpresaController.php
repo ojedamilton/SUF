@@ -107,7 +107,7 @@ class EmpresaController extends Controller
             $empresa->ingresosBrutosEmpresa=$request->ingresosbrutos;
             $empresa->telEmpresa=$request->telefono;
             $empresa->direccionEmpresa=$request->direccion;
-            $empresa->inicioActividades=$request->inicioActivades;
+            $empresa->inicioActividades=$request->inicioActividades;
             $empresa->idTipoEmpresa=$request->tipoId;
             $empresa->estadoEmpresa=1;
             $empresa->save();

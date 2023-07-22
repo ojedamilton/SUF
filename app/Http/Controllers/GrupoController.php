@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Grupo;
+use App\Models\User;
+use App\Models\UserGrupo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
 
 class GrupoController extends Controller
 {
@@ -24,7 +28,7 @@ class GrupoController extends Controller
             
             return response()->json([
                 'success' => true,
-                'message' => 'grupos cargados correctamente',
+                'message' => 'Grupos cargados correctamente',
                 'grupos' => $grupos,
             ], 200);
         } catch (\Throwable $th) {
