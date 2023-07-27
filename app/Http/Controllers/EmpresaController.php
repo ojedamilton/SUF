@@ -24,7 +24,7 @@ class EmpresaController extends Controller
             })
                 ->where('estadoEmpresa', 1)
                 ->orderBy('nombreEmpresa', 'asc')
-                ->paginate(5);
+                ->paginate(15);
         
             return response()->json([
                 'success'=>true,
@@ -83,7 +83,7 @@ class EmpresaController extends Controller
             'tipoId'=>'required'
         ],[
             'razonsocial'=>'La razon social es requerida',
-            'cuit,required'=>'El cuit es requerido',
+            'cuit.required'=>'El cuit es requerido',
             'cuit.unique'=>'El cuit ya existe',
             'nombre.required'=>'El nombre es requerido',
             'ingresosbrutos'=>'Ingresos Brutos es requerido',

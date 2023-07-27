@@ -281,7 +281,7 @@ export default {
             })
             swalWithBootstrapButtons.fire({
                 title: 'Estas seguro de eliminarlo?',
-                text: "You won't be able to revert this!",
+                // text: "You won't be able to revert this!",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
@@ -312,7 +312,7 @@ export default {
                 }else if(result.dismiss === Swal.DismissReason.cancel){
                     swal.fire({
                         title: 'Cancelled',
-                        text:'Your imaginary file is safe ',
+                        text:'Tu registro está a salvo ',
                         icon:'error',
                         timer: 1500,
                         timerProgressBar: true,

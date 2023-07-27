@@ -35,6 +35,7 @@ Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('ar
 Route::middleware('auth:sanctum')->group(function(){
     // Grupos 
     Route::get('/grupos',[GrupoController::class,'index'])->name('grupos');
+
     // Empresa
     Route::put('/updateEmpresa', [EmpresaController::class,'update'])->name('updateEmpresa');
     Route::post('/deleteEmpresa', [EmpresaController::class,'destroy'])->name('deleteEmpresa');
@@ -53,8 +54,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');
     // Usuarios
     Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
+    Route::get('/getGruposByUser/{idUsuario}', [UserController::class, 'getGruposByUser'])->name('getGruposByUser');
+    Route::get('/getEmpresasByUser/{idUsuario}', [UserController::class, 'getEmpresasByUser'])->name('getEmpresasByUser');
     Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
-    Route::post('/updateUsuario', [UserController::class,'update'])->name('updateUsuario');
+    Route::put('/updateUsuario', [UserController::class,'update'])->name('updateUsuario');
     Route::post('/deleteUsuario', [UserController::class,'destroy'])->name('deleteUsuario');
     // Facturacion
     Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
