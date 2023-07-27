@@ -61,22 +61,67 @@ class UserController extends Controller
                     'from'=>1,
                     'to'=>1,
                 ],
-            ],500);    
+            ],500);
         }
-
-
     }
+
+    public function getEmpresasByUser($idUsuario)
+    {
+        try {
+            $usuario = User::findOrFail($idUsuario);
+            $empresas = $usuario->empresas()
+                                ->where('estadoEmpresa', 1)
+                                ->get()
+                                ->map(function ($empresa) {
+                                return [
+                                    'id' => $empresa->id,
+                                    'nombreEmpresa' => $empresa->nombreEmpresa,
+                                ];
+                            });
+
+            return response()->json([
+                'empresas' => $empresas,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener las empresas por usuario: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getGruposByUser($idUsuario)
+    {
+        try {
+            $usuario = User::findOrFail($idUsuario);
+            $grupos = $usuario->grupos->map(function ($grupo) {
+                return [
+                    'id' => $grupo->id,
+                    'nombreGrupo' => $grupo->nombreGrupo,
+                ];
+            });
+
+            return response()->json([
+                'grupos' => $grupos,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener los grupos por usuario: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
     /**
      * Sendmail to new user 
      * 
      * @param $string correo
      * @return void 
      */
-    public function sendMail($usuario,$password){    
+    public function sendMail($usuario,$password){
 
         $correo= new NotificacionRegistro($usuario,$password);
-        Mail::to($usuario)->send($correo);   
-        
+        Mail::to($usuario)->send($correo);
+
     }
 
     /**
@@ -188,9 +233,81 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $user = User::find($request->idUser);
+    
+        // Valido Backend
+        $validator = Validator::make($request->all(), [
+            'nombreUsuario' => 'required|max:10',
+            'apellidoUsuario' => 'required',
+            'idGrupos' => 'required|array',
+            'selectedEmpresa' => 'required|array'
+        ], [
+            'nombreUsuario.required' => 'El nombre es requerido',
+            'nombreUsuario.max' => 'El nombre no debe exceder los 10 caracteres',
+            'apellidoUsuario.required' => 'El apellido es requerido',
+            'idGrupos.required' => 'Los grupos son requeridos',
+            'idGrupos.array' => 'Los grupos deben ser un arreglo',
+            'selectedEmpresa.required' => 'Las empresas son requeridas',
+            'selectedEmpresa.array' => 'Las empresas deben ser un arreglo'
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(["errors" => $validator->getMessageBag(), "success" => false], 401);
+        }
+    
+        // Comienzo de la transacción
+        DB::beginTransaction();
+        try {
+            // Actualizo datos del usuario
+    
+            $user->name = $request->nombreUsuario;
+            $user->apellido = $request->apellidoUsuario;
+            $user->save();
+    
+            // // Actualizo los grupos del usuario
+            //recorrer grupo/s
+            $arrGrupo=[];
+            foreach ($request->idGrupos as $grupo) {
+                $arrGrupo[$grupo] = [
+                    'idUsuario' => $user->id,
+                    'estadoUsuarioGrupos' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ];
+            }
+
+            $user->grupos()->sync($arrGrupo);
+    
+            // Actualizo las empresas del usuario
+            $selectedEmpresaIds = [];
+            foreach ($request->selectedEmpresa as $empresa) {
+                $selectedEmpresaIds[$empresa['id']] = [
+                    'idUsuario' => $user->id,
+                    'estado' => 1,
+                ];
+            }
+
+            $user->empresas()->sync($selectedEmpresaIds);
+
+
+            DB::commit();
+            return response()->json([
+                "success" => true,
+                "message" => "El usuario se ha actualizado correctamente",
+                "user"=>$user
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success" => false,
+                "message" => "No se pudo actualizar el usuario"
+            ], 500);
+        }
+    
     }
 
     /**

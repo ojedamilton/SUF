@@ -20,8 +20,8 @@
                                     <th>NOMBRE</th>
                                     <th>APELLIDO</th>
                                     <th>EMAIL</th>
-                                    <!-- <th>GRUPO/S</th>
-                                    <th>EMPRESA/S</th> -->
+                                    <th>GRUPO/S</th>
+                                    <th>EMPRESA/S</th>
                                     <th>ACCIÓN</th>
                                     <!-- <th>PERMISOS</th> -->
 
@@ -32,17 +32,12 @@
                                         <td>{{user.name}}</td>
                                         <td>{{user.apellido}}</td>
                                         <td>{{user.email}}</td>
-                                        <!-- <td>
-                                            <span v-for="grupo in usuario.grupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
+                                        <td>
+                                            <span v-for="grupo in user.grupos" :key="grupo.id" class="badge">{{ grupo.nombreGrupo }}</span>
                                         </td>
                                         <td>
-                                            <template v-for="grupo in arrayGrupos">
-                                                <span v-if="grupo.id === usuario.id">{{ grupo.nombreGrupo }}</span>
-                                            </template>
+                                            <span v-for="empresa in user.empresas" :key="empresa.id" class="badge">{{ empresa.nombreEmpresa }}</span>
                                         </td>
-                                        <td>
-                                            <span v-for="empresa in user.empresas" :key="empresa.id" class="badge badge-primary">{{ empresa.name }}</span>
-                                        </td> -->
                                         <td>
                                             <a class="pr-2" @click="editarModal(user);" href="#"><i class="fas fa-edit text-warning"></i></a>
                                             <a class="pr-2" @click="eliminarUsuario(user.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
@@ -104,31 +99,31 @@
                                     </div>
                                 </div>
 
-                                <!-- Grupo/s -->
+                                <!-- -- Grupos -- -->
+
                                 <div class="form-group">
                                     <label>Grupo/s</label>
-                                    <div v-for="grupo in arrayGrupos" :key="grupo.id" class='custom-control custom-checkbox form-group row align-items-center'>
-                                        <input class="custom-control-input" v-model="idGrupos" type="checkbox" :value="grupo.id" ref="input_nombre" :id="grupo.nombreGrupo"/>
+                                    <div v-for="grupo in arrayGrupos" :key="grupo.id" class="custom-control custom-checkbox form-group row align-items-center">
+                                        <input class="custom-control-input" v-model="idGrupos" type="checkbox" :value="grupo.id" :id="grupo.nombreGrupo"/>
                                         <label :for="grupo.nombreGrupo" class="custom-control-label">{{ grupo.nombreGrupo }}</label>
                                     </div>
                                 </div>
 
-                                
-                                <!-- Empresas -->
-                                <div class='form-group row align-items-center'>
-                                    <label class='col-md-2 form-control-label mb-0'>Empresa/s</label>
+                                <!-- -- Empresas -- -->
 
-                                    <multiselect
-                                        v-model="selectedEmpresa"
-                                        :searchable="false"
-                                        placeholder="Seleccione una o varias empresas"
-                                        label="nombreEmpresa"
-                                        :multiple="true"
-                                        track-by="id"
-                                        :options="arrayEmpresa"
-                                    >
-                                    </multiselect>
-                                </div>
+                                <div class="form-group row align-items-center">
+                                    <label class="col-md-2 form-control-label mb-0">Empresa/s</label>
+                                        <multiselect
+                                            v-model="selectedEmpresa"
+                                            :options="arrayEmpresa"
+                                            label="nombreEmpresa"
+                                            track-by="id"
+                                            :multiple="true"
+                                            :taggable="true"
+                                            placeholder="Seleccione una o varias empresas"
+                                        >
+                                        </multiselect>
+                                    </div>
 
                                 <!-- Errores Validación -->
                                 <div v-show='erroruser' class='form-group row align-items-center div-error'>
@@ -139,7 +134,7 @@
                                 <!-- Guardo los Cambios -->
                                 <div class='d-flex flex-column justify-content-center align-items-center'>
 
-                                    <button class='btn btn-success text-center w-33' type='button' v-if='tipoAccion == 2' @click="ActualizarUsuario()">Editar Cambios</button>
+                                    <button class='btn btn-success text-center w-33' id="buttonsend" type='button' v-if='tipoAccion == 2' @click="ActualizarUsuario()">Editar Cambios</button>
                                 </div>
                             </form>
                         </div>
@@ -235,6 +230,11 @@ export default {
                 me.arrayUser=respuesta.users.data;
                 me.pagination= respuesta.pagination;
                 me.erroruser=0
+
+                // console.log("Usuarios:", me.arrayUser); 
+
+                me.obtenerGruposPorUsuario();
+                me.obtenerEmpresasPorUsuario();
             })
             .catch(function (error) {
                 console.log(error);
@@ -242,6 +242,43 @@ export default {
                 me.errorMostrarMsjuser=error.response.data.message
             });
         },
+        obtenerGruposPorUsuario() {
+            let me = this;
+            me.arrayUser.forEach((user, index) => { // Utilizamos el índice para asegurar que los grupos se asignen correctamente
+                axios.get('/api/getGruposByUser/' + user.id)
+                    .then(function(response) {
+                        var respuesta = response.data;
+                        me.$set(me.arrayUser[index], 'grupos', respuesta.grupos); // Usamos $set para asignar la propiedad 'grupos'
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                        if (error.response.status === 401) {
+                            location.reload(true);
+                        } else if (error.response.status === 404) {
+                            console.log("Los grupos no se encontraron");
+                        }
+                    });
+            });
+        },
+        obtenerEmpresasPorUsuario() {
+            let me = this;
+            me.arrayUser.forEach((user, index) => { 
+                axios.get('/api/getEmpresasByUser/' + user.id)
+                    .then(function(response) {
+                        var respuesta = response.data;
+                        me.$set(me.arrayUser[index], 'empresas', respuesta.empresas);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                        if (error.response.status === 401) {
+                            location.reload(true);
+                        } else if (error.response.status === 404) {
+                            console.log("Las empresas no se encontraron");
+                        }
+                    });
+            });
+        },
+
         listarEmpresas() {
             let me = this;
             var url = "api/empresas";
@@ -251,14 +288,16 @@ export default {
                 let empresas = response.data.empresas.data;
                 me.arrayEmpresa = empresas;
                 me.options = empresas.map((empresa) => empresa.nombreEmpresa);
+                // console.log(me.arrayEmpresa);
                 })
                 .catch(function (error) {
                 console.log(error);
                 if (error.response.status === 401) {
                     location.reload(true);
                 }
-            });
+                });
         },
+
         checkEmpresas() {
             console.log(this.selectedEmpresa);
         },
@@ -268,16 +307,18 @@ export default {
             axios
                 .get(url)
                 .then(function (response) {
-                var respuesta = response.data;
-                me.arrayGrupos = respuesta.grupos;
-                //me.pagination = respuesta.pagination;
+                    var respuesta = response.data;
+                    me.arrayGrupos = respuesta.grupos;
+                    //me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
-                console.log(error);
-                if (error.response.status === 401) {
-                    location.reload(true);
-                }
-            });
+                    console.log(error);
+                    if (error.response.status === 401) {
+                        location.reload(true);
+                    } else if (error.response.status === 404) {
+                        console.log("Los grupos no se encontraron");
+                    }
+                });
         },
         /**
          * Cambiar de pagina en la tabla
@@ -311,15 +352,19 @@ export default {
          * @param array  $user
          * @return void
          */
-        editarModal(usuario){
-            this.modal=1;
-            this.tituloModal='Editar Usuario';
-            this.idUser=usuario['id'];
-            this.nombreUsuario=usuario['name'];
-            this.apellidoUsuario=usuario['apellido'];
-            // this.selectedEmpresa=usuario['selectedEmpresa'];
-            // this.idGrupos = usuario.grupos.map(grupo => grupo.id);
-            this.tipoAccion=2;
+         editarModal(usuario) {
+            this.modal = 1;
+            this.tituloModal = 'Editar Usuario';
+            this.idUser = usuario['id'];
+            this.nombreUsuario = usuario['name'];
+            this.apellidoUsuario = usuario['apellido'];
+            this.selectedEmpresa = usuario.empresas.map(empresa => ({
+                id: empresa.id,
+                nombreEmpresa: empresa.nombreEmpresa
+            }));
+            this.idGrupos = usuario.grupos.map(grupo => grupo.id);
+            this.tipoAccion = 2;
+            // console.log(usuario )
         },
 
         /**
@@ -329,7 +374,7 @@ export default {
          * Controlador UserController.php metodo update()
          *
          * @return SwalFire modal de confirmación
-         */
+        //  */
         ActualizarUsuario(){
             this.validarUsuario();
             if(this.erroruser==1 ){
@@ -337,12 +382,16 @@ export default {
             }
             let me=this;
             var url = '/api/updateUsuario';
+            let btn_editar = document.getElementById('buttonsend');
+            btn_editar.disabled = true;
             axios.put(url,{
+                'idUser':this.idUser,
                 'nombreUsuario':this.nombreUsuario,
                 'apellidoUsuario':this.apellidoUsuario,
-                'idGrupos':[...this.idGrupos],
+                'idGrupos':this.idGrupos,
                 'selectedEmpresa':this.selectedEmpresa,
             }).then(function (response){
+                btn_editar.disabled = false;
                 // Ciero el modal
                 me.cerrarModal();
                 // Listo Usuarios asi se Actuaiza la tabla
@@ -355,13 +404,13 @@ export default {
                     timer: 1500,
                     timerProgressBar: true,
                 })
-
             }).catch(function(error){
+                btn_editar.disabled = false;
                 console.log(error);
                 if(error.status === 401){
                     location.reload(true)
                 }
-            });
+            });console.log(this.idGrupos,this.selectedEmpresa)
         },
 
         /**
@@ -384,7 +433,7 @@ export default {
             })
             swalWithBootstrapButtons.fire({
                 title: 'Estas seguro de eliminarlo?',
-                text: "You won't be able to revert this!",
+                // text: "You won't be able to revert this!",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
@@ -415,7 +464,7 @@ export default {
                 }else if(result.dismiss === Swal.DismissReason.cancel){
                     swal.fire({
                         title: 'Cancelled',
-                        text:'Your imaginary file is safe ',
+                        text:'Tu registro está a salvo ',
                         icon:'error',
                         timer: 1500,
                         timerProgressBar: true,
@@ -428,12 +477,12 @@ export default {
          *
          * @return void
          */
-         validarUsuario() {
+        validarUsuario() {
         this.erroruser = 0;
         this.errorMostrarMsjuser = [];
-        if (!this.nombre)
+        if (!this.nombreUsuario)
             this.errorMostrarMsjuser.push("* El nombre no puede estar vacío");
-        if (!this.apellido)
+        if (!this.apellidoUsuario)
             this.errorMostrarMsjuser.push("* El apellido no puede estar vacío");
         if (this.idGrupos.length == 0)
             this.errorMostrarMsjuser.push("* El Grupo no puede estar vacío");
@@ -445,9 +494,9 @@ export default {
         },
     },
     mounted() {
-          this.listarUsuarios(1,this.buscar);
-          this.listarEmpresas();
-          this.listarGrupos();
+        this.listarUsuarios(1,this.buscar);
+        this.listarEmpresas();
+        this.listarGrupos();
     }
 }
 </script>
@@ -486,5 +535,11 @@ export default {
   opacity: 0.4;
   filter: alpha(opacity=40);
 }
+
+/* .custom-select {
+    background-color: #f8f8f8;
+    color: #333;
+} */
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
