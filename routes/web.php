@@ -8,6 +8,7 @@ use App\Http\Controllers\ValorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\SituacionFiscalController;
 use App\Http\Controllers\TipoEmpresaController;
@@ -52,9 +53,6 @@ Route::middleware('auth:web')->group(function(){
     Route::post('/descargarFactura',[FacturaController::class,'descargarFactura'])->name('descargarfactura');
     Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('reporteventas');
 
-    // Compras
-    Route::post('/comprar', [FacturaController::class,'store'])->name('comprar');
-
     // Usuarios
     Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');
     Route::get('/showUserAuth',[UserController::class,'showUserAuth'])->name('showUserAuth');
@@ -65,11 +63,7 @@ Route::middleware('auth:web')->group(function(){
     Route::post('/crearcliente', [ClienteController::class,'crearCliente'])->name('crearcliente');
     Route::put('/updateCliente', [ClienteController::class,'update'])->name('updateCliente');
     Route::post('/deleteCliente', [ClienteController::class,'destroy'])->name('deleteCliente');
+
     //Situacion Fiscal
     Route::get('/situacionfiscal',[SituacionFiscalController::class,'getAllSituacionFiscal'])->name('situacionfiscal');
-    
-
-    // Proveedores
-    //Route::get('/proveedor',[ProveedorController::class,'getAllProveedores'])->name('proveedor');
-
 });

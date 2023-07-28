@@ -92,7 +92,7 @@
                 <td class="text-center">{{detalle.idArticulo}}</td>
                 <td >{{detalle.nombre}}</td>
                 <td class="">{{detalle.cantidadArticulo}}</td>
-                <td>{{detalle.precioVenta}}</td>
+                <td>{{detalle.precioCompra}}</td>
                 <td>{{detalle.totalDetalle}}</td>
                 <td>
                   <button @click="eliminarItem(index), sumarSubtotal(), obtenerDescuento()" class="btn btn-danger"><i class="fas fa-trash"></i></button>
@@ -377,7 +377,7 @@ export default {  // todo lo que voy a exportar
       let valorCantidad = parseInt(document.getElementById(id).value);
       let existe = false;
       this.arrayDetalles.forEach((detalle, index) => {
-        if (detalle.idArticulo === id && detalle.precioVenta === precio) {
+        if (detalle.idArticulo === id && detalle.precioCompra === precio) {
           // Si el artículo y el precio coinciden en los detalles, se modifica la cantidad
           this.arrayDetalles[index].cantidadArticulo += valorCantidad;
           this.arrayDetalles[index].totalDetalle =
@@ -392,7 +392,7 @@ export default {  // todo lo que voy a exportar
           idArticulo: id,
           nombre: nombre,
           cantidadArticulo: valorCantidad,
-          precioVenta: precio,
+          precioCompra: precio,
           totalDetalle: valorCantidad * precio,
         };
         this.arrayDetalles.push(nuevoDetalle);
@@ -509,7 +509,7 @@ export default {  // todo lo que voy a exportar
       //me.arrayDetalles=[];
       //debugger;
       console.log('me Array: '+this.arrayDetalles);
-      var url = "/comprar";
+      var url = "/api/comprar";
       axios
         .post(url ,{ 
               compra:{
