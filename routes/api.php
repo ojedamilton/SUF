@@ -8,6 +8,7 @@ use App\Http\Controllers\TipoEmpresaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\GrupoController;
@@ -61,9 +62,11 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/deleteUsuario', [UserController::class,'destroy'])->name('deleteUsuario');
     // Facturacion
     Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
+    // Compras
+    Route::post('/comprar', [CompraController::class,'store'])->name('comprar');
     // Proveedor
-    Route::get('/proveedores',[ProveedorController::class,'index'])->name('proveedores');
+    Route::get('/proveedores',[ProveedorController::class,'getAllProveedores'])->name('proveedores');
     Route::post('/createProveedor',[ProveedorController::class,'store'])->name('crearproveedor');
     Route::put('/updateProveedor',[ProveedorController::class,'update'])->name('editarproveedor');
-    Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');   
+    Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');
 });

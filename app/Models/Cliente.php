@@ -21,6 +21,7 @@ class Cliente extends Persona
         'telefonoCliente',
         'estadoCliente',
         'idEmpresa',
-        'idSituacion'
+        'idSituacion',
+        'razonSocial',
     ];
 }

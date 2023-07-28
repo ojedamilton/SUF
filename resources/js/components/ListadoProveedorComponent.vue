@@ -26,7 +26,7 @@
                                 <tr v-for="proveedor in arrayProveedor" :key="proveedor.id">
                                     <td>{{proveedor.nombreProveedor}}</td>
                                     <td>{{proveedor.apellidoProveedor}}</td>
-                                    <td>{{proveedor.dniProveedor}}</td>
+                                    <td>{{proveedor.cuitProveedor}}</td>
                                     <td>{{proveedor.emailProveedor}}</td>
                                     <td>{{proveedor.direccionProveedor}}</td>
                                     <td>{{proveedor.telefonoProveedor}}</td>

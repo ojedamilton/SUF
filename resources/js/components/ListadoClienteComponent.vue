@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
         <div class=" row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-11">
                 <p class="text-center"><strong>LISTADO CLIENTES</strong></p>
                 <div class="card">
                     <div class="card-header">
