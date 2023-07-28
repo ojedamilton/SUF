@@ -577,4 +577,7 @@ export default {  // todo lo que voy a exportar
         position: absolute !important;
         background-color: #3c29297a !important;
     }
+    .col-lg-1.control-label {
+      padding-right:1px !important
+    }
 </style>    
