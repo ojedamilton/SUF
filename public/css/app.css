@@ -81,11 +81,9 @@ body {
   color: var(--bs-body-color);
   text-align: var(--bs-body-text-align);
   background-color: var(--bs-body-bg);
+  background-image:url('../img/ecommerce-tienda.jpg');
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  background: url('../img/ecommerce-tienda.jpg') no-repeat center center fixed;
-  background-size: 1500px 1000px;
-  background-size: cover;
 }
 
 hr {

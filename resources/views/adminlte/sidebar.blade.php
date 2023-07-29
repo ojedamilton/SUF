@@ -180,7 +180,7 @@
                     </router-link>
                   </li>
                   <li class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
+                    <router-link  class="nav-link" to='/nuevoArticulo'>
                       <i class="fas fa-cube nav-icon"></i>
                       <p>Nuevo Articulo</p>
                     </router-link>
@@ -231,23 +231,32 @@
                       <p>Subdiario de ventas</p>
                     </a>
                   </li>
-                </ul>{{-- 
+                </ul>
                 <ul class="nav nav-treeview">
-                  <li  class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
-                      <i class="far fa-chart-bar nav-icon"></i>
-                      <p>Ventas por cliente</p>
+                  <li   class="nav-item">
+                    <router-link  class="nav-link" id="dashboard-link" to='/estadisticasVentas'>
+                      <i class="fa fa-book nav-icon"></i>
+                      <p>Reportes Ventas</p>
                     </a>
                   </li>
                 </ul>
+              </li>
+              <!-- STOCKS -->
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <p>
+                    STOCKS
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
                 <ul class="nav nav-treeview">
                   <li  class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
-                      <i class="far fa-chart-bar nav-icon"></i>
-                      <p>Ventas por vendedor</p>
+                    <router-link  class="nav-link" to='/inventarioStock'>
+                      <i class="fa fa-database"></i>
+                      <p>Inventario</p>
                     </a>
                   </li>
-                </ul> --}}
+                </ul>
               </li>
             </ul>
           </nav>

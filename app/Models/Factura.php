@@ -53,4 +53,9 @@ class Factura extends Model implements Auditable
        
         return $this->belongsTo(TipoFactura::class,'idTipoFactura');
     }
+
+    public function detallesfactura(){
+       
+        return $this->hasMany(DetalleFactura::class,'idFactura');
+    }
 }

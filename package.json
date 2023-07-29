@@ -26,6 +26,10 @@
     "dependencies": {
         "autoprefixer": "10.4.5",
         "chart.js": "^4.2.1",
+        "datatables.net-bs4": "^1.13.5",
+        "datatables.net-buttons-bs4": "^2.4.1",
+        "jszip": "^3.10.1",
+        "pdfmake": "^0.2.7",
         "print-js": "^1.6.0",
         "vue-chartjs": "^5.2.0",
         "vue-multiselect": "^2.1.7",

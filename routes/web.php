@@ -51,7 +51,6 @@ Route::middleware('auth:web')->group(function(){
     Route::post('/detallesbyid',[FacturaController::class,'getDetallesById'])->name('detallesbyid');
     Route::post('/getfacturasbyid',[FacturaController::class,'getFacturasById'])->name('facturasbyid');
     Route::post('/descargarFactura',[FacturaController::class,'descargarFactura'])->name('descargarfactura');
-    Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('reporteventas');
 
     // Usuarios
     Route::get('/notificacioncorreo',[UserController::class,'sendMail'])->name('sendMail');

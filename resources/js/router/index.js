@@ -15,6 +15,9 @@ import ListadoCategoria from "../components/ListadoCategoriaComponent.vue";
 import NuevoMedioPago from "../components/NuevoMedioPagoComponent.vue";
 import ListadoMedioPago from "../components/ListadoMedioPagoComponent.vue";
 import GraficosView from "../components/GraficosComponent.vue";
+import InventarioStock from "../components/InventarioStockComponent.vue";
+import NuevoArticulo from "../components/NuevoArticuloComponent.vue";
+import EstadisticasVentas from "../components/EstadisticasVentasComponent.vue";
 
 const routes = [
     {
@@ -92,11 +95,11 @@ const routes = [
         name: "listadoCategoria",
         component: ListadoCategoria,
     },
-    // {
-    //     path: "/nuevoArticulo",
-    //     name: "nuevoArticulo",
-    //     component: NuevoArticulo,
-    // },
+    {
+        path: "/nuevoArticulo",
+        name: "nuevoArticulo",
+        component: NuevoArticulo,
+    },
     // {
     //     path: "/listadoArticulo",
     //     name: "listadoArticulo",
@@ -111,6 +114,16 @@ const routes = [
         path: "/listadoMedioPago",
         name: "listadoMedioPago",
         component: ListadoMedioPago,
+    },
+    {
+        path: "/inventarioStock",
+        name: "inventarioStock",
+        component: InventarioStock,
+    },
+    {
+        path: "/estadisticasVentas",
+        name: "estadisticasVentas",
+        component: EstadisticasVentas,
     },
 ];
 

@@ -17,9 +17,9 @@ class CreateTableArticulos extends Migration
             $table->id();
             $table->string('nombreArticulo');
             $table->decimal('precio',8,2);
-            $table->integer('stock');
             $table->boolean('estadoArticulo');
             $table->unsignedBigInteger('idCategoria');
+            $table->decimal('precioCompra',8,2);
             $table->timestamps();
 
             $table->foreign('idCategoria')->references('id')->on('categorias');

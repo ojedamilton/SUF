@@ -11,7 +11,9 @@ use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\GrupoController;
+
 
 
 /*
@@ -23,9 +25,11 @@ use App\Http\Controllers\GrupoController;
 
 // Articulos
 Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
- // Empresas
- Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
+// Empresas
+Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
  
+// Reportes
+Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('reporteventas');
 /*
 |--------------------------------------------------------------------------
 | API Routes - Privates
@@ -69,4 +73,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/createProveedor',[ProveedorController::class,'store'])->name('crearproveedor');
     Route::put('/updateProveedor',[ProveedorController::class,'update'])->name('editarproveedor');
     Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');
+    // Stocks
+    Route::get('/stocks/{page}/{buscar}',[StockController::class,'index'])->name('stocks');
+    Route::put('/updateInventario',[StockController::class,'update'])->name('stocks.update');
+    // Articulos
+    Route::post('/crearArticulo',[ArticuloController::class,'store'])->name('crearArticulos');
+
 });

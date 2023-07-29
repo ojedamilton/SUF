@@ -16,7 +16,6 @@ class Articulo extends Model
         'id',
         'precio',
         'nombreArticulo',
-        'stock',
         'idCategoria',
         'estadoValor',
     ];
@@ -24,5 +23,10 @@ class Articulo extends Model
     public function detallesFactura()
     {
         return $this->hasMany(DetalleFactura::class, 'id');
+    }
+
+    public function stock()
+    {
+        return $this->hasOne(Stock::class, 'idArticulo');
     }
 }

@@ -34,7 +34,11 @@ class DetalleFactura extends Model implements Auditable
 
     public function articulo()
     {
-        //dd($this);
         return $this->belongsTo(Articulo::class, 'idArticulo');
+    }
+
+    public function factura()
+    {
+        return $this->belongsTo(Factura::class, 'idFactura');
     }
 }

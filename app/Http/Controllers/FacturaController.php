@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Articulo;
 use App\Models\Factura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetalleFactura;
+use App\Models\Stock;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -24,8 +26,13 @@ class FacturaController extends Controller
     {
 
         try {
-            $listadofacturas = Factura::orderBy('id', 'desc')
-                ->where('idEmpresa', Auth::user()->idEmpresa)
+            $listadofacturas = Factura::with('detallesfactura','puntoventa', 'detallesfactura.articulo','detallesfactura.articulo.stock')
+                ->select('facturas.id','facturas.idpuntoVenta','facturas.numeroFactura','facturas.totalFactura','facturas.fechaModificacion','tipofacturas.tipoFactura','users.name as nameUser','users.apellido as apellidoUser','clientes.nombreCliente','clientes.apellidoCliente')
+                ->leftJoin('users','facturas.idUsuario','=','users.id')
+                ->leftJoin('tipofacturas','facturas.idTipoFactura','=','tipofacturas.idTipoFactura')
+                ->leftJoin('clientes','facturas.idCliente','=','clientes.id')
+                ->orderBy('facturas.id', 'desc')
+                ->where('facturas.idEmpresa', Auth::user()->idEmpresa)
                 ->get();
 
             return response()->json([
@@ -101,11 +108,18 @@ class FacturaController extends Controller
         } else {
             $ultimoNum = '000001';
         }
-
         // llamo al metodo validarForm
         // $this->validarForm($request);
-
+        
         try {
+            // Valido El stock de cada articulo
+            foreach ($request->detalles as $detalle) {
+                $stock = Stock::where('idArticulo', $detalle['idArticulo'])->first();
+                if ($stock->cantidad < $detalle['cantidadArticulo']) {
+                   // Enviar Throw Exception
+                    throw new \Exception("No hay Stock Suficiente para el Articulo: " . $detalle['nombre']);
+                }
+            }
             // Comienzo Transaccion
             DB::beginTransaction();
             // Instancio Factura
@@ -140,6 +154,8 @@ class FacturaController extends Controller
             // No me permitia auditar con el metodo insert porque es de tipo query builder y no de tipo eloquent
             //$detalleFactura->insert($detalleReq);
             DB::commit();
+            // Hago un refresh de la instancia para que me traiga los detalles
+            $detalleFactura->refresh();
             return response()->json([
                 'success' => true,
                 'message' => 'Factura Creada Correctamente',
@@ -207,21 +223,75 @@ class FacturaController extends Controller
 
     public function reporteventas(){
 
-        $fecha_actual = Carbon::now()->toDateString();
-       // dd($fecha_actual);
-       /*  $inicio_semana_actual = $fecha_actual->startOfWeek()->startOfDay();
-        $fin_semana_actual = $fecha_actual->endOfWeek()->endOfDay(); */
-        //whereBetween('fechaModificacion', [$inicio_semana_actual, $fin_semana_actual])
-        $total_facturada_semana_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
-                                                ->where('fechaModificacion',$fecha_actual)
-                                                ->sum('totalFactura');                                       
-        $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa)->count();                                          
-        
+        $fecha_actual = Carbon::now();
+        $inicio_mes_actual = Carbon::now()->startOfMonth();
 
-        return [
-          "cantVentaSemanal"=>$cantidad_facturas,
-          "totalVentaSemanal"=>$total_facturada_semana_actual
-        ];
+        $total_facturada_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
+                                                ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
+                                                ->sum('totalFactura');
+        
+        $cantidad_facturas=Factura::where('idEmpresa',1)
+            ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
+            ->count();
+        
+        $cantidad_articulos_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
+            ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
+            ->join('detallesfacturas','facturas.id','=','detallesfacturas.idFactura')
+            ->sum('detallesfacturas.cantidadArticulo');
+
+        $ArtMasVendido = 'Jean kosiuko';
+
+        // Metricas Para Grafico de Barras ChartJS
+        $numeroMes      = $fecha_actual->month;
+        $nombreMes      = $fecha_actual->formatLocalized('%B');
+        $nameMeses      = [];
+        $amount         = [];
+        $countFacturas  = [];
+        $countArticulos = [];
+
+        for ($i=1; $i <= $numeroMes ; $i++) { 
+            // Get Current Month with dates
+            $currentMonth = $fecha_actual->month($i);
+            $nameofMonth = $currentMonth->formatLocalized('%B');
+            array_push($nameMeses,$nameofMonth);
+            $startOfMonth = $currentMonth->startOfMonth()->toDateString();
+            $endOfMonth = date("Y-m-t", strtotime($currentMonth->toDateString()));
+
+            $total_facturada_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
+                    ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
+                    ->sum('totalFactura');
+            array_push($amount,$total_facturada_mes_actual);
+
+            $cantidad_facturas=Factura::where('idEmpresa',1)
+                ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
+                ->count();
+            array_push($countFacturas,$cantidad_facturas);
+
+            $cantidad_articulos_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
+                ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
+                ->join('detallesfacturas','facturas.id','=','detallesfacturas.idFactura')
+                ->sum('detallesfacturas.cantidadArticulo');
+            array_push($countArticulos,$cantidad_articulos_mes_actual);
+
+        }
+        // Metricas Grafico Pie
+        $cantidadArticulos = DetalleFactura::select('a.nombreArticulo',DB::raw('SUM(detallesfacturas.cantidadArticulo) as total'))
+            ->join('articulos as a','detallesfacturas.idArticulo','=','a.id')
+            ->groupBy('detallesfacturas.idArticulo', 'a.id', 'a.nombreArticulo')
+            ->orderByDesc('total')
+            ->pluck('total','nombreArticulo');
+    //DetalleFactura::whereDate();
+        return response()->json([
+            "cantVentaMensual"          =>$cantidad_facturas,
+            "totalVentaMensual"         =>$total_facturada_mes_actual,
+            "cantidadArticulosMensual"  =>$cantidad_articulos_mes_actual,
+            "ArtMasVendido"             =>$ArtMasVendido,
+            "toCurrentMonths"           =>$nameMeses,
+            "amount"                    =>$amount,
+            "countFacturas"             =>$countFacturas,
+            "countArticulos"            =>$countArticulos,
+            'cantidadArticulos'        =>$cantidadArticulos,
+        ],200);
          
 
     }
