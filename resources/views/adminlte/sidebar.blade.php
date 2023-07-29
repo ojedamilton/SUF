@@ -232,6 +232,14 @@
                     </a>
                   </li>
                 </ul>
+                <ul class="nav nav-treeview">
+                  <li   class="nav-item">
+                    <router-link  class="nav-link" id="dashboard-link" to='/estadisticasVentas'>
+                      <i class="fa fa-book nav-icon"></i>
+                      <p>Reportes Ventas</p>
+                    </a>
+                  </li>
+                </ul>
               </li>
               <!-- STOCKS -->
               <li class="nav-item">

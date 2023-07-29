@@ -21,9 +21,11 @@ use App\Http\Controllers\StockController;
 
 // Articulos
 Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
- // Empresas
- Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
+// Empresas
+Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
  
+// Reportes
+Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('reporteventas');
 /*
 |--------------------------------------------------------------------------
 | API Routes - Privates
@@ -60,5 +62,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('/updateInventario',[StockController::class,'update'])->name('stocks.update');
     // Articulos
     Route::post('/crearArticulo',[ArticuloController::class,'store'])->name('crearArticulos');
+
    
 });
