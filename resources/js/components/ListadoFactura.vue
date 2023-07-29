@@ -12,12 +12,12 @@
             </a>
           </div>
         </div>
-        <div class="card-body table-responsive p-0">
+        <div class="card-body table-responsive p-1">
           <table class="table table-striped table-valign-middle">
             <thead>
               <tr>
-                <th>Tipo Factura</th>
                 <th>N° Factura</th>
+                <th>Tipo Factura</th>
                 <th>Total Factura</th>
                 <th>Fecha</th>
                 <th>Ver</th>
@@ -26,10 +26,10 @@
             <tbody>
               <tr v-for="factura in arrayFacturas" :key="factura.id">
                 <td>
-                  {{ tipoFactura(factura.idTipoFactura) }}
+                  {{ factura.numeroFactura }}
                 </td>
                 <td>
-                  {{ factura.numeroFactura }}
+                  {{ factura.tipoFactura }}
                 </td>
                 <td>$ {{ factura.totalFactura }}</td>
                 <td>
