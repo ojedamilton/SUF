@@ -114,7 +114,6 @@ export default {
             idCan:'',
             cantidad:0,
             cantidadMinima:0,
-            cantidadBackUp:0,
             tituloModal:'',
             nombreCliente:'',
             apellidoCliente:'',
@@ -237,7 +236,6 @@ export default {
             this.idStock=stock['id'];
             this.cantidad=stock['cantidad'];
             this.cantidadMinima=stock['cantidadMinima'];
-            this.cantidadBackUp=stock['cantidadBackup'];
             this.tipoAccion=2;     
         },
 
@@ -259,7 +257,6 @@ export default {
             axios.put(url,{
                 'cantidad':this.cantidad,
                 'cantidadMinima':this.cantidadMinima,
-                'cantidadBackup':this.cantidadBackUp,
                 'idStock':this.idStock,
             }).then(function (response){
                 // Ciero el modal
@@ -293,7 +290,6 @@ export default {
             this.errorMostrarMsjuser=[];
             if(!this.cantidad) this.errorMostrarMsjuser.push('* La cantidad no puede estar vacío');
             if(!this.cantidadMinima) this.errorMostrarMsjuser.push('* La cantidad minima no puede estar vacío');
-            if(!this.cantidadBackUp) this.errorMostrarMsjuser.push('* La cantidad bak-up no puede estar vacío');
             if(this.errorMostrarMsjuser.length) this.errorcliente=1;
         },
     },
