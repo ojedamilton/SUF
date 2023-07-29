@@ -8,7 +8,7 @@ use App\Models\Articulo;
 use App\Models\DetalleFactura;
 use Illuminate\Support\Facades\Log;
 
-class StockObserver
+class StockFacturaObserver
 {
      /**
      * Handle the User "created" event.
@@ -25,7 +25,7 @@ class StockObserver
             $detallefactura->refresh();
             $detallefactura = $detallefactura->load('articulo');
             // Descuento Stock de Articulo
-            $stock = Stock::where('idArticulo',$detallefactura->idArticulo);
+            $stock = Stock::where('idArticulo',$detallefactura->idArticulo)->first();
             $stock->cantidad = $stock->cantidad - $detallefactura->cantidadArticulo;
             $stock->save();
             Log::info("Se actualizo el Stock para el Articulo: ".$stock->idArticulo." cantidad: ".$stock->cantidad);

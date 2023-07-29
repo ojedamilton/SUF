@@ -178,13 +178,13 @@
                                 <td>{{articulo.id}}</td>    
                                 <td>{{articulo.nombreArticulo}}</td> 
                                 <td class="col-2">
-                                  <input class="form-control form-control-sm" :value="articulo.precio" type="number" name="precio" :id="'precio_'+articulo.id">
+                                  <input class="form-control form-control-sm" :value="articulo.precioCompra" type="number" name="precio" :id="'precio_'+articulo.id">
                                 </td>
                                 <td class="col-2">
                                   <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
                                   </td>
                                 <td>
-                                  <button @click="rellenarDetalleCompra(articulo.id,articulo.nombreArticulo,articulo.precio),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
+                                  <button @click="rellenarDetalleCompra(articulo.id,articulo.nombreArticulo),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
                                 </td>
                             </tr>  
                           </tbody>  
