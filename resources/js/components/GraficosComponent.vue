@@ -5,16 +5,16 @@
             <div class="row" style="display: flex; justify-content: center">
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-success">
+                    <div class="small-box bg-orange">
                         <div class="inner">
-                            <h3><sup style="font-size: 18px">$</sup> {{ totalVentaSemanal }}</h3>
+                            <h3><sup style="font-size: 18px">$</sup> {{ totalVentaMensual }}</h3>
 
-                            <p>Total Ventas</p>
+                            <p>Total Ventas del Mes</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="#" class="small-box-footer">Mas info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -22,29 +22,29 @@
                     <!-- small box -->
                     <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>{{ cantVentaSemanal }}</h3>
+                            <h3>{{ cantVentaMensual }}</h3>
 
-                            <p>Total Tickets</p>
+                            <p>Numero de Ventas del Mes</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-bag"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="#" class="small-box-footer">Mas info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-primary">
+                    <div class="small-box bg-violet">
                         <div class="inner">
-                            <h3>{{ cantClientes }}</h3>
+                            <h3>{{ cantidadArticulosMensual }}</h3>
 
-                            <p>Clientes</p>
+                            <p>Articulos Vendidos del Mes</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-person-add"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="#" class="small-box-footer">Mas info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -52,14 +52,14 @@
                     <!-- small box -->
                     <div class="small-box bg-secondary">
                         <div class="inner">
-                            <h3>{{ cantUsuarios }}</h3>
+                            <h3>{{ ArtMasVendido }}</h3>
 
-                            <p>Usuarios</p>
+                            <p>Articulo Mas Vendido</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="#" class="small-box-footer">Mas info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -70,23 +70,28 @@
                 </strong>
             </div>
             <!-- Tablero -->
-            <div class="row chart-container ml-5 w-75 h-100">
-                <Bar :options="chartOptions" :data="chartData"></Bar>
+            <div class="row chart-container mb-5 w-75 h-100"> 
+                <!-- <div class="col-12"> -->
+                    <Bar :options="chartOptions" :data="chartData"></Bar>
+                <!-- </div> -->
+            </div>
+            <div class="row chart-container w-100 h-100">
+                <Pie :options="chartOptionsPie" :data="dataPie"></Pie>
             </div>
         </div>
     </section>
 </template>
 <script>
 
-import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { Bar, Pie } from 'vue-chartjs'
+import { Chart as ChartJS, Title, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 import axios from 'axios';
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
 
 export default {
 
-    components: { Bar },
+    components: { Bar, Pie },
     props: {
         chartId: {
             type: String,
@@ -97,10 +102,10 @@ export default {
         return {
             etiquetas: [],
             valores: [],
-            cantVentaSemanal: 0,
-            totalVentaSemanal: 0,
-            cantClientes: 0,
-            cantUsuarios: 0,
+            cantVentaMensual: 0,
+            totalVentaMensual: 0,
+            cantidadArticulosMensual:0,
+            ArtMasVendido: '',
             chartData: {
                 labels: []
                 , datasets: [
@@ -110,58 +115,94 @@ export default {
                     }
                 ]
             },
+            dataPie : {
+                labels: [],
+                datasets: [
+                    {
+                    data: []
+                    }
+                ]
+            },
             chartOptions: {
                 responsive: true,
+                //maintainAspectRatio: false,
+            },
+            chartOptionsPie: {
+                responsive: true,
+                maintainAspectRatio: false,
             },
         }
     },
     methods: {
-        grafico() {
-            /* let url='/articulos';
-            const totales = await axios.get(url);
-            console.log(totales.data.articulos.data[0]); */
-            this.chartData = {
-                labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-
-                datasets: [
-                    {
-                        label: 'Ventas',
-                        backgroundColor: '#28a745',
-                        data: [400000, 200000, 120000, 390000, 1000000, 400000, 390000, 800000, 400000, 200000, 600002, 1000041],
-                        grouped: false
-                    },
-
-                    {
-                        label: 'Tickets Emitidos',
-                        backgroundColor: '#17a2b8',
-                        data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
-                        grouped: false
-                    },
-
-                    {
-                        label: 'Articulos Vendidos',
-                        backgroundColor: '#f87979',
-                        data: [50, 45, 50, 70, 60, 100, 64, 160, 55, 35, 45, 20],
-                        grouped: false
-                    },
-                ]
-            };
-        },
+    
         async reporteVentas() {
-            let url = '/reporteventas';
+            let url = 'api/reporteventas';
             let me = this;
             try {
                 const totales = await axios.get(url);
-                this.cantVentaSemanal = totales.data.cantVentaSemanal;
-                this.totalVentaSemanal = totales.data.totalVentaSemanal;
+                this.cantVentaMensual = totales.data.cantVentaMensual;
+                this.totalVentaMensual = totales.data.totalVentaMensual;
+                this.cantidadArticulosMensual = totales.data.cantidadArticulosMensual;
+                this.ArtMasVendido = Object.keys(totales.data.cantidadArticulos)[0];
+                this.chartData = {
+                    labels: totales.data.toCurrentMonths,
+                    datasets: [
+                        {
+                            label: 'Ventas',
+                            backgroundColor: '#F8C471',
+                            data: totales.data.amount,
+                            grouped: false
+                        },
+                        {
+                            label: 'Cantidad Facturas',
+                            backgroundColor: '#17a2b8',
+                            data: totales.data.countFacturas,
+                            grouped: false
+                        },
+                        {
+                            label: 'Articulos Vendidos',
+                            backgroundColor: '#9B59B6',
+                            data: totales.data.countArticulos,
+                            grouped: false
+                        },
+                    ]
+                };
+                this.dataPie = {
+                    labels: Object.keys(totales.data.cantidadArticulos),
+                    datasets: [
+                        {
+                        backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16','#F4D03F','#F39C12','#BB8FCE'],
+                        data: Object.values(totales.data.cantidadArticulos)
+                        }
+                    ]
+                };
             } catch (error) {
 
             }
         }
     },
     mounted() {
-        this.grafico();
+        //this.grafico();
         this.reporteVentas();
     }
 }
 </script>
+<style>
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 80vh;
+    width: 80vw;
+}
+.bg-violet {
+    background-color: #BB8FCE !important;
+    color: #fff;
+}
+.bg-orange {
+    background-color: #F39C12 !important;
+    color: #fff !important;
+}
+.bg-orange > a {
+    color: #fff !important;
+}
+</style>
