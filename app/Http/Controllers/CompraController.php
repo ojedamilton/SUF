@@ -138,6 +138,8 @@ class CompraController extends Controller
             // No me permitia auditar con el metodo insert porque es de tipo query builder y no de tipo eloquent
             //$detalleCompra->insert($detalleReq);
             DB::commit();
+            // Hago un refresh de la instancia para que me traiga los detalles
+            $detalleCompra->refresh();
             return response()->json([
                 'success' => true,
                 'message' => 'Compra Creada Correctamente',

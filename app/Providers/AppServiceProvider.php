@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\DetalleCompra;
 use App\Models\DetalleFactura;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
 use App\Observers\MailObserver;
-use App\Observers\StockObserver;
+use App\Observers\StockCompraObserver;
+use App\Observers\StockFacturaObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,8 +28,12 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-    {
+    {   
+        // Cuando el usuario se crea, se envia un mail
         User::observe(MailObserver::class);
-        DetalleFactura::observe(StockObserver::class);
+        // Cuando se crea un detalle de factura, se disminuye el stock
+        DetalleFactura::observe(StockFacturaObserver::class);
+        // Cuando se crea un detalle de compra, se suma el stock
+        DetalleCompra::observe(StockCompraObserver::class);
     }
 }
