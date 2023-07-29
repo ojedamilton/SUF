@@ -26,7 +26,7 @@
                                 <tr v-for="proveedor in arrayProveedor" :key="proveedor.id">
                                     <td>{{proveedor.nombreProveedor}}</td>
                                     <td>{{proveedor.apellidoProveedor}}</td>
-                                    <td>{{proveedor.dniProveedor}}</td>
+                                    <td>{{proveedor.cuitProveedor}}</td>
                                     <td>{{proveedor.emailProveedor}}</td>
                                     <td>{{proveedor.direccionProveedor}}</td>
                                     <td>{{proveedor.telefonoProveedor}}</td>
@@ -347,7 +347,7 @@ export default {
             })
             swalWithBootstrapButtons.fire({
                 title: 'Estas seguro de eliminarlo?',
-                text: "You won't be able to revert this!",
+                // text: "You won't be able to revert this!",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
@@ -378,7 +378,7 @@ export default {
                 }else if(result.dismiss === Swal.DismissReason.cancel){
                     swal.fire({
                         title: 'Cancelled',
-                        text:'Your imaginary file is safe ',
+                        text:'Tu registro está a salvo ',
                         icon:'error',
                         timer: 1500,
                         timerProgressBar: true,

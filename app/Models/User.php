@@ -59,14 +59,19 @@ class User extends Authenticatable
 
        return $this->pwd;
     }
-    
+
     /**
      * Get relation between User and empresas in pivot table = "usuariosempresas"
-     * 
+     *
      */
     public function empresas(){
-        
+
         return $this->belongsToMany(Empresa::class,'usuariosempresas','idUsuario','idEmpresa');
+    }
+
+    public function grupos()
+    {
+        return $this->belongsToMany(Grupo::class, 'usuariogrupos','idUsuario','idGrupo');
     }
 
 }

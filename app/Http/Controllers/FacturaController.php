@@ -90,11 +90,18 @@ class FacturaController extends Controller
         // Obtengo Pto Venta ||Proxima iteracion
         //$ptoVenta=DB::table('puntoVenta')->where('id',1)->first();
         $ptoVenta = 1;
-        $factura = Factura::where('idTipoFactura', $request->factura['tipoFacturaId'])->first();
+
+        // Obtener la empresa del usuario logueado
+        $idEmpresa = Auth::user()->idEmpresa;
+
+        $factura = Factura::where('idTipoFactura', $request->factura['tipoFacturaId'])
+                            ->where('idEmpresa', $idEmpresa) // Agregar filtro por empresa
+                            ->first();
         // ultimo Numero por cada Tipo de Factura 
         if ($factura) {
             $ultimoNum = Factura::selectRaw("id,CONCAT(LPAD(numeroFactura+1, 6, '0')) as numeroFactura")
                 ->where("idTipoFactura", $request->factura['tipoFacturaId'])
+                ->where("idEmpresa", $idEmpresa) // Agregar filtro por empresa
                 ->orderBy("numeroFactura", "desc")
                 ->pluck('numeroFactura')
                 ->first();

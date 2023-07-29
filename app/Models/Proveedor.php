@@ -17,6 +17,7 @@ class Proveedor extends Model
         'apellidoProveedor',
         'cuitProveedor',
         'emailProveedor',
+        'direccionProveedor',
         'telefonoProveedor',
         'estadoProveedor',
         'id_empresa',

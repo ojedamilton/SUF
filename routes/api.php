@@ -8,9 +8,13 @@ use App\Http\Controllers\TipoEmpresaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\GrupoController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +38,12 @@ Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('r
 */
  
 Route::middleware('auth:sanctum')->group(function(){
+    // Grupos 
+    Route::get('/grupos',[GrupoController::class,'index'])->name('grupos');
+
+    // Empresa
+    Route::put('/updateEmpresa', [EmpresaController::class,'update'])->name('updateEmpresa');
+    Route::post('/deleteEmpresa', [EmpresaController::class,'destroy'])->name('deleteEmpresa');
     // Medios de Pago
     Route::get('/valores',[ValorController::class,'getAllValores'])->name('valores');
     Route::post('/crearvalores',[ValorController::class,'store'])->name('crearvalores');
@@ -49,11 +59,17 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/tipoFacturaEmpresa', [TipoEmpresaController::class,'getTipoFacturaEmpresa'])->name('tipofacturaempresa');
     // Usuarios
     Route::get('/usuarios',[UserController::class,'index'])->name('usuario');
+    Route::get('/getGruposByUser/{idUsuario}', [UserController::class, 'getGruposByUser'])->name('getGruposByUser');
+    Route::get('/getEmpresasByUser/{idUsuario}', [UserController::class, 'getEmpresasByUser'])->name('getEmpresasByUser');
     Route::post('/crearusuario', [UserController::class,'store'])->name('crearusuario');
+    Route::put('/updateUsuario', [UserController::class,'update'])->name('updateUsuario');
+    Route::post('/deleteUsuario', [UserController::class,'destroy'])->name('deleteUsuario');
     // Facturacion
     Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
+    // Compras
+    Route::post('/comprar', [CompraController::class,'store'])->name('comprar');
     // Proveedor
-    Route::get('/proveedores',[ProveedorController::class,'index'])->name('proveedores');
+    Route::get('/proveedores',[ProveedorController::class,'getAllProveedores'])->name('proveedores');
     Route::post('/createProveedor',[ProveedorController::class,'store'])->name('crearproveedor');
     Route::put('/updateProveedor',[ProveedorController::class,'update'])->name('editarproveedor');
     Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');
@@ -63,5 +79,4 @@ Route::middleware('auth:sanctum')->group(function(){
     // Articulos
     Route::post('/crearArticulo',[ArticuloController::class,'store'])->name('crearArticulos');
 
-   
 });

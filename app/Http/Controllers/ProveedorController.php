@@ -7,23 +7,25 @@ use App\Models\Proveedor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\ProveedorRepository;
 
 class ProveedorController extends Controller
 {
-    public function index(Request $request) {
+    private $proveedorRepository;
+
+    public function __construct(ProveedorRepository $proveedorRepository){
+
+      $this->proveedorRepository = $proveedorRepository;
+
+    }
+    public function getAllProveedores(Request $request)
+    {
+        $buscar= $request->buscar;
+
         try {
 
-            $buscar= $request->buscar;
-            if (!$buscar) {
-                $proveedor=Proveedor::orderBy('id','asc')->paginate(10);
-            }else{
-                $proveedor=Proveedor::where('nombreProveedor','like','%'.$buscar.'%')
-                    ->orWhere('apellidoProveedor','like','%'.$buscar.'%')
-                    ->orWhere('cuitProveedor','like','%'.$buscar.'%')
-                    ->orderBy('apellidoProveedor','asc')
-                    ->paginate(5);     
-            }
-              
+            $proveedor=$this->proveedorRepository->all($buscar,Auth::user()->idEmpresa);
+
             return response()->json([
                     'success'=>true,
                     'message'=>'Listado de proveedores',
@@ -44,7 +46,7 @@ class ProveedorController extends Controller
 
             return response()->json([
                 'success'=>false,
-                'message'=>'No se encontraron proveedors',
+                'message'=>'No se encontraron proveedores',
                 'proveedores'=>null,
                 'pagination'=>[
                     'total'=>1,

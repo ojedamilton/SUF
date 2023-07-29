@@ -81,6 +81,7 @@
                 <select class="form-control" v-model="empresaId" id="exampleInputEmpresa" name="empresas">
                 <option  v-for="empresas in arrayEmpresa" :key="empresas.id" :value="empresas.id">{{empresas.nombreEmpresa}}</option>
               </select> -->
+                <label for="nombreEmpresa">Empresa/s</label>
                 <div>
                   <multiselect
                     v-model="selectedEmpresa"
@@ -142,13 +143,13 @@ export default {
       buscar: "",
       arrayGrupos: [],
       arrayEmpresa: [],
-      pagination: {
-        total: 0,
-        current_page: 0,
-        per_page: 0,
-        last_page: 0,
-        from: 0,
-        to: 0,
+      pagination:{
+          'total':0,
+          'current_page':0,
+          'per_page':0,
+          'last_page':0,
+          'from':0,
+          'to':0,
       },
       offset: 3,
       erroruser: 0,
@@ -186,7 +187,7 @@ export default {
     },
     listarGrupos() {
       let me = this;
-      var url = "/grupos";
+      var url = "/api/grupos";
       axios
         .get(url)
         .then(function (response) {
@@ -296,7 +297,7 @@ export default {
       swalWithBootstrapButtons
         .fire({
           title: "Estas seguro de eliminarlo?",
-          text: "You won't be able to revert this!",
+          // text: "You won't be able to revert this!",
           icon: "question",
           showCancelButton: true,
           confirmButtonText: "Aceptar",
@@ -332,7 +333,7 @@ export default {
           } else if (result.dismiss === Swal.DismissReason.cancel) {
             swal.fire({
               title: "Cancelled",
-              text: "Your imaginary file is safe ",
+              text: "Tu registro está a salvo ",
               icon: "error",
               timer: 1500,
               timerProgressBar: true,
