@@ -23,8 +23,6 @@ use App\Http\Controllers\GrupoController;
 | Se pueden acceder desde un cliente externo sin registrarse 
 */
 
-// Articulos
-Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
 // Empresas
 Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empresas');
  
@@ -77,6 +75,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/stocks/{page}/{buscar}',[StockController::class,'index'])->name('stocks');
     Route::put('/updateInventario',[StockController::class,'update'])->name('stocks.update');
     // Articulos
+    Route::get('/articulos',[ArticuloController::class,'getAllArticulos'])->name('articulos');
+    Route::get('/getProveedoresByArticulo/{idArticulo}',[ArticuloController::class,'getProveedoresByArticulo'])->name('getProveedoresByArticulo');
     Route::post('/crearArticulo',[ArticuloController::class,'store'])->name('crearArticulos');
+    Route::put('/updateArticulo', [ArticuloController::class,'update'])->name('updateArticulo');
+    Route::post('/deleteArticulo', [ArticuloController::class,'destroy'])->name('deleteArticulo');
 
 });

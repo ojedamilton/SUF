@@ -17,10 +17,10 @@ class CategoriaSeeder extends Seeder
         // corremos los seeders
 
         $arrCategorias =[
-            ['nombreCategoria' => 'Pantalones', 'estadoCategoria'=>1],
-            ['nombreCategoria' => 'Camisas', 'estadoCategoria'=>1],
-            ['nombreCategoria' => 'Remeras', 'estadoCategoria'=>1],
-            ['nombreCategoria' => 'Calzados', 'estadoCategoria'=>1]
+            ['nombreCategoria' => 'Pantalones', 'estadoCategoria'=>1, 'idEmpresa' => 1],
+            ['nombreCategoria' => 'Camisas', 'estadoCategoria'=>1 , 'idEmpresa' => 1],
+            ['nombreCategoria' => 'Remeras', 'estadoCategoria'=>1 , 'idEmpresa' => 1],
+            ['nombreCategoria' => 'Calzados', 'estadoCategoria'=>1, 'idEmpresa' => 1]
         ] ;
 
        $categoria= new Categoria;

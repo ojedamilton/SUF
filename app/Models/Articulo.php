@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\DetallesFactura;
+use App\Models\Proveedor;
 
 class Articulo extends Model
 {
@@ -14,10 +15,12 @@ class Articulo extends Model
 
     protected $fillable = [
         'id',
-        'precio',
         'nombreArticulo',
+        'precio',
+        'precioCompra',
         'idCategoria',
-        'estadoValor',
+        'estadoArticulo',
+
     ];
 
     public function detallesFactura()
@@ -28,5 +31,10 @@ class Articulo extends Model
     public function stock()
     {
         return $this->hasOne(Stock::class, 'idArticulo');
+    }
+
+    public function proveedores(){
+
+        return $this->belongsToMany(Proveedor::class,'articulo_proveedores','idArticulo','idProveedor');
     }
 }

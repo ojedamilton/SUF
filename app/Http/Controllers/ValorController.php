@@ -15,7 +15,7 @@ class ValorController extends Controller
     
     public function __construct(MedioPagoRepository $medioPagoRepository){
      
-      $this->medioPagoRepository = $medioPagoRepository;
+    $this->medioPagoRepository = $medioPagoRepository;
 
     }
 
