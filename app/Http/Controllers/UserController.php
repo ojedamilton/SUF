@@ -337,8 +337,8 @@ class UserController extends Controller
             DB::commit();
             return response()->json([
                 "success"=>true,
-                "message"=>"La Empresa se ha eliminado correctamente",
-                "empresa"=>$user
+                "message"=>"El usuario se ha eliminado correctamente",
+                "usuario"=>$user
             ],200);
 
         } catch (\Throwable $th) {

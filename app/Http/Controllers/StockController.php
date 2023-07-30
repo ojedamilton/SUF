@@ -32,7 +32,7 @@ class StockController extends Controller
                         $subquery->where('nombreProveedor', 'like', '%' . $buscar . '%');
                     });
                 }) */
-                $stock = Stock::whereRelation('articulo', 'nombreArticulo', 'like', '%' . $buscar . '%')
+                $stocks = Stock::whereRelation('articulo', 'nombreArticulo', 'like', '%' . $buscar . '%')
                             /* ->orWhereRelation('proveedor', 'nombreProveedor', 'like', '%' . $buscar . '%') */
                 ->paginate(5);     
             }

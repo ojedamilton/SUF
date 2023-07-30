@@ -6,6 +6,7 @@ use App\Models\Articulo;
 use App\Models\ArticuloProveedores;
 use App\Models\Proveedor;
 use App\Models\Stock;
+use App\Repositories\ArticuloRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,14 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticuloController extends Controller
 {
+
+    private $articuloRepository;
+    
+    public function __construct(ArticuloRepository $articuloRepository){
+     
+    $this->articuloRepository = $articuloRepository;
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,19 +41,23 @@ class ArticuloController extends Controller
      */
     public function getAllArticulos(Request $request) {
 
+        $buscar= $request->buscar;
+
         try {
 
+            $articulo=$this->articuloRepository->all($buscar,Auth::user()->idEmpresa);
+
             $buscar= $request->buscar;
-            if (!$buscar) {
-                $articulo=Articulo::with('stock')
-                    ->orderBy('id','asc')->paginate(5);
-            }else{
-                $articulo=Articulo::with('stock')
-                    ->where('nombreArticulo','like','%'.$buscar.'%')
-                    ->orWhere('id','like','%'.$buscar.'%')
-                    ->orderBy('nombreArticulo','asc')
-                    ->paginate(5);     
-            }
+            // if (!$buscar) {
+            //     $articulo=Articulo::with('stock')
+            //         ->orderBy('id','asc')->paginate(5);
+            // }else{
+            //     $articulo=Articulo::with('stock')
+            //         ->where('nombreArticulo','like','%'.$buscar.'%')
+            //         ->orWhere('id','like','%'.$buscar.'%')
+            //         ->orderBy('nombreArticulo','asc')
+            //         ->paginate(5);     
+            // }
               
             return response()->json([
                     'success'=>true,
@@ -81,6 +94,30 @@ class ArticuloController extends Controller
        
     }
 
+    public function getProveedoresByArticulo($idArticulo)
+    {
+        try {
+            $articulo = Articulo::findOrFail($idArticulo);
+            $proveedores = $articulo->proveedores()
+                                ->where('estadoProveedor', 1)
+                                ->get()
+                                ->map(function ($proveedor) {
+                                return [
+                                    'id' => $proveedor->id,
+                                    'nombreProveedor' => $proveedor->nombreProveedor,
+                                ];
+                            });
+
+            return response()->json([
+                'proveedores' => $proveedores,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener los proveedores por articulo: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -103,19 +140,19 @@ class ArticuloController extends Controller
          $validator = Validator::make(
             $request->all(),
             [
-                'nombre'=>'required|max:50',
-                'precioC'=>'required|numeric',
-                'precioV'=>'required',
-                'categoriaId'=>'required',
-                'proveedorId'=>'required'
+                'nombreArticulo'=>'required|max:50',
+                'precioCompra'=>'required|numeric',
+                'precio'=>'required',
+                'idCategoria'=>'required',
+                'selectedProveedor'=>'required'
             ],[
-                'nombre.required'=>'El nombre es requerido',
-                'nombre.max'=>'El nombre no debe superar los 50 caracteres',
-                'precioC'=>'precio Compra es requerido',
-                'precioC.numeric'=>'precio Compra debe ser numerico',
-                'precioV'=>'precio venta es requerido',
-                'categoriaId'=>'La Categoria es requerida',
-                'proveedorId'=>'El Proveedor es requerido',
+                'nombreArticulo.required'=>'El nombre es requerido',
+                'nombreArticulo.max'=>'El nombre no debe superar los 50 caracteres',
+                'precioCompra'=>'precio Compra es requerido',
+                'precioCompra.numeric'=>'precio Compra debe ser numerico',
+                'precio'=>'precio venta es requerido',
+                'idCategoria'=>'La Categoria es requerida',
+                'selectedProveedor'=>'El Proveedor es requerido',
             ]
         );
 
@@ -134,13 +171,26 @@ class ArticuloController extends Controller
             $articulo->precioCompra=$request->precioC;
             $articulo->idCategoria=$request->categoriaId;
             $articulo->estadoArticulo=1;
+            $articulo->idEmpresa=Auth::user()->idEmpresa;
             $articulo->save();
 
             // Relaciono con Tabla Pivot Articulo-Proveedor
-            $proveedor = new ArticuloProveedores();
-            $proveedor->idArticulo=$articulo->id;
-            $proveedor->idProveedor=$request->proveedorId;
-            $proveedor->save();
+
+            // $proveedor = new ArticuloProveedores();
+            // $proveedor->idArticulo=$articulo->id;
+            // $proveedor->idProveedor=$request->proveedorId;
+            // $proveedor->save();
+
+            // Seteo Multiproveedores
+            $selectedProveedorIds = array_map(function($proveedor) use ($articulo) {
+                    $selectedProveedorIds['idArticulo']=$articulo->id;
+                    $selectedProveedorIds['idProveedor']=$proveedor['id'];
+                    // $selectedProveedorIds['estado']=1;
+                    return $selectedProveedorIds; 
+                }, $request->selectedProveedor);
+
+            $articuloProovedors = ArticuloProveedores::insert($selectedProveedorIds); 
+
 
             // Inserto Stock en mi modelo Stock
             $stock = new Stock();
@@ -188,9 +238,74 @@ class ArticuloController extends Controller
      * @param  \App\Models\Articulo  $articulo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Articulo $articulo)
+    public function update(Request $request, Articulo $articulos)
     {
-        //
+        $articulos = Articulo::find($request->idArticulo);
+    
+        // Valido Backend
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'nombreArticulo'=>'required|max:50',
+                'precio'=>'required|numeric',
+                'precioCompra'=>'required',
+                'idCategoria'=>'required',
+                'selectedProveedor'=>'required'
+            ],[
+                'nombreArticulo.required'=>'El nombre es requerido',
+                'nombreArticulo.max'=>'El nombre no debe superar los 50 caracteres',
+                'precioCompra'=>'precio Compra es requerido',
+                'precioCompra.numeric'=>'precio Compra debe ser numerico',
+                'precio'=>'precio venta es requerido',
+                'idCategoria'=>'La Categoria es requerida',
+                'selectedProveedor'=>'El Proveedor es requerido',
+            ]
+        );
+    
+        if ($validator->fails()) {
+            return response()->json(["errors" => $validator->getMessageBag(), "success" => false], 401);
+        }
+    
+        // Comienzo de la transacción
+        DB::beginTransaction();
+        try {
+            // Actualizo datos del articulo
+    
+            $articulos->nombreArticulo = $request->nombreArticulo;
+            $articulos->precio = $request->precio;
+            $articulos->precioCompra = $request->precioCompra;
+            $articulos->idCategoria = $request->idCategoria;
+            $articulos->save();
+    
+    
+            // Actualizo los proveedores del articulo
+            $selectedProveedorIds = [];
+            foreach ($request->selectedProveedor as $proveedor) {
+                $selectedProveedorIds[$proveedor['id']] = [
+                    'idArticulo' => $articulos->id,
+                    // 'estado' => 1,
+                ];
+            }
+
+            $articulos->proveedores()->sync($selectedProveedorIds);
+
+
+            DB::commit();
+            return response()->json([
+                "success" => true,
+                "message" => "El articulo se ha actualizado correctamente",
+                "articulos"=>$articulos
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success" => false,
+                "message" => "No se pudo actualizar el articulo"
+            ], 500);
+        }
+    
     }
 
     /**
@@ -199,8 +314,30 @@ class ArticuloController extends Controller
      * @param  \App\Models\Articulo  $articulo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Articulo $articulo)
+    public function destroy(Request $request)
     {
-        //
+        // Comienzo Transaccion
+        DB::beginTransaction();
+
+        try { 
+            $articulos = Articulo::find($request->idArticulo);
+            $articulos->estadoArticulo = 0;
+            $articulos->save();
+            DB::commit();
+            return response()->json([
+                "success"=>true,
+                "message"=>"El articulo se ha eliminado correctamente",
+                "articulos"=>$articulos
+            ],200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            // Logeo errores
+            Log::error($th->getMessage());
+            return response()->json([
+                "success"=>false,
+                "errors"=>"No se pudo eliminar el articulo"
+            ],500);
+        }
     }
 }

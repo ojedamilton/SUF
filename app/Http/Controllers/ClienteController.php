@@ -21,7 +21,7 @@ class ClienteController extends Controller
     
     public function __construct(ClientRepository $clientRepository){
      
-      $this->clientRepository = $clientRepository;
+    $this->clientRepository = $clientRepository;
 
     }
     public function getAllClientes(Request $request)

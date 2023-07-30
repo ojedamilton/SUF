@@ -186,10 +186,27 @@
                     </router-link>
                   </li>
                   <li  class="nav-item">
-                    <router-link  class="nav-link" to='/#'>
+                    <router-link  class="nav-link" to='/listadoArticulo'>
                       <i class="fas fa-list nav-icon"></i>
                       <p>Listado Articulos</p>
                     </router-link>
+                  </li>
+                </ul>
+              </li>
+              <!-- STOCKS -->
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <p>
+                    STOCKS
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li  class="nav-item">
+                    <router-link  class="nav-link" to='/inventarioStock'>
+                      <i class="fa fa-database"></i>
+                      <p>Inventario</p>
+                    </a>
                   </li>
                 </ul>
               </li>
@@ -216,11 +233,11 @@
                   </li>
                 </ul>
               </li>
-              <!-- LISTADOS -->
+              <!-- INFORMES -->
               <li class="nav-item">
                 <a href="#" class="nav-link ">
                   <p>
-                    LISTADOS
+                    INFORMES
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -237,23 +254,6 @@
                     <router-link  class="nav-link" id="dashboard-link" to='/estadisticasVentas'>
                       <i class="fa fa-book nav-icon"></i>
                       <p>Reportes Ventas</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <!-- STOCKS -->
-              <li class="nav-item">
-                <a href="" class="nav-link">
-                  <p>
-                    STOCKS
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li  class="nav-item">
-                    <router-link  class="nav-link" to='/inventarioStock'>
-                      <i class="fa fa-database"></i>
-                      <p>Inventario</p>
                     </a>
                   </li>
                 </ul>
