@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Empresa;
+use App\Models\Factura;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -69,6 +70,36 @@ class ClienteController extends Controller
 
         
     }
+
+
+    public function getClienteByFactura(Request $request)
+    {
+        // Si quieren ingresar sin un request, redirecciona al home 
+        if (!$request->ajax()) {
+            return redirect('/');
+        }
+    
+        $idFactura = $request->id;
+        $factura = Factura::with('cliente.situacion')->find($idFactura);
+    
+        // Si no se encuentra la factura, retornar un mensaje de error o lo que consideres apropiado
+        if (!$factura) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Factura no encontrada',
+            ], 404);
+        }
+    
+        // Obtener el cliente asociado a la factura
+        $cliente = $factura->cliente;
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Cliente encontrado',
+            'cliente' => $cliente,
+        ], 200);
+    }
+    
     
     public function clienteTipoFactura(Request $request){  
         // Si es un Tipo de Empresa Responsable Inscripto   

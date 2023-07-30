@@ -49,9 +49,15 @@ class Factura extends Model implements Auditable
        
         return $this->belongsTo(PuntoVenta::class,'idPuntoVenta');
     }
+    
     public function tipofactura(){
        
         return $this->belongsTo(TipoFactura::class,'idTipoFactura');
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'idCliente');
     }
 
     public function detallesfactura(){

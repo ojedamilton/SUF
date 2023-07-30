@@ -26,14 +26,26 @@ class FacturaController extends Controller
     {
 
         try {
-            $listadofacturas = Factura::with('detallesfactura','puntoventa', 'detallesfactura.articulo','detallesfactura.articulo.stock')
+            $buscar= $request->buscar;
+
+            
+            $query = Factura::with('detallesfactura','puntoventa', 'detallesfactura.articulo','detallesfactura.articulo.stock')
                 ->select('facturas.id','facturas.idpuntoVenta','facturas.numeroFactura','facturas.totalFactura','facturas.fechaModificacion','tipofacturas.tipoFactura','users.name as nameUser','users.apellido as apellidoUser','clientes.nombreCliente','clientes.apellidoCliente')
                 ->leftJoin('users','facturas.idUsuario','=','users.id')
                 ->leftJoin('tipofacturas','facturas.idTipoFactura','=','tipofacturas.idTipoFactura')
                 ->leftJoin('clientes','facturas.idCliente','=','clientes.id')
                 ->orderBy('facturas.id', 'desc')
-                ->where('facturas.idEmpresa', Auth::user()->idEmpresa)
-                ->get();
+                ->where('facturas.idEmpresa', Auth::user()->idEmpresa);
+
+            if ($buscar) {
+                // Aplicar el filtro de búsqueda
+                $query->where(function ($q) use ($buscar) {
+                    $q->where('facturas.numeroFactura', 'like', '%' . $buscar . '%')
+                    ->orWhere('facturas.fechaModificacion', 'like', '%' . $buscar . '%');
+                });
+            }
+        
+            $listadofacturas = $query->get();
 
             return response()->json([
                 'success' => true,
@@ -206,6 +218,8 @@ class FacturaController extends Controller
        ]; 
    
     }
+
+
     public function descargarFactura(Request $request)
     {
         // Obtener el contenido del modal
