@@ -33,7 +33,8 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <a class="btn btn-secondary btn-sm ml-4" id="botoneditar"  @click="abrirModal(grupo.acciones,grupo.id)">
+                                        <!-- Permiso con Edición Admin -->
+                                        <a v-if="idAccionesUser.includes('editAdmin')" class="btn btn-secondary btn-sm ml-4" id="botoneditar"  @click="abrirModal(grupo.acciones,grupo.id)">
                                             <i class="fa fa-wrench text-light"></i>
                                         </a>
                                     </td>
@@ -96,7 +97,7 @@ export default {
             nombreGrupo:'',
             descripcionGrupo:'',
             tipoGrupo:0,
-            idCan:'',
+            idAccionesUser:'',
             modal:0,
             tituloModal:'',
             idPermissionUser:[],
@@ -229,12 +230,12 @@ export default {
         },
         methodCan(){
             let me=this;
-            var url= 'api/grupoAcciones';
+            var url= 'api/grupoAccionesByUser';
             axios.get(url,{
                     params: {
                 }
             }).then(function (response){
-                me.idCan=response.data; 
+                me.idAccionesUser=response.data.acciones; 
             }).catch(function(error){
                 console.log(error);
                 if(error.response.status === 401){
@@ -252,12 +253,9 @@ export default {
             let self = this;    
             this.modal=1;
             this.tituloModal='Actualizar Grupo-Accion';
-           /*  this.idPermisos=data['permissionid'];
-            this.idPermisosBack=data['permissionid'];*/
             this.idGrupo=idgrupo;
             this.idPermissionUser=[];
             acciones.forEach(accion => this.idPermissionUser.push(accion['id']));
-           // this.idRolBack=data['id'];
             this.tipoAccion=2; 
         },
         /**
@@ -279,6 +277,7 @@ export default {
     mounted() {
         this.listarGrupo(1,this.buscar);
         this.listarAcciones(1,this.buscar);
+        this.methodCan();
     }
 }
 </script>

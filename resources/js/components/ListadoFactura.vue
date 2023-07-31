@@ -7,11 +7,6 @@
 
           <div class="card-header">
           </div>
-          <div class="card-tools">
-           <!-- Find a result  -->
-             <button @click="paginaAnterior">Anterior</button>
-            <button @click="paginaSiguiente">Siguiente</button>   
-          </div> 
         </div>
         <div class="card-body table-responsive p-1">
           <table class="table table-striped table-valign-middle">
@@ -37,13 +32,25 @@
                   {{ factura.fechaModificacion }}
                 </td>
                 <td>
-                  <a @click="abrirModal(); listarDetallesById(factura.id), listarEmpresa(), facturaById(factura.id), listarClientes(factura.id)" href="home#/listadofacturacion" class="text-muted">
+                  <!-- Permiso visualizador de Ventas -->
+                  <a v-if="idAccionesUser.includes('viewVendedor')" @click="abrirModal(); listarDetallesById(factura.id), listarEmpresa(), facturaById(factura.id), listarClientes(factura.id)" href="home#/listadofacturacion" class="text-muted">
                     <i class="fas fa-search"></i>
                   </a>
+                  <span title="Solicitar Permiso" v-else>
+                    <i class="fas fa-times"></i>
+                  </span>
                 </td>
               </tr>
             </tbody>
           </table>
+          <nav class=" d-flex flex-row justify-content-start card-tools">
+            <div class="ml-2">
+              <button class="btn btn-primary" @click="paginaAnterior">Anterior</button>
+            </div>
+            <div class="ml-1">
+              <button class="btn btn-primary" @click="paginaSiguiente">Siguiente</button>
+            </div>
+          </nav> 
         </div>
       </div>
 
@@ -65,6 +72,7 @@ export default {
     return {
       arrayFacturas: [],
       arrayDetalles:[],
+      idAccionesUser:[],
       userEmpresa:{},
       arrayClientes:{},
       factura:{
@@ -265,6 +273,21 @@ export default {
       }
       return '';
     },
+    methodCan(){
+            let me=this;
+            var url= 'api/grupoAccionesByUser';
+            axios.get(url,{
+                    params: {
+                }
+            }).then(function (response){
+                me.idAccionesUser=response.data.acciones; 
+            }).catch(function(error){
+                console.log(error);
+                if(error.response.status === 401){
+                    location.reload(true)
+                }
+            });
+        },
   },
    computed: {  
     // se usa para hacer logica extensa en el template 

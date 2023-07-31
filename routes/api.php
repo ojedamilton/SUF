@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/grupos',[GrupoController::class,'index'])->name('grupos');
     // Acciones
     Route::get('/acciones',[AccionController::class,'index'])->name('acciones');
+    Route::get('/grupoAccionesByUser',[AccionController::class,'grupoAccionesByUser'])->name('grupoAccionesByUser');
     // Grupo - Acciones
     Route::get('/grupoacciones',[GrupoController::class,'grupoAcciones'])->name('grupoacciones');
     Route::put('/updateGrupoAcciones',[GrupoController::class,'updateGrupoAcciones'])->name('updateGrupoAcciones');
