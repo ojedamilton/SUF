@@ -23,19 +23,34 @@
                 <input type="number" class="form-control"  v-model="precioC" name="precioC"  min="1" max="100" id="exampleInputPrecioC" placeholder="Ingrese precio Compra"/>
               </div>
               <div class="form-group">
-                <label for="exampleInputCategoria">Categorias</label>
+                <label for="exampleInputCategoria">Categoria</label>
                 <select class="form-control" v-model="categoriaId" id="exampleInputCategoria" name="categoria">
                   <option selected value="0">Seleccione Categoria</option>
                   <option  v-for="categoria in arrayCategorias" :key="categoria.id" :value="categoria.id">{{categoria.nombreCategoria}}</option>
                 </select>
               </div>
-                <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="exampleInputProveedor">Proveedor</label>
                 <select class="form-control" v-model="proveedorId" id="exampleInputProveedor" name="proveedor">
                   <option selected value="0">Seleccione Proveedor</option>
                   <option  v-for="proveedor in arrayProveedor" :key="proveedor.id" :value="proveedor.id">{{proveedor.nombreProveedor}}</option>
                 </select>
-              </div>
+              </div> -->
+              <label for="nombreProveedor">Proveedor/es</label>
+              <div>
+                  <multiselect
+                    v-model="selectedProveedor"
+                    :searchable="false"
+                    placeholder="Seleccione uno o varios proveedores"
+                    label="nombreProveedor"
+                    :multiple="true"
+                    track-by="id"
+                    :options="arrayProveedor"
+                  >
+                  </multiselect>
+                </div>
+
+
               <div class="form-group">
                 <label for="exampleInputStock">Cantidad Inicial</label>
                 <input type="number" class="form-control" v-model="stock" name="stock" min="1" id="exampleInputstock" placeholder="Ingrese Stock"/>
@@ -63,7 +78,9 @@
 </template>
 <script>
   import axios from "axios";
+  import Multiselect from "vue-multiselect";  
   export default {
+    components: { Multiselect },
     props: ["path"],
     data() {
       return {
@@ -94,6 +111,8 @@
         offset: 3,
         errorArticulo: 0,
         errorMostrarMsj: [],
+        selectedProveedor: [],
+        options: ["list", "of", "options"],
       };
     },
     computed: {
@@ -125,8 +144,14 @@
         axios
           .get(url) // ,{ params: {},} 
           .then(function (response) {
-            var respuesta = response.data;
-            me.arrayProveedor = respuesta.proveedores.data;
+            
+            let proveedores = response.data.proveedores.data;
+            console.log(proveedores)
+            me.arrayProveedor = proveedores;
+            me.options = proveedores.map((proveedor) => proveedor.nombreProveedor);
+            // console.log(response)
+            // var respuesta = response.data;
+            // me.arrayProveedor = respuesta.proveedores.data;
           })
           .catch(function (error) {
             console.log(error);
@@ -140,9 +165,11 @@
         this.errorArticulo = 0;
         this.errorMostrarMsj = [];
         if(!this.nombre) this.errorMostrarMsj.push('* El nombre no puede estar vacío');
-        if(!this.precioV) this.errorMostrarMsj.push('* El precio ventra');
-        if(!this.precioC) this.errorMostrarMsj.push('* El precio compra');
+        if(!this.precioV) this.errorMostrarMsj.push('* El precio ventra no puede estar vacío');
+        if(!this.precioC) this.errorMostrarMsj.push('* El precio compra no puede estar vacío');
+        if(!this.categoriaId) this.errorMostrarMsj.push('* La Categoria no puede estar vacía');
         if(!this.stock) this.errorMostrarMsj.push('* El stock no puede estar vacío');
+        if (this.selectedProveedor.length == 0) this.errorMostrarMsj.push("* El select proveedor/es no puede estar vacío");
         if (this.errorMostrarMsj.length) this.errorArticulo = 1;
       },
       //Implemento Async-Await//
@@ -153,7 +180,14 @@
         let url = "api/crearArticulo";
         this.loading = true;
         try {
-          const response= await axios.post(url,{nombre:this.nombre,precioC:this.precioC,precioV:this.precioV,proveedorId:this.proveedorId,categoriaId:this.categoriaId,stock:this.stock,stockMinimo:this.stockMinimo})
+          const response= await axios.post(url,{
+            nombre:this.nombre,
+            precioC:this.precioC,
+            precioV:this.precioV,
+            categoriaId:this.categoriaId,
+            selectedProveedor:this.selectedProveedor,
+            stock:this.stock,
+            stockMinimo:this.stockMinimo})
           let respuesta = response.data;
           if (respuesta.status == 201) {
             let success=respuesta.success;

@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Categoria;
 use Illuminate\Http\Request;
+use App\Models\Categoria;
+use Illuminate\Support\Facades\Auth;
+use App\Repositories\CategoriaRepository;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 class CategoriaController extends Controller
 {
+    private $categoriaRepository;
+    
+    public function __construct(CategoriaRepository $categoriaRepository){
+     
+    $this->categoriaRepository = $categoriaRepository;
+
+    }
+
+    
     /**
      * Display a listing of the resource.
      *
@@ -21,11 +32,8 @@ class CategoriaController extends Controller
 
             try {
 
-                $categorias = Categoria::where('estadoCategoria',1)
-                    ->where('nombreCategoria', 'LIKE', "%$buscar%")
-                    ->orderBy('nombreCategoria', 'asc')
-                    ->paginate(10);
-
+                $categorias=$this->categoriaRepository->all($buscar,Auth::user()->idEmpresa);
+               
                 return response()->json([
                     'success'=>true,
                     'message'=>'Listado Categorias',
@@ -75,6 +83,7 @@ class CategoriaController extends Controller
             $categorias= new Categoria();
             $categorias->nombreCategoria=$request->nombre;
             $categorias->estadoCategoria=1;
+            $categorias->idEmpresa=Auth::user()->idEmpresa;
             $categorias->save();
 
             DB::commit();

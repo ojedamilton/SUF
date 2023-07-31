@@ -32,9 +32,11 @@ class StockController extends Controller
                         $subquery->where('nombreProveedor', 'like', '%' . $buscar . '%');
                     });
                 }) */
+
                 $stocks = Stock::with('articulo:id,nombreArticulo')
                     ->whereRelation('articulo', 'nombreArticulo', 'like', '%' . $buscar . '%')
                     /*->WhereRelation('articulo', 'idEmpresa', Auth::user()->idEmpresa) */
+
                 ->paginate(5);     
             }
               

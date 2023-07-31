@@ -2,15 +2,16 @@
   <main class="container">
       <div class="card">
         <div class="card-header border-0">
-          <h3 class="card-title">Listado de Facturas</h3>
-          <div class="card-tools">
-            <a href="#" class="btn btn-tool btn-sm">
-              <i class="fas fa-download"></i>
-            </a>
-            <a href="#" class="btn btn-tool btn-sm">
-              <i class="fas fa-bars"></i>
-            </a>
+          <p class="text-center"><strong>LISTADO FACTURAS</strong></p>
+          <input type="text" v-model="buscar"  @keyup="listarFacturas(buscar)" class="form-control" placeholder="Busqueda por numero de factura o fecha">
+
+          <div class="card-header">
           </div>
+          <div class="card-tools">
+           <!-- Find a result  -->
+             <button @click="paginaAnterior">Anterior</button>
+            <button @click="paginaSiguiente">Siguiente</button>   
+          </div> 
         </div>
         <div class="card-body table-responsive p-1">
           <table class="table table-striped table-valign-middle">
@@ -24,7 +25,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="factura in arrayFacturas" :key="factura.id">
+              <tr v-for="factura in facturasPaginadas" :key="factura.id">
                 <td>
                   {{ factura.numeroFactura }}
                 </td>
@@ -36,7 +37,7 @@
                   {{ factura.fechaModificacion }}
                 </td>
                 <td>
-                  <a @click="abrirModal(); listarDetallesById(factura.id), listarEmpresa(), facturaById(factura.id)" href="home#/listadofacturacion" class="text-muted">
+                  <a @click="abrirModal(); listarDetallesById(factura.id), listarEmpresa(), facturaById(factura.id), listarClientes(factura.id)" href="home#/listadofacturacion" class="text-muted">
                     <i class="fas fa-search"></i>
                   </a>
                 </td>
@@ -47,7 +48,7 @@
       </div>
 
     <!-- Modal -->
-    <ModalFactura :modalFlag="modal" @cambiar-modal="cerrarModal" :userEmpresa="userEmpresa" :factura="factura" :arrayDetalles="arrayDetalles"/>
+    <ModalFactura :modalFlag="modal" @cambiar-modal="cerrarModal" :userEmpresa="userEmpresa" :factura="factura" :arrayDetalles="arrayDetalles" :arrayClientes="arrayClientes"/>
 
   </main>
 </template>
@@ -65,12 +66,17 @@ export default {
       arrayFacturas: [],
       arrayDetalles:[],
       userEmpresa:{},
+      arrayClientes:{},
       factura:{
         puntoventa:{},
         tipofactura:{},
       },
       modal:0,
+      buscar:'',
       tituloModal: "Detalles Facturas",
+      facturasPaginadas: [], // Arreglo para almacenar las facturas de la página actual
+      elementosPorPagina: 10, // Número de elementos que quieres mostrar por página
+      paginaActual: 1, // Página actual (inicialmente establecida en 1)
       pagination:{
           'total':0,
           'current_page':0,
@@ -82,21 +88,60 @@ export default {
     };
   },
   methods: {
-    listarFacturas() {
-      let me = this;
-      var url = "api/allfacturas";
-      axios
-        .get(url)
-        .then(function (response) {
-          var respuesta = response.data;
-          me.arrayFacturas = respuesta.listadofacturas;
-        })
-        .catch(function (error) {
-          console.log(error);
-          if (error.response.status === 401) {
-            location.reload(true);
-          }
-        });
+    // listarFacturas() {
+    //   let me = this;
+    //   var url = "api/allfacturas";
+    //   axios
+    //     .get(url)
+    //     .then(function (response) {
+    //       var respuesta = response.data;
+    //       me.arrayFacturas = respuesta.listadofacturas;
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //       if (error.response.status === 401) {
+    //         location.reload(true);
+    //       }
+    //     });
+    // },
+    listarFacturas(buscar) {
+    let me = this;
+    var url = "api/allfacturas" + '?buscar=' + buscar;
+    axios
+      .get(url)
+      .then(function (response) {
+        var respuesta = response.data;
+        me.arrayFacturas = respuesta.listadofacturas;
+
+        // Actualizar el arreglo de facturas para mostrar solo los elementos de la página actual
+        me.actualizarFacturas();
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (error.response.status === 401) {
+          location.reload(true);
+        }
+      });
+    },
+    actualizarFacturas() {
+      const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
+      const fin = inicio + this.elementosPorPagina;
+
+      // Filtrar el arreglo para mostrar solo las facturas de la página actual
+      this.facturasPaginadas = this.arrayFacturas.slice(inicio, fin);
+    },
+    paginaAnterior() {
+      if (this.paginaActual > 1) {
+        this.paginaActual--;
+        this.actualizarFacturas();
+      }
+    },
+    paginaSiguiente() {
+      const ultimaPagina = Math.ceil(this.arrayFacturas.length / this.elementosPorPagina);
+      if (this.paginaActual < ultimaPagina) {
+        this.paginaActual++;
+        this.actualizarFacturas();
+      }
     },
     abrirModal() {
       this.modal = 1;
@@ -120,6 +165,38 @@ export default {
         return 'error Tipo Factura'
       }
     },
+    listarClientes(idFactura) {
+      let me = this;
+      var url = "/clienteFactura?id=" + idFactura;
+      axios
+        .get(url)
+        .then(function (response) {
+          var respuesta = response.data;
+          console.log(respuesta)
+
+          me.arrayClientes = respuesta.cliente;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    // listarSituacion() {
+    //   let me = this;
+    //   var url = "/situacionfiscal";
+    //   axios
+    //     .get(url) // ,{ params: {},} 
+    //     .then(function (response) {
+    //       var respuesta = response.data;
+    //       me.arraySituacion = respuesta.situacionfiscal;
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //       if (error.response.status === 401) {
+    //         location.reload(true);
+    //       }
+    //     });
+    // },
+
     listarDetallesById(id) {
       let me = this;
       var url = "/detallesbyid";
@@ -187,8 +264,8 @@ export default {
         return 'C';
       }
       return '';
-    }
-   },
+    },
+  },
    computed: {  
     // se usa para hacer logica extensa en el template 
     isActived: function(){
@@ -217,7 +294,7 @@ export default {
   },
   mounted() {
     // se auto-ejecuta apenas termina de cargar el DOM
-    this.listarFacturas();
+    this.listarFacturas(this.buscar);
   },
   watch: {
     // se usa para escuchar cambios en las variables

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SituacionFiscal;
+
 
 class Cliente extends Persona
 {
@@ -24,4 +26,9 @@ class Cliente extends Persona
         'idSituacion',
         'razonSocial',
     ];
+
+    public function situacion()
+    {
+        return $this->belongsTo(SituacionFiscal::class, 'idSituacion');
+    }
 }
