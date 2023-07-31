@@ -20,23 +20,15 @@ class StockController extends Controller
         try {
             $page_url = $page;
             $buscar_url = $buscar;
-            //$buscar= $request->buscar;
             if ($buscar == '*') {
-                $stocks=Stock::with('articulo','proveedor')
+                $stocks=Stock::with('articulo:id,nombreArticulo')
+                    ->WhereRelation('articulo', 'idEmpresa', Auth::user()->idEmpresa)
                     ->orderBy('id','asc')->paginate(10);
             }else{
-                /* $stocks = Stock::with('articulo', 'proveedor')
-                ->whereHas('articulo', function ($query) use ($buscar) {
-                    $query->where('nombreArticulo', 'like', '%' . $buscar . '%')
-                    ->orWhereHas('proveedor', function ($subquery) use ($buscar) {
-                        $subquery->where('nombreProveedor', 'like', '%' . $buscar . '%');
-                    });
-                }) */
 
                 $stocks = Stock::with('articulo:id,nombreArticulo')
                     ->whereRelation('articulo', 'nombreArticulo', 'like', '%' . $buscar . '%')
-                    /*->WhereRelation('articulo', 'idEmpresa', Auth::user()->idEmpresa) */
-
+                    ->WhereRelation('articulo', 'idEmpresa', Auth::user()->idEmpresa)
                 ->paginate(5);     
             }
               
