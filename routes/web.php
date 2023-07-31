@@ -58,6 +58,7 @@ Route::middleware('auth:web')->group(function(){
 
     // Clientes
     Route::get('/clientes',[ClienteController::class,'getAllClientes'])->name('clientes');
+    Route::get('/clienteFactura',[ClienteController::class,'getClienteByFactura'])->name('clienteFactura');
     Route::post('/clienteTipoFactura', [ClienteController::class,'clienteTipoFactura'])->name('clientetipofactura');
     Route::post('/crearcliente', [ClienteController::class,'crearCliente'])->name('crearcliente');
     Route::put('/updateCliente', [ClienteController::class,'update'])->name('updateCliente');

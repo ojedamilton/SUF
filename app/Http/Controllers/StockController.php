@@ -25,6 +25,7 @@ class StockController extends Controller
                     ->WhereRelation('articulo', 'idEmpresa', Auth::user()->idEmpresa)
                     ->orderBy('id','asc')->paginate(10);
             }else{
+
                 $stocks = Stock::with('articulo:id,nombreArticulo')
                     ->whereRelation('articulo', 'nombreArticulo', 'like', '%' . $buscar . '%')
                     ->WhereRelation('articulo', 'idEmpresa', Auth::user()->idEmpresa)

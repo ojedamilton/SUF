@@ -18,14 +18,14 @@ class Stock extends Model
         'idProveedor',
         'cantidad',
         'cantidadMinima',
-        'cantidadBackup',
+        'idEmpresa'
     ];
 
     // Generamos las relaciones con el modelo Articulo.
     public function articulo(){
         return $this->belongsTo(Articulo::class, 'idArticulo');
     }
-    // Generamos las relaciones con el modelo Proveedor.
+   // Generamos las relaciones con el modelo Proveedor.
     public function proveedor(){
         return $this->belongsTo(Proveedor::class, 'idProveedor');
     }

@@ -1,7 +1,7 @@
 <script>
 import PrintJS from 'print-js';
 export default {
-  props: ["path","modalFlag","userEmpresa","factura","arrayDetalles"],
+  props: ["path","modalFlag","userEmpresa","factura","arrayDetalles", "arrayClientes"],
   data() {
     return {
       // Obtengo el valor del modalFlag del padre
@@ -60,7 +60,7 @@ export default {
             </div>
               <div class="modal-body" id="modal-body">
                 <div class="col-12">
-                  <h4>Datos Empresa</h4>
+                  <h4>Empresa</h4>
                   <div class="row my-3">
                     <div class="col-10">
                       <p><strong>Nombre:</strong> {{userEmpresa.nombreEmpresa}}</p>
@@ -119,6 +119,12 @@ export default {
                         <tr>
                           <th></th>
                           <th></th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                        <tr>
+                          <th></th>
+                          <th></th>
                           <th class="font-weight-normal">Subtotal</th>
                           <th class="font-weight-normal">{{ (factura.totalFactura / (1 - this.factura.descuento / 100)).toFixed(2) }}</th>
                         </tr>
@@ -139,8 +145,13 @@ export default {
                   </div>
                   <div class="cond row">
                     <div class="col-12 mt-3">
-                      <h4>Condiciones y formas de pago</h4>
-                      <p>El pago se debe realizar en un plazo de 15 dias.</p>
+                      <div class="col-10">
+                      <p><strong>Cliente: </strong> {{arrayClientes.nombreCliente}} {{arrayClientes.apellidoCliente}}</p>
+                      <p><strong>Email: </strong>{{arrayClientes.emailCliente}}</p>
+                       <div v-if="arrayClientes && arrayClientes.situacion">
+                      <p><strong>Situacion Fiscal: </strong>{{ arrayClientes.situacion.nombreSituacion }}</p>
+                    </div>
+                    </div>
                     </div>
                   </div>
                </div>

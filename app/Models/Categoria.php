@@ -14,6 +14,7 @@ class Categoria extends Model
     protected $fillable = [
         'id',
         'nombreCategoria',
-        'estadoCategoria'
+        'estadoCategoria',
+        'idEmpresa'
     ];
 }
