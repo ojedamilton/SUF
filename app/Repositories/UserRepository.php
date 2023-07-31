@@ -8,9 +8,10 @@ class UserRepository
 {
     public function getUsersByEmpresa($idEmpresa, $buscar = null)
     {
-        $query = User::whereHas('empresas', function ($query) use ($idEmpresa) {
-            $query->where('idEmpresa', $idEmpresa)
-                  ->where('estadoUsuario',1);
+        $query = User::with('grupos:id,nombreGrupo', 'empresas:id,nombreEmpresa')
+            ->whereHas('empresas', function ($query) use ($idEmpresa) {
+                $query->where('idEmpresa', $idEmpresa)
+                    ->where('estadoUsuario',1);
         });
 
         if (!empty($buscar)) {
