@@ -17,15 +17,20 @@ class EmpresaController extends Controller
         $buscar= $request->buscar;
         
         try {
-
-            $empresas = Empresa::where(function ($query) use ($buscar) {
-                $query->where('nombreEmpresa', 'like', '%' . $buscar . '%')
-                    ->orWhere('cuitEmpresa', 'like', '%' . $buscar . '%');
-            })
+            if($buscar == 'userListado'){
+                $empresas = Empresa::select('id','nombreEmpresa')
+                    ->where('estadoEmpresa', 1)
+                    ->paginate(15);
+            }else{
+            $empresas = Empresa::select('id','nombreEmpresa','razonSocial','cuitEmpresa','ingresosBrutosEmpresa','telEmpresa','direccionEmpresa','inicioActividades','idTipoEmpresa','estadoEmpresa')
+                ->where(function ($query) use ($buscar) {
+                    $query->where('nombreEmpresa', 'like', '%' . $buscar . '%')
+                        ->orWhere('cuitEmpresa', 'like', '%' . $buscar . '%');
+                })
                 ->where('estadoEmpresa', 1)
                 ->orderBy('nombreEmpresa', 'asc')
                 ->paginate(15);
-        
+            }
             return response()->json([
                 'success'=>true,
                 'message'=>'Listado de Empresas',

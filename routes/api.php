@@ -13,6 +13,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\AccionController;
 
 
 
@@ -28,6 +29,7 @@ Route::get('/empresas', [EmpresaController::class,'getAllEmpresas'])->name('empr
  
 // Reportes
 Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('reporteventas');
+
 /*
 |--------------------------------------------------------------------------
 | API Routes - Privates
@@ -38,7 +40,11 @@ Route::get('/reporteventas',[FacturaController::class,'reporteVentas'])->name('r
 Route::middleware('auth:sanctum')->group(function(){
     // Grupos 
     Route::get('/grupos',[GrupoController::class,'index'])->name('grupos');
-
+    // Acciones
+    Route::get('/acciones',[AccionController::class,'index'])->name('acciones');
+    // Grupo - Acciones
+    Route::get('/grupoacciones',[GrupoController::class,'grupoAcciones'])->name('grupoacciones');
+    Route::put('/updateGrupoAcciones',[GrupoController::class,'updateGrupoAcciones'])->name('updateGrupoAcciones');
     // Empresa
     Route::put('/updateEmpresa', [EmpresaController::class,'update'])->name('updateEmpresa');
     Route::post('/deleteEmpresa', [EmpresaController::class,'destroy'])->name('deleteEmpresa');

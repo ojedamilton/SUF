@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Grupo;
+use App\Models\GrupoAcciones;
 use App\Models\User;
 use App\Models\UserGrupo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +26,9 @@ class GrupoController extends Controller
 
         try {
 
-            $grupos = Grupo::all();
+            $grupos = Grupo::with('acciones:id,nombreAccion,descripcionAccion')
+                ->select('id', 'nombreGrupo', 'descripcionGrupo')
+                ->get();
             
             return response()->json([
                 'success' => true,
@@ -43,6 +47,60 @@ class GrupoController extends Controller
        
     }
 
+    public function grupoAcciones(){
+
+        try {
+
+            $gruposAcciones = GrupoAcciones::with('grupos','acciones')->get();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'GruposAcciones cargados correctamente',
+                'gruposAcciones' => $gruposAcciones,
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cargar los grupos y acciones',
+                'grupos' => null,
+            ], 500);
+        }
+    }
+    public function updateGrupoAcciones(Request $request){
+
+        try {
+            $grupo = Grupo::find($request->idGrupo);
+            
+            $arrAcciones=[];
+            foreach ($request->permisos as $permiso) {
+                $arrAcciones[$permiso] = [
+                    'idGrupo' => $grupo->id,
+                    'estadoGrupoAccion' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ];
+            }
+
+            $grupo->acciones()->sync($arrAcciones);
+             
+            /* $grupoAcciones = Grupo::where('idGrupo',$request->idGrupo)->get();
+            $grupoAcciones->each->delete();
+            $grupoAcciones = GrupoAcciones::create($request->all()); */
+            return response()->json([
+                'success' => true,
+                'message' => 'Grupo Acciones actualizado correctamente',
+                'grupoAcciones' => $grupo,
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el grupo y acciones',
+                'grupos' => null,
+            ], 500);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *

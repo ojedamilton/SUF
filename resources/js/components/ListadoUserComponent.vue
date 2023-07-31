@@ -33,10 +33,10 @@
                                         <td>{{user.apellido}}</td>
                                         <td>{{user.email}}</td>
                                         <td>
-                                            <span v-for="grupo in user.grupos" :key="grupo.id" class="badge">{{ grupo.nombreGrupo }}</span>
+                                            <span v-for="grupo in user.grupos" :key="grupo.id" class="badge badge-primary">{{ grupo.nombreGrupo }}</span>
                                         </td>
                                         <td>
-                                            <span v-for="empresa in user.empresas" :key="empresa.id" class="badge">{{ empresa.nombreEmpresa }}</span>
+                                            <span v-for="empresa in user.empresas" :key="empresa.id" class="badge badge-secondary">{{ empresa.nombreEmpresa }}</span>
                                         </td>
                                         <td>
                                             <a class="pr-2" @click="editarModal(user);" href="#"><i class="fas fa-edit text-warning"></i></a>
@@ -233,8 +233,8 @@ export default {
 
                 // console.log("Usuarios:", me.arrayUser); 
 
-                me.obtenerGruposPorUsuario();
-                me.obtenerEmpresasPorUsuario();
+               /*  me.obtenerGruposPorUsuario();
+                me.obtenerEmpresasPorUsuario(); */
             })
             .catch(function (error) {
                 console.log(error);
@@ -242,7 +242,7 @@ export default {
                 me.errorMostrarMsjuser=error.response.data.message
             });
         },
-        obtenerGruposPorUsuario() {
+        /* obtenerGruposPorUsuario() {
             let me = this;
             me.arrayUser.forEach((user, index) => { // Utilizamos el índice para asegurar que los grupos se asignen correctamente
                 axios.get('/api/getGruposByUser/' + user.id)
@@ -259,8 +259,8 @@ export default {
                         }
                     });
             });
-        },
-        obtenerEmpresasPorUsuario() {
+        }, */
+       /*  obtenerEmpresasPorUsuario() {
             let me = this;
             me.arrayUser.forEach((user, index) => { 
                 axios.get('/api/getEmpresasByUser/' + user.id)
@@ -277,11 +277,11 @@ export default {
                         }
                     });
             });
-        },
+        }, */
 
         listarEmpresas() {
             let me = this;
-            var url = "api/empresas";
+            var url = "api/empresas?page=1&buscar=userListado";
             axios
                 .get(url) // ,{ params: {},}
                 .then(function (response) {
