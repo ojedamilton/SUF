@@ -18,6 +18,9 @@ import GraficosView from "../components/GraficosComponent.vue";
 import InventarioStock from "../components/InventarioStockComponent.vue";
 import NuevoArticulo from "../components/NuevoArticuloComponent.vue";
 import EstadisticasVentas from "../components/EstadisticasVentasComponent.vue";
+import GruposComponent from "../components/GruposComponent.vue";
+import AccionesComponent from "../components/AccionesComponent.vue";
+import GruposAccionesComponent from "../components/GruposAccionesComponent.vue";
 
 const routes = [
     {
@@ -124,6 +127,21 @@ const routes = [
         path: "/estadisticasVentas",
         name: "estadisticasVentas",
         component: EstadisticasVentas,
+    },
+    {
+        path: "/grupos",
+        name: "grupos",
+        component: GruposComponent,
+    },
+    {
+        path: "/acciones",
+        name: "acciones",
+        component: AccionesComponent,
+    },
+    {
+        path: "/gruposAcciones",
+        name: "gruposAcciones",
+        component: GruposAccionesComponent,
     },
 ];
 

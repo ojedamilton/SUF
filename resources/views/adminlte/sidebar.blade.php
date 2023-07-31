@@ -111,6 +111,38 @@
                   </li>
                 </ul>
               </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <p>
+                    GRUPOS Y ACCIONES
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li  class="nav-item">
+                    <router-link  class="nav-link" to='/grupos'>
+                      <i class="fa fa-users nav-icon"></i>
+                      <p>Grupos</p>
+                    </router-link>
+                  </li>
+                </ul>
+                <ul class="nav nav-treeview">
+                  <li   class="nav-item">
+                    <router-link  class="nav-link" to='/acciones'>
+                      <i class="fa fa-cogs nav-icon"></i>
+                      <p>Acciones</p>
+                    </router-link>
+                  </li>
+                </ul>
+                <ul class="nav nav-treeview">
+                  <li  class="nav-item">
+                    <router-link  class="nav-link" to='/gruposAcciones'>
+                      <i class="fa fa-link nav-icon"></i>
+                      <p>Grupos-Acciones</p>
+                    </router-link>
+                  </li>
+                </ul>
+              </li>
               @endcanany
               <!-- CLIENTES -->
               <li class="nav-item ">

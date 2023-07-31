@@ -14,4 +14,9 @@ class Grupo extends Model
         'nombreGrupos',
         'descripcionGrupos'
     ];
+
+    public function acciones()
+    {
+        return $this->belongsToMany(Accion::class, 'grupoacciones', 'idGrupo', 'idAccion');
+    }
 }
