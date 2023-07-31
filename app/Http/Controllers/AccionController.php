@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Accion;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AccionController extends Controller
@@ -60,6 +63,40 @@ class AccionController extends Controller
                 ],
             ],500); 
         }
+    }
+
+    public function grupoAccionesByUser(Request $request)
+    {
+    
+        try {
+
+            $user = User::find(Auth::id());
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion');
+
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'Acciones cargadas correctamente',
+                    'acciones' => $acciones,
+                ],
+                200
+        );
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Error al cargar las acciones',
+                    'acciones' => null,
+                ],
+                500
+            );
+        }
+       
     }
 
     /**

@@ -38,9 +38,11 @@
                                         <td>
                                             <span v-for="empresa in user.empresas" :key="empresa.id" class="badge badge-secondary">{{ empresa.nombreEmpresa }}</span>
                                         </td>
-                                        <td>
-                                            <a class="pr-2" @click="editarModal(user);" href="#"><i class="fas fa-edit text-warning"></i></a>
-                                            <a class="pr-2" @click="eliminarUsuario(user.id);" href="#"><i class="fas fa-trash-alt text-danger"></i></a>
+                                        <td class="d-flex flex-row ">
+                                            <!-- Permiso a Edición Admin -->
+                                            <a v-if="idAccionesUser.includes('editAdmin')" class="btn btn-warning btn-sm" @click="editarModal(user);" href="#"><i class="fas fa-edit text-light"></i></a>
+                                            <!-- Permiso para Eliminar Admin -->
+                                            <a v-if="idAccionesUser.includes('deleteAdmin')" class="btn btn-danger btn-sm ml-1" @click="eliminarUsuario(user.id);" href="#"><i class="fas fa-trash-alt text-light"></i></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -50,13 +52,13 @@
                                     <div v-text="errorMostrarMsjuser"></div>
                                 </div>
                             </div>
-                            <nav>
+                            <nav class="pt-1">
                                 <ul class="pagination">
                                     <li class="page-item"  v-if="pagination.current_page > 1 ">
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page">1</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination.current_page < pagination.last_page "  >
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar)">Sig</a>
@@ -155,6 +157,7 @@ export default {
         return{
             idUser: 0,
             idGrupos: [],
+            idAccionesUser:[],
             nombreUsuario: "",
             apellidoUsuario: "",
             loading: false,
@@ -492,11 +495,27 @@ export default {
             );
         if (this.errorMostrarMsjuser.length) this.erroruser = 1;
         },
+        methodCan(){
+            let me=this;
+            var url= 'api/grupoAccionesByUser';
+            axios.get(url,{
+                    params: {
+                }
+            }).then(function (response){
+                me.idAccionesUser=response.data.acciones; 
+            }).catch(function(error){
+                console.log(error);
+                if(error.response.status === 401){
+                    location.reload(true)
+                }
+            });
+        },
     },
     mounted() {
         this.listarUsuarios(1,this.buscar);
         this.listarEmpresas();
         this.listarGrupos();
+        this.methodCan();
     }
 }
 </script>
