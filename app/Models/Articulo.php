@@ -37,4 +37,14 @@ class Articulo extends Model
 
         return $this->belongsToMany(Proveedor::class,'articulo_proveedores','idArticulo','idProveedor');
     }
+
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class, 'idCategoria');
+    }
+    
+    public function detalleCompra()
+    {
+        return $this->hasMany(DetalleCompra::class, 'idArticulo');
+    }
 }

@@ -16,7 +16,7 @@ class ArticuloRepository {
   
     public function all($buscar,$idEmpresa){
 
-        return $this->model->with('stock')
+        return $this->model->with('stock','categoria:id,nombreCategoria','proveedores:id,nombreProveedor')
                             ->where('idEmpresa',$idEmpresa)
                             ->where('estadoArticulo',1)
                             ->where(function($query) use ($buscar){

@@ -31,12 +31,10 @@
                                     <td>{{articulos.precio}}</td>
                                     <td>{{articulos.precioCompra}}</td>
                                     <td>
-                                        <template v-for="categorias in arrayCategoria">
-                                            <span v-if="categorias.id === articulos.idCategoria">{{ categorias.nombreCategoria }}</span>
-                                        </template>
+                                        <span class="badge badge-secondary">{{ articulos.categoria.nombreCategoria }}</span>
                                     </td>
                                     <td>
-                                        <span v-for="proveedor in articulos.proveedores" :key="proveedor.id" class="badge">{{ proveedor.nombreProveedor }}</span>
+                                        <span  v-for="proveedor in articulos.proveedores" :key="proveedor.id" class="badge badge-secondary">{{ proveedor.nombreProveedor }}</span>
                                     </td>
                                     <td>
                                         <a class="pr-2" @click="editarModal(articulos);" href="#"><i class="fas fa-edit text-warning"></i></a>
@@ -235,7 +233,7 @@ export default {
                     me.arrayArticulos=articulos.data;
                     me.pagination= response.data.pagination;
 
-                    me.obtenerProveedoresPorArticulo() 
+                    //me.obtenerProveedoresPorArticulo() 
 
                 })
                 .catch(function (error) {
