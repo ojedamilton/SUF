@@ -107,7 +107,18 @@ class AuthServiceProvider extends ServiceProvider
 
              $resultado=in_array('editVendedor',$acciones);
              return $resultado;
-        }); 
+        });
+        Gate::define('viewVendedor', function($user) {
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion')
+                            ->toArray();
+
+             $resultado=in_array('viewVendedor',$acciones);
+             return $resultado;
+        });
         Gate::define('reportVendedor', function($user) {
             $grupos = $user->grupos()->pluck('id');
             $acciones = DB::table('grupoacciones as ga')
@@ -120,6 +131,17 @@ class AuthServiceProvider extends ServiceProvider
              return $resultado;
         });
         // Comprador (reemplazar edit por create)
+        Gate::define('viewComprador', function($user) {
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion')
+                            ->toArray();
+
+             $resultado=in_array('viewComprador',$acciones);
+             return $resultado;
+        }); 
         Gate::define('editComprador', function($user) {
             $grupos = $user->grupos()->pluck('id');
             $acciones = DB::table('grupoacciones as ga')
