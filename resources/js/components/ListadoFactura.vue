@@ -53,7 +53,8 @@
           </nav> 
         </div>
       </div>
-
+    <!-- Spinner -->
+    <div class="loader" v-if="isLoading"></div>
     <!-- Modal -->
     <ModalFactura :modalFlag="modal" @cambiar-modal="cerrarModal" :userEmpresa="userEmpresa" :factura="factura" :arrayDetalles="arrayDetalles" :arrayClientes="arrayClientes"/>
 
@@ -81,6 +82,7 @@ export default {
       },
       modal:0,
       buscar:'',
+      isLoading:true,
       tituloModal: "Detalles Facturas",
       facturasPaginadas: [], // Arreglo para almacenar las facturas de la página actual
       elementosPorPagina: 10, // Número de elementos que quieres mostrar por página
@@ -120,12 +122,14 @@ export default {
       .then(function (response) {
         var respuesta = response.data;
         me.arrayFacturas = respuesta.listadofacturas;
+        me.isLoading=false;
 
         // Actualizar el arreglo de facturas para mostrar solo los elementos de la página actual
         me.actualizarFacturas();
       })
       .catch(function (error) {
         console.log(error);
+        me.isLoading=false;
         if (error.response.status === 401) {
           location.reload(true);
         }
@@ -371,5 +375,20 @@ export default {
   opacity: 1 !important;
   position: absolute !important;
   background-color: #3c29297a !important;
+}
+.loader{  /* Loader Div Class */
+  position: absolute;
+  top:0px;
+  right:0px;
+  width:100%;
+  height:100%;
+  background-color:#eceaea;
+  background-image: url('/img/loading-gif.gif');
+  background-size: 50px;
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
 }
 </style>

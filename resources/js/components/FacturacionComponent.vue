@@ -150,6 +150,8 @@
         <!-- Carga los datos ajax -->
       </div>
     </div>
+     <!-- Spinner -->
+     <div class="loader" v-if="isLoading"></div> 
       <!-- Modal -->
       <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -240,6 +242,7 @@ export default {  // todo lo que voy a exportar
       arrayTipoFactura: [],
       buscarCliente: '',
       descuento: 0,
+      isLoading: false,
       buscarArticulo: '',
       pagination: {
         'total': 0,
@@ -637,6 +640,7 @@ export default {  // todo lo que voy a exportar
      * @returns {void}
      */
     facturarTodo(){
+      this.isLoading=true;
       this.validarFactura();
       if(this.errorFactura==1)return; 
       let totalFactura = document.querySelector('#totalFactura').textContent;
@@ -663,6 +667,7 @@ export default {  // todo lo que voy a exportar
         }) 
         .then(function (response) {
           var respuesta = response.data;
+          me.isLoading=false;
           document.querySelector('#subTotalFactura').textContent='0';
           document.querySelector('#totalFactura').textContent='0';
           me.arrayDetalles=[];
@@ -682,7 +687,8 @@ export default {  // todo lo que voy a exportar
           totalFactura='0'; */
         })
         .catch(function (error) {
-         let errorMessage=error.response.data.message;
+          me.isLoading=false;
+          let errorMessage=error.response.data.message;
             Swal.fire({
               position: 'center',
               icon: 'error',
@@ -713,14 +719,30 @@ export default {  // todo lo que voy a exportar
 };
 </script>
 <style>
-   .modal-content{
-        width: 100%;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: absolute !important;
-        background-color: #3c29297a !important;
-    }
+.modal-content{
+    width: 100%;
+    position: absolute !important;
+}
+.mostrar{
+    display: list-item !important;
+    opacity: 1 !important;
+    position: absolute !important;
+    background-color: #3c29297a !important;
+}
+.loader {
+  /* Loader Div Class */
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: #eceaea;
+  background-image: url("/webfonts/ajax-loader.gif");
+  background-size: 50px;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+}
 </style>    

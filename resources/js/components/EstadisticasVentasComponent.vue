@@ -24,7 +24,9 @@
                     </tbody>
                 </table>
             </div>
-        </div>  
+        </div>
+        <!-- Spinner -->
+        <div class="loader" v-if="isLoading"></div>  
     </main>
   </template>
   <script>
@@ -46,6 +48,7 @@
           tipofactura:{},
         },
         modal:0,
+        isLoading: true,
         tituloModal: "Detalles Facturas",
         pagination:{
             'total':0,
@@ -66,6 +69,7 @@
             .then(function (response) {
                 var respuesta = response.data;
                 me.arrayFacturas = respuesta.listadofacturas;
+                me.isLoading = false;
                 const dataTable = $('#facturaTable').DataTable({
                     searchPanes: {
                         cascadePanes: true,
@@ -121,6 +125,7 @@
             })
             .catch(function (error) {
                 console.log(error);
+                me.isLoading = false;
                 if (error.response.status === 401) {
                 location.reload(true);
                 }
@@ -278,5 +283,22 @@
     position: absolute !important;
     background-color: #3c29297a !important;
   }
-  </style>
+  
+    .loader {
+    /* Loader Div Class */
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #eceaea;
+    background-image: url("/webfonts/ajax-loader.gif");
+    background-size: 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10000000;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+    }
+</style>
   

@@ -44,6 +44,8 @@
                     </div>
                 </div>
             </div>
+            <!-- Spinner -->
+            <div class="loader" v-if="isLoading"></div>
             <!-- Modal -->
             <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" Permisos="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog  modal-dialog-centered" Permisos="document">
@@ -99,6 +101,7 @@ export default {
             tipoGrupo:0,
             idAccionesUser:'',
             modal:0,
+            isLoading:true,
             tituloModal:'',
             idPermissionUser:[],
             idPermisos:0,
@@ -171,11 +174,13 @@ export default {
                 // destructuro la respuesta para obtener los stocks
                 var {grupos} = response.data;
                 me.arrayGrupo=grupos;
+                me.isLoading=false;
                 //me.pagination= response.data.pagination;
 
             })
             .catch(function (error) {
                 console.log(error);
+                me.isLoading=false;
                 if(error.status === 401){
                     location.reload(true)
                 }
@@ -281,3 +286,22 @@ export default {
     }
 }
 </script>
+<style>
+.loader {
+    /* Loader Div Class */
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #eceaea;
+    background-image: url("/webfonts/ajax-loader.gif");
+    background-size: 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10000000;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+}
+  
+</style>
