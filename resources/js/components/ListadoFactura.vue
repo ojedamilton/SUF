@@ -318,6 +318,7 @@ export default {
   mounted() {
     // se auto-ejecuta apenas termina de cargar el DOM
     this.listarFacturas(this.buscar);
+    this.methodCan();
   },
   watch: {
     // se usa para escuchar cambios en las variables
