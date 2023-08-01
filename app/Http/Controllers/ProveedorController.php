@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Proveedor;
+use App\Models\Empresa;
+use App\Models\Compra;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -59,6 +61,34 @@ class ProveedorController extends Controller
             ],500); 
         }
        
+    }
+
+    public function getProevedorByCompra(Request $request)
+    {
+        // Si quieren ingresar sin un request, redirecciona al home 
+        if (!$request->ajax()) {
+            return redirect('/');
+        }
+    
+        $idCompra = $request->id;
+        $compra = Compra::find($idCompra);
+    
+        // Si no se encuentra la compra, retornar un mensaje de error o lo que consideres apropiado
+        if (!$compra) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Compra no encontrada',
+            ], 404);
+        }
+    
+        // Obtener el proveedor asociado a la compra
+        $proveedor = $compra->proveedor;
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Proveedor encontrado',
+            'proveedor' => $proveedor,
+        ], 200);
     }
     /**
     * Store a newly created resource in Proveedor.

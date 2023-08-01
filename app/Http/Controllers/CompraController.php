@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Articulo;
 use App\Models\Compra;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetalleCompra;
+use App\Models\Stock;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -24,9 +26,25 @@ class CompraController extends Controller
     {
 
         try {
-            $listadocompras = Compra::orderBy('id', 'desc')
-                ->where('idEmpresa', Auth::user()->idEmpresa)
-                ->get();
+            $buscar= $request->buscar;
+
+
+            $query = Compra::with('detallescompra', 'detallescompra.articulo','detallescompra.articulo.stock')
+            ->select('compras.id','compras.numeroCompra','compras.totalCompra','compras.fechaCompra','users.name as nameUser','users.apellido as apellidoUser','proveedors.nombreProveedor','proveedors.apellidoProveedor')
+            ->leftJoin('users','compras.idUsuario','=','users.id')
+            ->leftJoin('proveedors','compras.idProveedor','=','proveedors.id')
+            ->orderBy('compras.id', 'desc')
+            ->where('compras.idEmpresa', Auth::user()->idEmpresa);
+
+        if ($buscar) {
+            // Aplicar el filtro de búsqueda
+            $query->where(function ($q) use ($buscar) {
+                $q->where('compras.numeroCompra', 'like', '%' . $buscar . '%')
+                ->orWhere('compras.fechaCompra', 'like', '%' . $buscar . '%');
+            });
+        }
+    
+        $listadocompras = $query->get();
 
             return response()->json([
                 'success' => true,
@@ -163,8 +181,7 @@ class CompraController extends Controller
       if (!$request->ajax())return redirect('/');
 
       $compra=Compra::find($request->id);
-      $compra = Compra::with('proveedor', 'valor', 'usuario', 'empresa')
-          ->selectRaw("id, descuento, totalCompra, fechaCompra, idProveedor, idValor, idUsuario, idEmpresa, CONCAT(LPAD(numeroCompra, 6, '0')) as numeroCompra")
+      $compra = Compra::selectRaw("id, descuento, totalCompra, fechaCompra, idProveedor, idValor, idUsuario, idEmpresa, CONCAT(LPAD(numeroCompra, 6, '0')) as numeroCompra")
           ->where('id', $request->id)
           ->first();
 
@@ -173,19 +190,19 @@ class CompraController extends Controller
       ];
    }
 
-    public function  getDetallesById(Request $request){
+    public function  getDetallesComprasById(Request $request){
 
         // Si quieren Ingresar sin un request , redirecciona al home 
         if(!$request->ajax())return redirect('/');
 
 
         $idCompra=$request->id;
-        $detallesById=DetalleCompra::with('articulo')
+        $detallescomprasbyid=DetalleCompra::with('articulo')
             ->where('idCompra',$idCompra)
             ->get();
 
        return[
-           'detallesbyid'=>$detallesById,
+           'detallescomprasbyid'=>$detallescomprasbyid,
        ]; 
    
     }
@@ -204,7 +221,7 @@ class CompraController extends Controller
         return $dompdf->stream('contenido-modal.pdf');
     }
 
-    public function reporteventas(){
+    public function reportecompras(){
 
         $fecha_actual = Carbon::now()->toDateString();
        // dd($fecha_actual);
@@ -212,7 +229,7 @@ class CompraController extends Controller
         $fin_semana_actual = $fecha_actual->endOfWeek()->endOfDay(); */
         //whereBetween('fechaModificacion', [$inicio_semana_actual, $fin_semana_actual])
         $total_comprada_semana_actual = Compra::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
-                                                ->where('fechaModificacion',$fecha_actual)
+                                                ->where('fechaCompra',$fecha_actual)
                                                 ->sum('totalCompra');
         $cantidad_compradas=Compra::where('idEmpresa',Auth::user()->idEmpresa)->count();
 
