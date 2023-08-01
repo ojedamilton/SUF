@@ -27,4 +27,9 @@ class DetalleCompra extends Model
         //dd($this);
         return $this->belongsTo(Articulo::class, 'idArticulo');
     }
+
+    public function compra()
+    {
+        return $this->belongsTo(Compra::class, 'idCompra');
+    }
 }

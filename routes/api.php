@@ -73,8 +73,14 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
     // Compras
     Route::post('/comprar', [CompraController::class,'store'])->name('comprar');
+    Route::get('/allcompras',[CompraController::class,'getAllCompras'])->name('allcompras');
+    Route::post('/detallescomprasbyid',[CompraController::class,'getDetallesComprasById'])->name('detallescomprasbyid');
+    Route::post('/getcomprasbyid',[CompraController::class,'getComprasById'])->name('comprasbyid');
+    Route::post('/descargarCompra',[CompraController::class,'descargarCompra'])->name('descargarcompra');
+
     // Proveedor
     Route::get('/proveedores',[ProveedorController::class,'getAllProveedores'])->name('proveedores');
+    Route::get('/proveedorCompra',[ProveedorController::class,'getProevedorByCompra'])->name('proveedorCompra');
     Route::post('/createProveedor',[ProveedorController::class,'store'])->name('crearproveedor');
     Route::put('/updateProveedor',[ProveedorController::class,'update'])->name('editarproveedor');
     Route::post('/deleteProveedor',[ProveedorController::class,'destroy'])->name('eliminarproveedor');
