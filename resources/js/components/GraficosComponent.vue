@@ -105,7 +105,7 @@ export default {
             cantVentaMensual: 0,
             totalVentaMensual: 0,
             cantidadArticulosMensual:0,
-            ArtMasVendido: '',
+            ArtMasVendido: 'No hay datos',
             chartData: {
                 labels: []
                 , datasets: [
@@ -143,7 +143,7 @@ export default {
                 this.cantVentaMensual = totales.data.cantVentaMensual;
                 this.totalVentaMensual = totales.data.totalVentaMensual;
                 this.cantidadArticulosMensual = totales.data.cantidadArticulosMensual;
-                this.ArtMasVendido = Object.keys(totales.data.cantidadArticulos)[0];
+                this.ArtMasVendido = Object.keys(totales.data.cantidadArticulos)[0]??'No hay datos';
                 this.chartData = {
                     labels: totales.data.toCurrentMonths,
                     datasets: [

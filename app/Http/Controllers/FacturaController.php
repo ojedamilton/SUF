@@ -240,20 +240,20 @@ class FacturaController extends Controller
         $fecha_actual = Carbon::now();
         $inicio_mes_actual = Carbon::now()->startOfMonth();
 
-        $total_facturada_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
+        $total_facturada_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
                                                 ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
                                                 ->sum('totalFactura');
         
-        $cantidad_facturas=Factura::where('idEmpresa',1)
+        $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa)
             ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
             ->count();
         
-        $cantidad_articulos_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
+        $cantidad_articulos_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
             ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
             ->join('detallesfacturas','facturas.id','=','detallesfacturas.idFactura')
             ->sum('detallesfacturas.cantidadArticulo');
 
-        $ArtMasVendido = 'Jean kosiuko';
+        $ArtMasVendido = 'Sin Articulos';
 
         // Metricas Para Grafico de Barras ChartJS
         $numeroMes      = $fecha_actual->month;
@@ -271,17 +271,17 @@ class FacturaController extends Controller
             $startOfMonth = $currentMonth->startOfMonth()->toDateString();
             $endOfMonth = date("Y-m-t", strtotime($currentMonth->toDateString()));
 
-            $total_facturada_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
+            $total_facturada_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
                     ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
                     ->sum('totalFactura');
             array_push($amount,$total_facturada_mes_actual);
 
-            $cantidad_facturas=Factura::where('idEmpresa',1)
+            $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa)
                 ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
                 ->count();
             array_push($countFacturas,$cantidad_facturas);
 
-            $cantidad_articulos_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa ?? 1 )
+            $cantidad_articulos_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
                 ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
                 ->join('detallesfacturas','facturas.id','=','detallesfacturas.idFactura')
                 ->sum('detallesfacturas.cantidadArticulo');
@@ -290,7 +290,9 @@ class FacturaController extends Controller
         }
         // Metricas Grafico Pie
         $cantidadArticulos = DetalleFactura::select('a.nombreArticulo',DB::raw('SUM(detallesfacturas.cantidadArticulo) as total'))
+            ->join('facturas as f','detallesfacturas.idFactura','=','f.id')
             ->join('articulos as a','detallesfacturas.idArticulo','=','a.id')
+            ->where('f.idEmpresa',Auth::user()->idEmpresa)
             ->groupBy('detallesfacturas.idArticulo', 'a.id', 'a.nombreArticulo')
             ->orderByDesc('total')
             ->pluck('total','nombreArticulo');
@@ -304,7 +306,7 @@ class FacturaController extends Controller
             "amount"                    =>$amount,
             "countFacturas"             =>$countFacturas,
             "countArticulos"            =>$countArticulos,
-            'cantidadArticulos'        =>$cantidadArticulos,
+            'cantidadArticulos'         =>$cantidadArticulos,
         ],200);
          
 
