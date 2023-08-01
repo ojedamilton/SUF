@@ -34,8 +34,6 @@ class AuthServiceProvider extends ServiceProvider
                     $userGrupo=UserGrupo::where('idUsuario',$user->id)
                         ->pluck('idGrupo')
                         ->toArray();
-                    // aplico el Helper in_array()
-                    // verifico si es 1 (admin)
                     $resultado=in_array(1,$userGrupo);
                     return $resultado;
                 });
@@ -44,8 +42,6 @@ class AuthServiceProvider extends ServiceProvider
         $userGrupo=UserGrupo::where('idUsuario',$user->id)
             ->pluck('idGrupo')
             ->toArray();
-        // aplico el Helper in_array()
-        // verifico si es 2 (comprador)
         $resultado=in_array(2,$userGrupo);
             return $resultado;
         });
@@ -54,8 +50,6 @@ class AuthServiceProvider extends ServiceProvider
         $userGrupo=UserGrupo::where('idUsuario',$user->id)
             ->pluck('idGrupo')
             ->toArray();
-        // aplico el Helper in_array()
-        // verifico si es 3 (vendedor)
         $resultado=in_array(3,$userGrupo);
         return $resultado;
         });
@@ -95,8 +89,52 @@ class AuthServiceProvider extends ServiceProvider
 
             $resultado=in_array('editAdmin',$acciones);
             return $resultado;
-        }); 
+        });
+        Gate::define('deleteAdmin', function($user) {
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion')
+                            ->toArray();
+
+             $resultado=in_array('deleteAdmin',$acciones);
+             return $resultado;
+        });
+        Gate::define('reportAdmin', function($user) {
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion')
+                            ->toArray();
+
+             $resultado=in_array('reportAdmin',$acciones);
+             return $resultado;
+        });
         // Vendedor (reemplazar edit por create)
+        Gate::define('viewVendedor', function($user) {
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion')
+                            ->toArray();
+
+             $resultado=in_array('viewVendedor',$acciones);
+             return $resultado;
+        });
+        Gate::define('createVendedor', function($user) {
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion')
+                            ->toArray();
+
+            $resultado=in_array('createVendedor',$acciones);
+            return $resultado;
+        }); 
         Gate::define('editVendedor', function($user) {
             $grupos = $user->grupos()->pluck('id');
             $acciones = DB::table('grupoacciones as ga')
@@ -108,7 +146,7 @@ class AuthServiceProvider extends ServiceProvider
              $resultado=in_array('editVendedor',$acciones);
              return $resultado;
         });
-        Gate::define('viewVendedor', function($user) {
+        Gate::define('deleteVendedor', function($user) {
             $grupos = $user->grupos()->pluck('id');
             $acciones = DB::table('grupoacciones as ga')
                             ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
@@ -116,7 +154,7 @@ class AuthServiceProvider extends ServiceProvider
                             ->pluck('ac.nombreAccion')
                             ->toArray();
 
-             $resultado=in_array('viewVendedor',$acciones);
+             $resultado=in_array('deleteVendedor',$acciones);
              return $resultado;
         });
         Gate::define('reportVendedor', function($user) {
@@ -141,7 +179,18 @@ class AuthServiceProvider extends ServiceProvider
 
              $resultado=in_array('viewComprador',$acciones);
              return $resultado;
-        }); 
+        });
+        Gate::define('createComprador', function($user) {
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion')
+                            ->toArray();
+
+            $resultado=in_array('createComprador',$acciones);
+            return $resultado;
+        });  
         Gate::define('editComprador', function($user) {
             $grupos = $user->grupos()->pluck('id');
             $acciones = DB::table('grupoacciones as ga')
@@ -152,7 +201,18 @@ class AuthServiceProvider extends ServiceProvider
 
              $resultado=in_array('editComprador',$acciones);
              return $resultado;
-        }); 
+        });
+        Gate::define('deleteComprador', function($user) {
+            $grupos = $user->grupos()->pluck('id');
+            $acciones = DB::table('grupoacciones as ga')
+                            ->join('acciones as ac', 'ga.idAccion', '=', 'ac.id')
+                            ->whereIn('idGrupo', $grupos)
+                            ->pluck('ac.nombreAccion')
+                            ->toArray();
+
+             $resultado=in_array('deleteComprador',$acciones);
+             return $resultado;
+        });
         Gate::define('reportComprador', function($user) {
             $grupos = $user->grupos()->pluck('id');
             $acciones = DB::table('grupoacciones as ga')
