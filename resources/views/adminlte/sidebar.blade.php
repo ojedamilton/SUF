@@ -245,6 +245,8 @@
                     </ul>
                   @endcannot
                 </li>
+              @endcanany
+              @canany(['isAdmin','isSeller'])
                 <!-- CLIENTES -->
                 <li class="nav-item ">
                   <a href="#" class="nav-link ">
@@ -268,6 +270,8 @@
                     </li>
                   </ul>
                 </li>
+              @endcanany
+              @canany(['isAdmin','isBuyer'])
                 <!-- PROVEEDORES -->
                 <li class="nav-item ">
                   <a href="#" class="nav-link ">
@@ -291,6 +295,8 @@
                     </li>
                   </ul>
                 </li>
+              @endcanany
+              @canany(['isAdmin','isSeller'])
                 <!-- PRODUCTOS -->
                 <li class="nav-item ">
                   <a href="#" class="nav-link ">
@@ -343,6 +349,8 @@
                     </li>
                   </ul>
                 </li>
+              @endcanany
+              @canany(['isAdmin'])
                 <!-- MEDIOS DE PAGO -->
                 <li class="nav-item ">
                   <a href="#" class="nav-link ">
@@ -366,6 +374,8 @@
                     </li>
                   </ul>
                 </li>
+              @endcanany
+              @canany(['isAdmin','isSeller'])
                 <!-- INFORMES -->
                 <li class="nav-item">
                   <a href="#" class="nav-link ">
