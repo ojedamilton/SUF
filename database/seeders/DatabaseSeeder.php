@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ValorSeeder::class);
         $this->call(AccionSeeder::class);
         $this->call(GrupoSeeder::class);
-        $this->call(GrupoAccionSeeder::class);
+        $this->call(GrupoAccionesSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(TipoFacturaSeeder::class);
         $this->call(UsuarioGruposSeeder::class);
