@@ -68,7 +68,9 @@
                         </div>
                     </div>
                 </div>
-               <!-- Modal -->
+            <!-- Spinner -->
+            <div class="loader" v-if="isLoading"></div>
+            <!-- Modal -->
             <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" user="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" user="document">
                     <div class="modal-content">
@@ -163,6 +165,7 @@ export default {
             loading: false,
             modal: 0,
             idCan: "",
+            isLoading: true,
             tituloModal: "",
             tipoAccion: 0,
             buscar: "",
@@ -232,6 +235,7 @@ export default {
                 var respuesta = response.data;
                 me.arrayUser=respuesta.users.data;
                 me.pagination= respuesta.pagination;
+                me.isLoading=false;
                 me.erroruser=0
 
                 // console.log("Usuarios:", me.arrayUser); 
@@ -241,6 +245,7 @@ export default {
             })
             .catch(function (error) {
                 console.log(error);
+                me.isLoading=false;
                 me.erroruser=1,
                 me.errorMostrarMsjuser=error.response.data.message
             });

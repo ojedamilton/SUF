@@ -53,7 +53,7 @@
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page">1</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page "  >
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page+1,buscar)">Sig</a>
@@ -63,6 +63,8 @@
                     </div>
                 </div>
             </div>
+            <!-- Spinner -->
+            <div class="loader" v-if="isLoading"></div>
             <!-- Modal -->
             <div class="modal fade" :class="{'mostrar': modal}" style="display: none;" id="exampleModalCenter" tabindex="-1" user="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" user="document">
@@ -182,6 +184,7 @@ export default {
             idEmpresa:0,
             modal:0,
             idCan:'',
+            isLoading:true,
             tituloModal:'',
             nombreEmpresa:'',
             razonSocial:'',
@@ -245,22 +248,22 @@ export default {
          * @param string $buscar
          * @return void
          */
-    listarTipoEmpresa() {
-      let me = this;
-      var url = "api/tiposempresas";
-      axios
-        .get(url)
-        .then(function (response) {
-          var respuesta = response.data;
-          me.arrayTiposEmpresas = respuesta.tiposempresas;
-        })
-        .catch(function (error) {
-          console.log(error);
-          if (error.response.status === 401) {
-            location.reload(true);
-          }
-        });
-    },
+        listarTipoEmpresa() {
+        let me = this;
+        var url = "api/tiposempresas";
+        axios
+            .get(url)
+            .then(function (response) {
+            var respuesta = response.data;
+            me.arrayTiposEmpresas = respuesta.tiposempresas;
+            })
+            .catch(function (error) {
+            console.log(error);
+            if (error.response.status === 401) {
+                location.reload(true);
+            }
+            });
+        },
         listarEmpresa(page,buscar){
             let me = this;
             var url= '/api/empresas?page='+page+'&buscar='+buscar;
@@ -273,10 +276,12 @@ export default {
                     var {empresas} = response.data;
                     me.arrayEmpresa=empresas.data;
                     me.pagination= response.data.pagination;
+                    me.isLoading=false;
 
                 })
                 .catch(function (error) {
                     console.log(error);
+                    me.isLoading=false;
                     if(error.status === 401){
                         location.reload(true)
                     }
@@ -482,5 +487,20 @@ export default {
 .div-error{
     color: red;
     font-weight: bold;
+}
+.loader{  /* Loader Div Class */
+    position: absolute;
+    top:0px;
+    right:0px;
+    width:100%;
+    height:100%;
+    background-color:#eceaea;
+    background-image: url('/img/loading-gif.gif');
+    background-size: 50px;
+    background-repeat:no-repeat;
+    background-position:center;
+    z-index:10000000;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
 }
 </style>

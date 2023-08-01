@@ -42,6 +42,8 @@
                     </div>
                 </div>
             </div>
+            <!-- Spinner -->
+            <div class="loader" v-if="isLoading"></div>
         </div>
     </div>
 </template>
@@ -56,6 +58,7 @@ export default {
             descripcionAccion:'',
             tipoAccion:0,
             buscar:'',
+            isLoading:true,
             arrayAccion:[],
             pagination:{
                 'total':0,
@@ -121,10 +124,12 @@ export default {
                 var {acciones} = response.data;
                 me.arrayAccion=acciones.data;
                 me.pagination= response.data.pagination;
+                me.isLoading=false;
 
             })
             .catch(function (error) {
                 console.log(error);
+                me.isLoading=false;
                 if(error.status === 401){
                     location.reload(true)
                 }
@@ -152,3 +157,21 @@ export default {
     }
 }
 </script>
+<style>
+.loader {
+    /* Loader Div Class */
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #eceaea;
+    background-image: url("/webfonts/ajax-loader.gif");
+    background-size: 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10000000;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+}
+</style>

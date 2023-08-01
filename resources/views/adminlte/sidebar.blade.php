@@ -57,7 +57,7 @@
                 </li>
               @endcanany
               <!-- FACTURACION grupo admin y vendedor -->
-              @canany(['isAdmin','isSeller'])
+              @canany(['isAdmin','isSeller','editVendedor','viewVendedor'])
                 <li class="nav-item">
                   <a  href="#" class="nav-link ">
                     <p>
@@ -104,7 +104,7 @@
                 </li>
               @endcanany
               <!-- COMPRAS grupo admin y comprador -->
-              @canany(['isAdmin','isBuyer'])
+              @canany(['isAdmin','isBuyer','editComprador','viewComprador'])
                 <li class="nav-item ">
                   <a href="#" class="nav-link ">
                     <p>
@@ -296,7 +296,7 @@
                   </ul>
                 </li>
               @endcanany
-              @canany(['isAdmin','isSeller'])
+              @canany(['isAdmin','isSeller','isBuyer'])
                 <!-- PRODUCTOS -->
                 <li class="nav-item ">
                   <a href="#" class="nav-link ">
@@ -350,7 +350,7 @@
                   </ul>
                 </li>
               @endcanany
-              @canany(['isAdmin'])
+              @canany(['isAdmin','isSeller','isBuyer'])
                 <!-- MEDIOS DE PAGO -->
                 <li class="nav-item ">
                   <a href="#" class="nav-link ">
