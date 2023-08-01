@@ -22,6 +22,7 @@ import EstadisticasVentas from "../components/EstadisticasVentasComponent.vue";
 import GruposComponent from "../components/GruposComponent.vue";
 import AccionesComponent from "../components/AccionesComponent.vue";
 import GruposAccionesComponent from "../components/GruposAccionesComponent.vue";
+import NotFoundComponent from "../components/NotFoundComponent.vue";
 
 const routes = [
     {
@@ -143,6 +144,11 @@ const routes = [
         path: "/gruposAcciones",
         name: "gruposAcciones",
         component: GruposAccionesComponent,
+    },
+    {
+        path: "/notfound",
+        name: "notFound",
+        component: NotFoundComponent,
     },
 ];
 

@@ -30,7 +30,7 @@
                     @endcan
                     @cannot('createAdmin')
                       <li  class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                             <i class="fas fa-building nav-icon"></i>
                             <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -47,7 +47,7 @@
                     @endcan
                     @cannot('viewAdmin')
                       <li  class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                           <i class="fas fa-list nav-icon"></i>
                           <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -77,7 +77,7 @@
                     @endcan
                     @cannot('editVendedor')
                       <li  class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                             <i class="fas fa-file-alt nav-icon"></i>
                             <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -94,7 +94,7 @@
                     @endcan
                     @cannot('viewVendedor')
                       <li  class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                           <i class="fas fa-list nav-icon"></i>
                           <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -124,7 +124,7 @@
                     @endcan
                     @cannot('editComprador')
                       <li class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                           <i class="fas fa-toolbox nav-icon"></i>
                           <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -141,7 +141,7 @@
                     @endcan
                     @cannot('viewComprador')
                       <li class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                           <i class="fas fa-list nav-icon"></i>
                           <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -208,7 +208,7 @@
                   @cannot('viewAdmin')
                     <ul class="nav nav-treeview">
                       <li  class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                           <i class="fa fa-users nav-icon"></i>
                           <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -216,7 +216,7 @@
                     </ul>
                     <ul class="nav nav-treeview">
                       <li   class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                           <i class="fa fa-cogs nav-icon"></i>
                           <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -237,7 +237,7 @@
                   @cannot('editAdmin')
                     <ul class="nav nav-treeview">
                       <li  class="nav-item">
-                        <router-link  class="nav-link" to='/'>
+                        <router-link  class="nav-link" to='/notfound'>
                           <i class="fa fa-link nav-icon"></i>
                           <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
@@ -393,7 +393,7 @@
                     @endcan
                     @cannot('reportVendedor')
                       <li class="nav-item">
-                        <router-link  class="nav-link" id="dashboard-link" to='/'>
+                        <router-link  class="nav-link" id="dashboard-link" to='/notfound'>
                           <i class="fa fa-book nav-icon"></i>
                           <span class="badge badge-danger">Solicite Permiso</span>
                         </router-link>
