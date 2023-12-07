@@ -1,0 +1,39 @@
+name: Patatag - Deploy a Hostinger
+
+on:
+    push:
+        branches:
+            - develop
+
+jobs:
+    laravel-rsync-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+            - name: Setup Enviroment
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "7.4"
+            - name: Change to backend directory
+              #run: cd backend
+            - name: Install Packages
+              run: composer update
+            - name: Set up Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "14"
+            - name: Change to frontend directory
+              #run: cd ../frontend
+            - run: npm install
+            - run: npm run dev
+            - name: Deploy to Server
+              uses: ojedamilton/laravel-deploy@master
+              with:
+                  user: root
+                  host: ${{ secrets.HOSTINGER_IP_PUBLICO }}
+                  port: ${{ secrets.HOSTINGER_PUERTO_PUBLICO }}
+                  path: ${{ secrets.HOSTINGER_PATH }}/suf
+                  owner: root
+              env:
+                  DEPLOY_KEY: ${{ secrets.HOSTINGER_PRIVATEKEY_ROOT }}
