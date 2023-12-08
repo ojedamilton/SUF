@@ -13,16 +13,16 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "7.4"
-      - name: Change to backend directory
       - name: Install Packages
         run: composer update
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
           node-version: "14"
-      - name: Change to frontend directory
-      - run: npm install
-      - run: npm run dev
+      - name: Install dependency
+        run: npm install
+      - name: Compilating
+        run: npm run dev
       - name: Deploy to Server
         uses: ojedamilton/laravel-deploy@master
         with:
