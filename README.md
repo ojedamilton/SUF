@@ -16,6 +16,6 @@
 - Run php artisan key:generate
 - Run php artisan migrate
 - Run npm install
-- Run npm run dev (Compilar aseets)
+- Run npm run dev (Compilar aseets).
 - Run php artisan serve
 - Go to localhost:8000
