@@ -4,33 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Stock;
+use App\Repositories\StockRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use \Illuminate\Http\JsonResponse;
 
 class StockController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index($page, $buscar)
+    protected $stockRepository;
+
+    public function __construct(StockRepository $stockRepository)
+    {
+        $this->stockRepository = $stockRepository;
+    }
+
+    public function index($page, $buscar) : JsonResponse
     {
         try {
-            $page_url = $page;
-            $buscar_url = $buscar;
-            if ($buscar == '*') {
-                $stocks=Stock::with('articulo:id,nombreArticulo')
-                    ->WhereRelation('articulo', 'idEmpresa', Auth::user()->idEmpresa)
-                    ->orderBy('id','asc')->paginate(10);
-            }else{
-
-                $stocks = Stock::with('articulo:id,nombreArticulo')
-                    ->whereRelation('articulo', 'nombreArticulo', 'like', '%' . $buscar . '%')
-                    ->WhereRelation('articulo', 'idEmpresa', Auth::user()->idEmpresa)
-                ->paginate(5);     
-            }
+            
+            $stocks = $this->stockRepository->all($buscar);
               
             return response()->json([
                     'success'=>true,
@@ -99,12 +92,15 @@ class StockController extends Controller
     {
         // Comienzo Transaccion
         DB::beginTransaction();
+
         try {
             $stock = Stock::find($request->idStock);
             $stock->cantidad = $request->cantidad;
             $stock->cantidadMinima = $request->cantidadMinima;
             $stock->save();
+
             DB::commit();
+
             return response()->json([
                 'success'=>true,
                 'message'=>'stock actualizado correctamente',
@@ -112,7 +108,8 @@ class StockController extends Controller
             ],200); 
 
         } catch (\Throwable $th) {
-
+            
+            DB::rollBack();
             Log::info($th->getMessage());
 
             return response()->json([

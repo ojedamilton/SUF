@@ -9,49 +9,37 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetalleCompra;
 use App\Models\Stock;
+use App\Repositories\CompraRepository;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 
 class CompraController extends Controller
 {
+    protected $compraRepository;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getAllCompras(Request $request)
+    public function __construct(CompraRepository $compraRepository)
+    {
+        $this->compraRepository = $compraRepository;    
+    }
+
+    public function getAllCompras(Request $request): JsonResponse
     {
 
         try {
-            $buscar= $request->buscar;
-
-
-            $query = Compra::with('detallescompra', 'detallescompra.articulo','detallescompra.articulo.stock')
-            ->select('compras.id','compras.numeroCompra','compras.totalCompra','compras.fechaCompra','users.name as nameUser','users.apellido as apellidoUser','proveedors.nombreProveedor','proveedors.apellidoProveedor')
-            ->leftJoin('users','compras.idUsuario','=','users.id')
-            ->leftJoin('proveedors','compras.idProveedor','=','proveedors.id')
-            ->orderBy('compras.id', 'desc')
-            ->where('compras.idEmpresa', Auth::user()->idEmpresa);
-
-        if ($buscar) {
-            // Aplicar el filtro de búsqueda
-            $query->where(function ($q) use ($buscar) {
-                $q->where('compras.numeroCompra', 'like', '%' . $buscar . '%')
-                ->orWhere('compras.fechaCompra', 'like', '%' . $buscar . '%');
-            });
-        }
     
-        $listadocompras = $query->get();
+            $listadocompras = $this->compraRepository->all($request->buscar);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Listado de Compras',
                 'listadocompras' => $listadocompras,
             ], 200);
+
         } catch (\Throwable $th) {
+            
             Log::error($th->getMessage());
             return response()->json([
                 'success' => false,
