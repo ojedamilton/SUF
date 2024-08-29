@@ -20,8 +20,8 @@ class ArticuloRepository {
                             ->where('idEmpresa',$idEmpresa)
                             ->where('estadoArticulo',1)
                             ->where(function($query) use ($buscar){
-                                $query->where('nombreArticulo', 'like', '%'.$buscar.'%')
-                                    ->orWhere('id', 'like', '%'.$buscar.'%');
+                                $query->whereLike('nombreArticulo', '%'.$buscar.'%')
+                                    ->orWhereLike('id', '%'.$buscar.'%');
                             })
                             ->orderBy('nombreArticulo','asc')
                             ->paginate(10);

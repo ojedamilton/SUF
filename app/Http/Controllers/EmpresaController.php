@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Empresa;
+use App\Repositories\EmpresaRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -11,26 +12,21 @@ use Illuminate\Support\Facades\Validator;
 
 class EmpresaController extends Controller
 {
+    protected $repository;
+
+    public function __construct(EmpresaRepository $empresaRepository)
+    {
+        $this->repository = $empresaRepository;
+    }
     public function getAllEmpresas(Request $request){
-   
-       
+        
         $buscar= $request->buscar;
         
+        $empresas = $this->repository->all($buscar);
+       
+        
         try {
-            if($buscar == 'userListado'){
-                $empresas = Empresa::select('id','nombreEmpresa')
-                    ->where('estadoEmpresa', 1)
-                    ->paginate(15);
-            }else{
-            $empresas = Empresa::select('id','nombreEmpresa','razonSocial','cuitEmpresa','ingresosBrutosEmpresa','telEmpresa','direccionEmpresa','inicioActividades','idTipoEmpresa','estadoEmpresa')
-                ->where(function ($query) use ($buscar) {
-                    $query->where('nombreEmpresa', 'like', '%' . $buscar . '%')
-                        ->orWhere('cuitEmpresa', 'like', '%' . $buscar . '%');
-                })
-                ->where('estadoEmpresa', 1)
-                ->orderBy('nombreEmpresa', 'asc')
-                ->paginate(15);
-            }
+            
             return response()->json([
                 'success'=>true,
                 'message'=>'Listado de Empresas',

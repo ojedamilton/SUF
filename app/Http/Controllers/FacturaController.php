@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetalleFactura;
 use App\Models\Stock;
+use App\Repositories\FacturaRepository;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -16,6 +17,12 @@ use Illuminate\Support\Facades\Validator;
 
 class FacturaController extends Controller
 {
+    protected $facturaRepository;
+
+    public function __construct(FacturaRepository $facturaRepository)
+    {
+        $this->facturaRepository = $facturaRepository;    
+    }
 
     /**
      * Display a listing of the resource.
@@ -27,25 +34,8 @@ class FacturaController extends Controller
 
         try {
             $buscar= $request->buscar;
-
             
-            $query = Factura::with('detallesfactura','puntoventa', 'detallesfactura.articulo','detallesfactura.articulo.stock')
-                ->select('facturas.id','facturas.idpuntoVenta','facturas.numeroFactura','facturas.totalFactura','facturas.fechaModificacion','tipofacturas.tipoFactura','users.name as nameUser','users.apellido as apellidoUser','clientes.nombreCliente','clientes.apellidoCliente')
-                ->leftJoin('users','facturas.idUsuario','=','users.id')
-                ->leftJoin('tipofacturas','facturas.idTipoFactura','=','tipofacturas.idTipoFactura')
-                ->leftJoin('clientes','facturas.idCliente','=','clientes.id')
-                ->orderBy('facturas.id', 'desc')
-                ->where('facturas.idEmpresa', Auth::user()->idEmpresa);
-
-            if ($buscar) {
-                // Aplicar el filtro de búsqueda
-                $query->where(function ($q) use ($buscar) {
-                    $q->where('facturas.numeroFactura', 'like', '%' . $buscar . '%')
-                    ->orWhere('facturas.fechaModificacion', 'like', '%' . $buscar . '%');
-                });
-            }
-        
-            $listadofacturas = $query->get();
+            $listadofacturas = $this->facturaRepository->all($buscar);
 
             return response()->json([
                 'success' => true,
