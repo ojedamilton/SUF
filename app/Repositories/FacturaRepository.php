@@ -19,10 +19,10 @@ class FacturaRepository {
 
         $query = $this->model->query()
             //->with('detallesfactura','puntoventa', 'detallesfactura.articulo','detallesfactura.articulo.stock')
-            ->select('facturas.id','facturas.idpuntoVenta','facturas.numeroFactura','facturas.totalFactura','facturas.fechaModificacion','tipofacturas.tipoFactura')//,'users.name as nameUser','users.apellido as apellidoUser','clientes.nombreCliente','clientes.apellidoCliente')
-            //->leftJoin('users','facturas.idUsuario','=','users.id')
+            ->select('facturas.id','facturas.idpuntoVenta','facturas.numeroFactura','facturas.totalFactura','facturas.fechaModificacion','tipofacturas.tipoFactura','users.name as nameUser','users.apellido as apellidoUser','clientes.nombreCliente','clientes.apellidoCliente')
+            ->leftJoin('users','facturas.idUsuario','=','users.id')
             ->leftJoin('tipofacturas','facturas.idTipoFactura','=','tipofacturas.idTipoFactura')
-            //->leftJoin('clientes','facturas.idCliente','=','clientes.id')
+            ->leftJoin('clientes','facturas.idCliente','=','clientes.id')
             ->orderBy('facturas.id', 'desc')
             ->where('facturas.idEmpresa', Auth::user()->idEmpresa);
 
