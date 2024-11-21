@@ -188,7 +188,7 @@
                                 <td>{{articulo.id}}</td>    
                                 <td>{{articulo.nombreArticulo}}</td> 
                                 <td class="col-2" >
-                                  <input class="form-control form-control-sm" :value="articulo.precio" type="number" name="precio" :id="'precio_'+articulo.id">
+                                  <input class="form-control form-control-sm" :value="articulo.precio" min="1" type="number" name="precio" :id="'precio_'+articulo.id">
                                 </td>
                                 <td class="col-2" >
                                   <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
@@ -326,6 +326,8 @@ export default {  // todo lo que voy a exportar
     validarFactura() {
       this.errorFactura = 0;
       this.errorMostrarMsjFactura = [];
+      let subtotal = document.querySelector('#subTotalFactura').textContent;
+      let total = document.querySelector('#totalFactura').textContent;
       if(!this.buscarCliente) this.errorMostrarMsjFactura.push('* El nombre de cliente no puede estar vacío');
       if(!this.telefono) this.errorMostrarMsjFactura.push('* El telefono no puede estar vacío');
       if(!this.fecha) this.errorMostrarMsjFactura.push('* La fecha no puede estar vacío');
@@ -333,6 +335,8 @@ export default {  // todo lo que voy a exportar
       if(!this.email) this.errorMostrarMsjFactura.push('* El email no puede estar vacío');
       if(!this.tipoFacturaId || this.tipoFactura == 0) this.errorMostrarMsjFactura.push('* El tipoFactura no puede estar vacío');
       if(!this.arrayDetalles[0]) this.errorMostrarMsjFactura.push('* No hay Articulos para Facturar');
+      if(subtotal < 0) this.errorMostrarMsjFactura.push('* El subtotal no puede ser negativo');
+      if(total < 0) this.errorMostrarMsjFactura.push('* El total no puede ser negativo');
       if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjFactura.push('* El email no es valido');
       if (this.errorMostrarMsjFactura.length) this.errorFactura = 1;
     },
@@ -429,28 +433,22 @@ export default {  // todo lo que voy a exportar
         this.buscarCliente=nombre+' '+apellido;
         this.idCliente=cliente;
     },
-    // rellenarDetalleFactura(id,nombre){
-    //    let precio = parseInt(document.getElementById('precio_'+id).value);
-    //    const valorCantidad =parseInt(document.getElementById(id).value)     
-    //    const detalleObjeto ={}
-    //    detalleObjeto.idArticulo=id
-    //    detalleObjeto.nombre=nombre
-    //    detalleObjeto.precioVenta=parseInt(precio)
-    //    detalleObjeto.cantidadArticulo=valorCantidad
-    //    detalleObjeto.totalDetalle=valorCantidad*precio
-    //    // const detalleParse= JSON.parse(JSON.stringify(detalleObjeto))
-    //    const detalleParse = {...detalleObjeto} // Sacar Observer
-    //    this.arrayDetalles.push(detalleParse);
-    //    //console.log(this.arrayDetalles.splice(this.arrayDetalles.lenght));
-    //    //debugger
-    //   //this.arrayDetalles.splice(0,1);
-    // },
+    /**
+     * Se encarga de rellenar el detalle de la factura
+     *
+     * @param {integer} id - id del articulo
+     * @param {string} nombre - nombre del articulo
+     * @param {integer} p - precio del articulo
+     * @param {integer} cantidad - cantidad del articulo
+     * 
+     * @returns {void}
+     */
     rellenarDetalleFactura(id, nombre,p,cantidad) {
       // resultado del return en validarStock()
       let resultStock = this.validarStock(id,cantidad);
       // Valido Stock antes de agregar el detalle
       if (resultStock==false) return;
-      let precio = parseInt(document.getElementById('precio_'+id).value);
+      let precio = parseInt(document.getElementById('precio_'+id).value.replace("-", ""));
       let valorCantidad = parseInt(document.getElementById(id).value);
       let existe = false;
       this.arrayDetalles.forEach((detalle, index) => {
@@ -458,7 +456,7 @@ export default {  // todo lo que voy a exportar
           // Si el artículo y el precio coinciden en los detalles, se modifica la cantidad
           this.arrayDetalles[index].cantidadArticulo += valorCantidad;
           this.arrayDetalles[index].totalDetalle =
-            this.arrayDetalles[index].cantidadArticulo * precio;
+          this.arrayDetalles[index].cantidadArticulo * precio;
           existe = true;
         }
       });
@@ -473,6 +471,12 @@ export default {  // todo lo que voy a exportar
           totalDetalle: valorCantidad * precio,
         };
         this.arrayDetalles.push(nuevoDetalle);
+      }
+    },
+    validateNegativePrice(id) {
+      let price = document.getElementById("precio_"+id).value;
+      if (price < 0) {
+        document.getElementById("precio").value = 0;
       }
     },
     /**
