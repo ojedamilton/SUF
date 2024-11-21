@@ -166,7 +166,9 @@
         this.errorMostrarMsj = [];
         if(!this.nombre) this.errorMostrarMsj.push('* El nombre no puede estar vacío');
         if(!this.precioV) this.errorMostrarMsj.push('* El precio ventra no puede estar vacío');
+        if(this.precioV<=0) this.errorMostrarMsj.push('* El precio venta no puede ser menor o igual a 0');
         if(!this.precioC) this.errorMostrarMsj.push('* El precio compra no puede estar vacío');
+        if(this.precioC<=0) this.errorMostrarMsj.push('* El precio compra no puede ser menor o igual a 0');
         if(!this.categoriaId) this.errorMostrarMsj.push('* La Categoria no puede estar vacía');
         if(!this.stock) this.errorMostrarMsj.push('* El stock no puede estar vacío');
         if (this.selectedProveedor.length == 0) this.errorMostrarMsj.push("* El select proveedor/es no puede estar vacío");
