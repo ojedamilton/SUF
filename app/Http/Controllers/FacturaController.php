@@ -90,7 +90,6 @@ class FacturaController extends Controller
     public function store(Request $request)
     {
         // Obtengo Pto Venta ||Proxima iteracion
-        //$ptoVenta=DB::table('puntoVenta')->where('id',1)->first();
         $ptoVenta = 1;
 
         // Obtener la empresa del usuario logueado
@@ -110,18 +109,16 @@ class FacturaController extends Controller
         } else {
             $ultimoNum = '000001';
         }
-        // llamo al metodo validarForm
-        // $this->validarForm($request);
         
         try {
-            // Valido El stock de cada articulo
-            foreach ($request->detalles as $detalle) {
-                $stock = Stock::where('idArticulo', $detalle['idArticulo'])->first();
-                if ($stock->cantidad < $detalle['cantidadArticulo']) {
-                   // Enviar Throw Exception
-                    throw new \Exception("No hay Stock Suficiente para el Articulo: " . $detalle['nombre']);
-                }
+
+            // Llamo al metodo estatico de la clase Stock
+            $validacion = Stock::consultarDisponibilidad($request->detalles);
+
+            if (!$validacion['exito']) {
+                throw new \Exception("No hay stock suficiente para el artículo: " . $validacion['articulo']);
             }
+            
             // Comienzo Transaccion
             DB::beginTransaction();
             // Instancio Factura
@@ -146,18 +143,12 @@ class FacturaController extends Controller
                 $detalleReq[$key]['idFactura'] = $factura->id;
                 unset($detalleReq[$key]['nombre']);
             }
-            // Instancio DetalleFactura
-            $detalleFactura = new DetalleFactura;
-            //$detalleFactura::create();
-            // modificar la manera que inserto los registros y hacerlo uno por uno craendo un nuevo objeto
-            foreach ($detalleReq as $detalleF) {
-                $detalleFactura->create($detalleF);
-            }
-            // No me permitia auditar con el metodo insert porque es de tipo query builder y no de tipo eloquent
-            //$detalleFactura->insert($detalleReq);
+
+            // Creo los detalles
+            $factura->detallesfactura()->createMany($detalleReq);
+
             DB::commit();
-            // Hago un refresh de la instancia para que me traiga los detalles
-            $detalleFactura->refresh();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Factura Creada Correctamente',

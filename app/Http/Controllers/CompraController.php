@@ -134,18 +134,12 @@ class CompraController extends Controller
                 $detalleReq[$key]['idCompra'] = $compra->id;
                 unset($detalleReq[$key]['nombre']);
             }
-            // Instancio DetalleCompra
-            $detalleCompra = new DetalleCompra;
-            //$detalleCompra::create();
-            // modificar la manera que inserto los registros y hacerlo uno por uno craendo un nuevo objeto
-            foreach ($detalleReq as $detalleF) {
-                $detalleCompra->create($detalleF);
-            }
-            // No me permitia auditar con el metodo insert porque es de tipo query builder y no de tipo eloquent
-            //$detalleCompra->insert($detalleReq);
+    
+            // Creo los detalles de la compra
+            $compra->detallescompra()->createMany($detalleReq);
+
             DB::commit();
-            // Hago un refresh de la instancia para que me traiga los detalles
-            $detalleCompra->refresh();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Compra Creada Correctamente',

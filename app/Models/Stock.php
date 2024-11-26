@@ -25,8 +25,21 @@ class Stock extends Model
     public function articulo(){
         return $this->belongsTo(Articulo::class, 'idArticulo');
     }
-   // Generamos las relaciones con el modelo Proveedor.
-    public function proveedor(){
-        return $this->belongsTo(Proveedor::class, 'idProveedor');
+
+    // Consultar disponibilidad de un articulo.
+    public static function consultarDisponibilidad($detalles)
+    {
+        foreach ($detalles as $detalle) {
+            $stock = self::where('idArticulo', $detalle['idArticulo'])->first();
+
+            if (!$stock || $stock->cantidad < $detalle['cantidadArticulo']) {
+                return [
+                    'exito' => false,
+                    'articulo' => $detalle['nombre']
+                ];
+            }
+        }
+
+        return ['exito' => true];
     }
 }
