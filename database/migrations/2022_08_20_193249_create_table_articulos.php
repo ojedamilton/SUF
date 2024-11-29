@@ -16,7 +16,7 @@ class CreateTableArticulos extends Migration
         Schema::create('articulos', function (Blueprint $table) {
             $table->id();
             $table->string('nombreArticulo');
-            $table->decimal('precio',8,2);
+            $table->decimal('precio',8,2)->unsigned();
             $table->boolean('estadoArticulo');
             $table->unsignedBigInteger('idCategoria');
             $table->decimal('precioCompra',8,2);

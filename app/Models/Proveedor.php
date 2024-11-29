@@ -22,4 +22,9 @@ class Proveedor extends Model
         'estadoProveedor',
         'id_empresa',
     ];
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'id_empresa');
+    }
 }

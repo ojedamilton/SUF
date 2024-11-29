@@ -28,11 +28,6 @@ class Articulo extends Model
         return $this->hasMany(DetalleFactura::class, 'id');
     }
 
-    public function stock()
-    {
-        return $this->hasOne(Stock::class, 'idArticulo');
-    }
-
     public function proveedores(){
 
         return $this->belongsToMany(Proveedor::class,'articulo_proveedores','idArticulo','idProveedor');
@@ -46,5 +41,10 @@ class Articulo extends Model
     public function detalleCompra()
     {
         return $this->hasMany(DetalleCompra::class, 'idArticulo');
+    }
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'idEmpresa');
     }
 }
