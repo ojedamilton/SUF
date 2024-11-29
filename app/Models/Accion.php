@@ -18,9 +18,9 @@ class Accion extends Model
         'estadoAccion',
     ];
 
-    public function acciones()
+    public function grupos()
     {
-        return $this->belongsToMany(Accion::class, 'grupoacciones', 'idAccion', 'idGrupo');
+        return $this->belongsToMany(Grupo::class, 'grupoacciones', 'idGrupo', 'idAccion');
     }
 
 }

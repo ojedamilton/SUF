@@ -174,13 +174,6 @@ class ArticuloController extends Controller
             $articulo->idEmpresa=Auth::user()->idEmpresa;
             $articulo->save();
 
-            // Relaciono con Tabla Pivot Articulo-Proveedor
-
-            // $proveedor = new ArticuloProveedores();
-            // $proveedor->idArticulo=$articulo->id;
-            // $proveedor->idProveedor=$request->proveedorId;
-            // $proveedor->save();
-
             // Seteo Multiproveedores
             $selectedProveedorIds = array_map(function($proveedor) use ($articulo) {
                     $selectedProveedorIds['idArticulo']=$articulo->id;

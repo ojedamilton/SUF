@@ -24,4 +24,9 @@ class Empresa extends Model
         'telEmpresa',
         'inicioActividades'
     ];
+
+    public function tipoEmpresa()
+    {
+        return $this->belongsTo(TipoEmpresa::class, 'idTipoEmpresa');
+    }
 }
