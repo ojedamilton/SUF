@@ -2,6 +2,8 @@ import EmpresaComponent from "../components/EmpresaComponent.vue";
 import ListadoEmpresa from "../components/ListadoEmpresaComponent.vue";
 import FacturacionComponent from "../components/FacturacionComponent.vue";
 import ListadoFactura from "../components/ListadoFactura.vue";
+import NotaCreditoComponent from "../components/NotaCreditoComponent.vue";
+import ListadoNotaCredito from "../components/ListadoNotaCredito.vue";
 import ComprasComponent from "../components/ComprasComponent.vue";
 import ListadoCompras from "../components/ListadoComprasComponent.vue";
 import NuevoUsuario from "../components/NuevoUserComponent.vue";
@@ -23,6 +25,7 @@ import GruposComponent from "../components/GruposComponent.vue";
 import AccionesComponent from "../components/AccionesComponent.vue";
 import GruposAccionesComponent from "../components/GruposAccionesComponent.vue";
 import NotFoundComponent from "../components/NotFoundComponent.vue";
+import InterfazVentasComponent from "../components/InterfazVentasComponent.vue";
 
 const routes = [
     {
@@ -49,6 +52,16 @@ const routes = [
         path: "/listadofacturacion",
         name: "listadofacturacion",
         component: ListadoFactura,
+    },
+    {
+        path: "/notacredito",
+        name: "notacredito",
+        component: NotaCreditoComponent,
+    },
+    {
+        path: "/ListadoNotaCredito",
+        name: "ListadoNotaCredito",
+        component: ListadoNotaCredito,
     },
     {
         path: "/compras",
@@ -144,6 +157,11 @@ const routes = [
         path: "/gruposAcciones",
         name: "gruposAcciones",
         component: GruposAccionesComponent,
+    },
+    {
+        path: "/interfazVentas",
+        name: "interfazVentas",
+        component: InterfazVentasComponent
     },
     {
         path: "/notfound",

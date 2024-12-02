@@ -103,6 +103,53 @@
                   </ul>
                 </li>
               @endcanany
+              <!-- NOTA DE CREDITO grupo admin y vendedor -->
+              @canany(['isAdmin','isSeller','editVendedor','viewVendedor'])
+                <li class="nav-item">
+                  <a  href="#" class="nav-link ">
+                    <p>
+                      NOTA DE CREDITO
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    {{-- Accion para crear --}}
+                    @can('editVendedor')
+                      <li  class="nav-item">
+                        <router-link  class="nav-link" to='/notacredito'>
+                            <i class="fas fa-file-alt nav-icon"></i>
+                            <p>Nueva Nota de Credito</p>
+                        </router-link>
+                      </li>
+                    @endcan
+                    @cannot('editVendedor')
+                      <li  class="nav-item">
+                        <router-link  class="nav-link" to='/notfound'>
+                            <i class="fas fa-file-alt nav-icon"></i>
+                            <span class="badge badge-danger">Solicite Permiso</span>
+                        </router-link>
+                      </li>
+                    @endcannot
+                    {{-- Accion para visualización --}}
+                    @can('viewVendedor')
+                      <li  class="nav-item">
+                        <router-link  class="nav-link" to='/listadoNotaCredito'>
+                          <i class="fas fa-list nav-icon"></i>
+                          <p>Listado</p>
+                        </router-link>
+                      </li>
+                    @endcan
+                    @cannot('viewVendedor')
+                      <li  class="nav-item">
+                        <router-link  class="nav-link" to='/notfound'>
+                          <i class="fas fa-list nav-icon"></i>
+                          <span class="badge badge-danger">Solicite Permiso</span>
+                        </router-link>
+                      </li>
+                    @endcannot
+                  </ul>
+                </li>
+              @endcanany
               <!-- COMPRAS grupo admin y comprador -->
               @canany(['isAdmin','isBuyer','editComprador','viewComprador'])
                 <li class="nav-item ">
@@ -388,7 +435,7 @@
                     <li   class="nav-item">
                       <router-link  class="nav-link" id="dashboard-link" to='/dashboard'>
                         <i class="far fa-chart-bar nav-icon"></i>
-                        <p>Subdiario de ventas</p>
+                        <p>Estadistica de ventas</p>
                       </a>
                     </li>
                   </ul>
@@ -409,6 +456,25 @@
                         </router-link>
                       </li>
                     @endcannot
+                  </ul>
+                </li>
+              @endcanany
+              <!-- INTERFAZ DE VENTAS -->
+              @canany(['isAdmin','isSeller'])
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
+                    <p>
+                      INTERFAZ DE VENTAS
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    <li   class="nav-item">
+                      <router-link  class="nav-link" id="dashboard-link" to='/interfazVentas'>
+                        <i class="far fa-chart-bar nav-icon"></i>
+                        <p>Parametros</p>
+                      </a>
+                    </li>
                   </ul>
                 </li>
               @endcanany
