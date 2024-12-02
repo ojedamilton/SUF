@@ -47,4 +47,9 @@ class Articulo extends Model
     {
         return $this->belongsTo(Empresa::class, 'idEmpresa');
     }
+
+    public function stock()
+    {
+        return $this->hasOne(Stock::class, 'idArticulo');
+    }
 }
