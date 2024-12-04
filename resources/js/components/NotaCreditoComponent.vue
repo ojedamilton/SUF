@@ -187,11 +187,8 @@
                                 <td class="col-2" >
                                   <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
                                   </td>
-                                <td v-if="articulo.stock.cantidad != 0">
-                                  <button @click="rellenarDetalleNotaCredito(articulo.id,articulo.nombreArticulo,articulo.precio,articulo.stock.cantidad),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
-                                </td>
-                                <td v-else>
-                                  <button disabled class="btn btn-danger">SinStock</button> 
+                                <td>
+                                  <button @click="rellenarDetalleNotaCredito(articulo.id,articulo.nombreArticulo,articulo.precio),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
                                 </td>
                             </tr>  
                           </tbody>  
@@ -437,11 +434,8 @@ export default {  // todo lo que voy a exportar
      * 
      * @returns {void}
      */
-    rellenarDetalleNotaCredito(id, nombre,p,cantidad) {
-      // resultado del return en validarStock()
-      let resultStock = this.validarStock(id,cantidad);
-      // Valido Stock antes de agregar el detalle
-      if (resultStock==false) return;
+    rellenarDetalleNotaCredito(id, nombre) {
+
       let precio = parseInt(document.getElementById('precio_'+id).value.replace("-", ""));
       let valorCantidad = parseInt(document.getElementById(id).value);
       let existe = false;
@@ -481,57 +475,7 @@ export default {  // todo lo que voy a exportar
      * 
      * @returns {boolean} IsValid - true si hay stock, false si no hay stock
      */
-    validarStock(idArticulo,cantidad){
-      // Cantidad que se desea agregar desde el modal
-      let valorCantidadModal = parseInt(document.getElementById(idArticulo).value);
-      // Isvalid 
-      let isValid = false;
-      // is In ArrayArticulos
-      let isInArrayArticulos = false;
-      // Busco el idArticulo en el arrayArticulos
-      this.arrayDetalles.forEach((detalleLinea, index) => {
-        if (detalleLinea.idArticulo == idArticulo) {
-          isInArrayArticulos = true;
-          // obtengo la cantidad del articulo
-          let cantidadLinea = parseInt(detalleLinea.cantidadArticulo);
-          // Sumo las cantidades del arrayDetalles y del valorCantidadModal
-          // Si son mayor al stock, muestro mensaje de error
-          if ((cantidadLinea + valorCantidadModal) > cantidad) {
-            Swal.fire({
-              position: 'center',
-              icon: 'error',
-              title: 'No hay suficiente stock',
-              showConfirmButton: false,
-              timer: 3000
-            });
-            isValid = false;
-          } else {
-            isValid = true;
-          }
-        }else {
-          isInArrayArticulos = false;
-        }
-      });
-      // Si no existe el articulo en el arrayDetalles
-      // Valido solo con la cantidad del Modal
-      if (isInArrayArticulos==false) {
-        if (valorCantidadModal > cantidad) {
-          Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'No hay suficiente stock',
-            showConfirmButton: false,
-            timer: 3000
-          });
-          isValid =  false;
-        }else{
-          isValid = true;
-        } 
-      }
-      // Retorno el valor de isValid
-      return isValid;
-    },
-
+  
     /**
      * Se encarga de eliminar cada Item del detalle de la nota de credito
      *
@@ -640,16 +584,15 @@ export default {  // todo lo que voy a exportar
     realizarNotaCredito(){
       this.isLoading=true;
       this.validarNotaCredito();
-      if(this.errorNotaCredito==1)return; 
+      if (this.errorNotaCredito === 1) {
+        this.isLoading = false;
+        return;
+      }
+
       let totalNotaCredito = document.querySelector('#totalNotaCredito').textContent;
       let pago = parseInt(document.querySelector('#valor').value);
       let me = this;
-      
-      //const detalleParse = {...detalleObjeto} // Sacar Observer
-     
-      //me.arrayDetalles=[];
-      //debugger;
-      console.log('me Array: '+this.arrayDetalles);
+
       var url = "/api/notacredito";
       axios
         .post(url ,{ 

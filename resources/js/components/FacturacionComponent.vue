@@ -646,16 +646,15 @@ export default {  // todo lo que voy a exportar
     facturarTodo(){
       this.isLoading=true;
       this.validarFactura();
-      if(this.errorFactura==1)return; 
+      if(this.errorFactura==1){
+        this.isLoading = false;
+        return;
+      } 
+      
       let totalFactura = document.querySelector('#totalFactura').textContent;
       let pago = parseInt(document.querySelector('#valor').value);
       let me = this;
       
-      //const detalleParse = {...detalleObjeto} // Sacar Observer
-     
-      //me.arrayDetalles=[];
-      //debugger;
-      console.log('me Array: '+this.arrayDetalles);
       var url = "/facturar";
       axios
         .post(url ,{ 

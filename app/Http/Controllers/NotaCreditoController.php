@@ -111,14 +111,7 @@ class NotaCreditoController extends Controller
         }
         
         try {
-
-            // Llamo al metodo estatico de la clase Stock
-            $validacion = Stock::consultarDisponibilidad($request->detalles);
-
-            if (!$validacion['exito']) {
-                throw new \Exception("No hay stock suficiente para el artículo: " . $validacion['articulo']);
-            }
-            
+           
             // Comienzo Transaccion
             DB::beginTransaction();
             // Instancio Nota de Credito
