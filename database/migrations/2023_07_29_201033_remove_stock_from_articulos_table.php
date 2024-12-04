@@ -14,7 +14,9 @@ class RemoveStockFromArticulosTable extends Migration
     public function up()
     {
         Schema::table('articulos', function (Blueprint $table) {
-            $table->dropColumn('stock');
+            if (Schema::hasColumn('articulos', 'stock')) {
+                $table->dropColumn('stock');
+            }
         });
     }
 
