@@ -178,7 +178,7 @@
                                 <td>{{articulo.id}}</td>    
                                 <td>{{articulo.nombreArticulo}}</td> 
                                 <td class="col-2">
-                                  <input class="form-control form-control-sm" :value="articulo.precioCompra" type="number" name="precio" :id="'precio_'+articulo.id">
+                                  <input class="form-control form-control-sm" :value="articulo.precioCompra" min="1" type="number" name="precio" :id="'precio_'+articulo.id">
                                 </td>
                                 <td class="col-2">
                                   <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
@@ -310,12 +310,16 @@ export default {  // todo lo que voy a exportar
     validarCompra() {
       this.errorCompra = 0;
       this.errorMostrarMsjCompra = [];
+      let subtotal = document.querySelector('#subTotalCompra').textContent;
+      let total = document.querySelector('#subTotalCompra').textContent;
       if(!this.buscarProveedor) this.errorMostrarMsjCompra.push('* El nombre de proveedor no puede estar vacío');
       if(!this.telefono) this.errorMostrarMsjCompra.push('* El telefono no puede estar vacío');
       if(!this.fecha) this.errorMostrarMsjCompra.push('* La fecha no puede estar vacía');
       if(!this.pagoId) this.errorMostrarMsjCompra.push('* El metodo de pago no puede estar vacío');
       if(!this.email) this.errorMostrarMsjCompra.push('* El email no puede estar vacío');
       if(!this.arrayDetalles[0]) this.errorMostrarMsjCompra.push('* No hay Articulos para Comprar');
+      if(subtotal < 0) this.errorMostrarMsjNotaCredito.push('* El subtotal no puede ser negativo');
+      if(total < 0) this.errorMostrarMsjNotaCredito.push('* El total no puede ser negativo');
       if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjCompra.push('* El email no es valido');
       if (this.errorMostrarMsjCompra.length) this.errorCompra = 1;
     },
@@ -373,7 +377,7 @@ export default {  // todo lo que voy a exportar
         this.idProveedor=proveedor;
     },
     rellenarDetalleCompra(id, nombre) {
-      let precio = parseInt(document.getElementById('precio_'+id).value);
+      let precio = parseInt(document.getElementById('precio_'+id).value.replace("-", ""));
       let valorCantidad = parseInt(document.getElementById(id).value);
       let existe = false;
       this.arrayDetalles.forEach((detalle, index) => {
@@ -381,7 +385,7 @@ export default {  // todo lo que voy a exportar
           // Si el artículo y el precio coinciden en los detalles, se modifica la cantidad
           this.arrayDetalles[index].cantidadArticulo += valorCantidad;
           this.arrayDetalles[index].totalDetalle =
-            this.arrayDetalles[index].cantidadArticulo * precio;
+          this.arrayDetalles[index].cantidadArticulo * precio;
           existe = true;
         }
       });

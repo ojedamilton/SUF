@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Factura;
+use App\Models\NotaCredito;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -92,6 +93,34 @@ class ClienteController extends Controller
     
         // Obtener el cliente asociado a la factura
         $cliente = $factura->cliente;
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Cliente encontrado',
+            'cliente' => $cliente,
+        ], 200);
+    }
+
+    public function getClienteByNotaCredito(Request $request)
+    {
+        // Si quieren ingresar sin un request, redirecciona al home 
+        if (!$request->ajax()) {
+            return redirect('/');
+        }
+    
+        $idNotaCredito = $request->id;
+        $notacredito = notacredito::with('cliente.situacion')->find($idNotaCredito);
+    
+        // Si no se encuentra la notacredito, retornar un mensaje de error o lo que consideres apropiado
+        if (!$notacredito) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nota de Credito no encontrada',
+            ], 404);
+        }
+    
+        // Obtener el cliente asociado a la notacredito
+        $cliente = $notacredito->cliente;
     
         return response()->json([
             'success' => true,

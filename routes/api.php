@@ -14,7 +14,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AccionController;
-
+use App\Http\Controllers\NotaCreditoController;
 
 
 /*
@@ -71,6 +71,14 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/deleteUsuario', [UserController::class,'destroy'])->name('deleteUsuario');
     // Facturacion
     Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
+
+    // Notas de credito
+    Route::post('/notacredito', [NotaCreditoController::class,'store'])->name('notacredito');
+    Route::get('/allnotacredito',[NotaCreditoController::class,'getAllNotaCredito'])->name('allnotacredito');
+    Route::post('/detallesnotacreditobyid',[NotaCreditoController::class,'getDetallesNotaCreditoById'])->name('detallesnotacreditobyid');
+    Route::post('/getnotacreditobyid',[NotaCreditoController::class,'getNotaCreditoById'])->name('notacreditobyid');
+    Route::post('/descargarNotaCredito',[NotaCreditoController::class,'descargarNotacredito'])->name('descargarnotacredito');
+    
     // Compras
     Route::post('/comprar', [CompraController::class,'store'])->name('comprar');
     Route::get('/allcompras',[CompraController::class,'getAllCompras'])->name('allcompras');

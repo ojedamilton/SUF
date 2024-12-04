@@ -2,8 +2,8 @@
   <main class="container">
       <div class="card">
         <div class="card-header border-0">
-          <p class="text-center"><strong>LISTADO FACTURAS</strong></p>
-          <input type="text" v-model="buscar"  @keyup="listarFacturas(buscar)" class="form-control" placeholder="Busqueda por numero de factura o fecha">
+          <p class="text-center"><strong>LISTADO NOTAS DE CREDITO</strong></p>
+          <input type="text" v-model="buscar"  @keyup="listarNotaCredito(buscar)" class="form-control" placeholder="Busqueda por numero de nc o fecha">
 
           <div class="card-header">
           </div>
@@ -12,28 +12,28 @@
           <table class="table table-striped table-valign-middle">
             <thead>
               <tr>
-                <th>N° Factura</th>
-                <th>Tipo Factura</th>
-                <th>Total Factura</th>
+                <th>N° NC</th>
+                <th>Tipo NC</th>
+                <th>Total NC</th>
                 <th>Fecha</th>
                 <th>Ver</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="factura in facturasPaginadas" :key="factura.id">
+              <tr v-for="notacredito in notacreditoPaginadas" :key="notacredito.id">
                 <td>
-                  {{ factura.numeroFactura }}
+                  {{ notacredito.numeroNotaCredito }}
                 </td>
                 <td>
-                  {{ factura.tipoFactura }}
+                  {{ notacredito.tipoFactura }}
                 </td>
-                <td>$ {{ factura.totalFactura }}</td>
+                <td>$ {{ notacredito.totalNotaCredito }}</td>
                 <td>
-                  {{ factura.fechaModificacion }}
+                  {{ notacredito.fechaNotaCredito }}
                 </td>
                 <td>
-                  <!-- Permiso visualizador de Ventas -->
-                  <a v-if="idAccionesUser.includes('viewVendedor')" @click="abrirModal(); listarDetallesById(factura.id), listarEmpresa(), facturaById(factura.id), listarClientes(factura.id)" href="home#/listadofacturacion" class="text-muted">
+                  <!-- Permiso visualizador de Notas de Credito -->
+                  <a v-if="idAccionesUser.includes('viewVendedor')" @click="abrirModal(); listarDetallesById(notacredito.id), listarEmpresa(), notacreditoById(notacredito.id), listarClientes(notacredito.id)" href="home#/ListadoNotaCredito" class="text-muted">
                     <i class="fas fa-search"></i>
                   </a>
                   <span title="Solicitar Permiso" v-else>
@@ -56,35 +56,35 @@
     <!-- Spinner -->
     <div class="loader" v-if="isLoading"></div>
     <!-- Modal -->
-    <ModalFactura :modalFlag="modal" @cambiar-modal="cerrarModal" :userEmpresa="userEmpresa" :factura="factura" :arrayDetalles="arrayDetalles" :arrayClientes="arrayClientes"/>
+    <ModalNotaCredito :modalFlag="modal" @cambiar-modal="cerrarModal" :userEmpresa="userEmpresa" :notacredito="notacredito" :arrayDetalles="arrayDetalles" :arrayClientes="arrayClientes"/>
 
   </main>
 </template>
 <script>
 import axios from 'axios';
 // importamos el componente
-import ModalFactura from './partials/ModalFactura.vue';
+import ModalNotaCredito from './partials/ModalNotaCredito.vue';
 export default {
   components: {
     // registramos el componente para poder usarlo
-    ModalFactura,
+    ModalNotaCredito,
   },
   data() {
     return {
-      arrayFacturas: [],
+      arrayNotaCredito: [],
       arrayDetalles:[],
       idAccionesUser:[],
       userEmpresa:{},
       arrayClientes:{},
-      factura:{
+      notacredito:{
         puntoventa:{},
         tipofactura:{},
       },
       modal:0,
       buscar:'',
       isLoading:true,
-      tituloModal: "Detalles Facturas",
-      facturasPaginadas: [], // Arreglo para almacenar las facturas de la página actual
+      tituloModal: "Detalles Notas de Credito",
+      notacreditoPaginadas: [], // Arreglo para almacenar las nc de la página actual
       elementosPorPagina: 10, // Número de elementos que quieres mostrar por página
       paginaActual: 1, // Página actual (inicialmente establecida en 1)
       pagination:{
@@ -98,14 +98,14 @@ export default {
     };
   },
   methods: {
-    // listarFacturas() {
+    // listarNotaCredito() {
     //   let me = this;
-    //   var url = "api/allfacturas";
+    //   var url = "api/allnotacredito";
     //   axios
     //     .get(url)
     //     .then(function (response) {
     //       var respuesta = response.data;
-    //       me.arrayFacturas = respuesta.listadofacturas;
+    //       me.arrayNotaCredito = respuesta.listadonotacredito;
     //     })
     //     .catch(function (error) {
     //       console.log(error);
@@ -114,18 +114,18 @@ export default {
     //       }
     //     });
     // },
-    listarFacturas(buscar) {
+    listarNotaCredito(buscar) {
     let me = this;
-    var url = "api/allfacturas" + '?buscar=' + buscar;
+    var url = "api/allnotacredito" + '?buscar=' + buscar;
     axios
       .get(url)
       .then(function (response) {
         var respuesta = response.data;
-        me.arrayFacturas = respuesta.listadofacturas;
+        me.arrayNotaCredito = respuesta.listadonotacredito;
         me.isLoading=false;
 
-        // Actualizar el arreglo de facturas para mostrar solo los elementos de la página actual
-        me.actualizarFacturas();
+        // Actualizar el arreglo de nc para mostrar solo los elementos de la página actual
+        me.actualizarNotaCredito();
       })
       .catch(function (error) {
         console.log(error);
@@ -135,24 +135,24 @@ export default {
         }
       });
     },
-    actualizarFacturas() {
+    actualizarNotaCredito() {
       const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
       const fin = inicio + this.elementosPorPagina;
 
-      // Filtrar el arreglo para mostrar solo las facturas de la página actual
-      this.facturasPaginadas = this.arrayFacturas.slice(inicio, fin);
+      // Filtrar el arreglo para mostrar solo las nc de la página actual
+      this.notacreditoPaginadas = this.arrayNotaCredito.slice(inicio, fin);
     },
     paginaAnterior() {
       if (this.paginaActual > 1) {
         this.paginaActual--;
-        this.actualizarFacturas();
+        this.actualizarNotaCredito();
       }
     },
     paginaSiguiente() {
-      const ultimaPagina = Math.ceil(this.arrayFacturas.length / this.elementosPorPagina);
+      const ultimaPagina = Math.ceil(this.arrayNotaCredito.length / this.elementosPorPagina);
       if (this.paginaActual < ultimaPagina) {
         this.paginaActual++;
-        this.actualizarFacturas();
+        this.actualizarNotaCredito();
       }
     },
     abrirModal() {
@@ -174,12 +174,12 @@ export default {
            this.userEmpresa  = data.userEmpresa;
         
       } catch (error) {
-        return 'error Tipo Factura'
+        return 'error Tipo Nota de Credito'
       }
     },
-    listarClientes(idFactura) {
+    listarClientes(idNotaCredito) {
       let me = this;
-      var url = "/clienteFactura?id=" + idFactura;
+      var url = "/clienteNotaCredito?id=" + idNotaCredito;
       axios
         .get(url)
         .then(function (response) {
@@ -211,7 +211,7 @@ export default {
 
     listarDetallesById(id) {
       let me = this;
-      var url = "/detallesbyid";
+      var url = "api/detallesnotacreditobyid";
       axios
         .post(url,{id:id})
         .then(function (response) {
@@ -225,13 +225,13 @@ export default {
           }
         });
     },
-    async facturaById(id) {
+    async notacreditoById(id) {
       let me = this;
-      var url = "/getfacturasbyid";
+      var url = "api/getnotacreditobyid";
       try {
         const response = await axios.post(url,{id})
         const respuesta = response.data;
-        me.factura = respuesta.factura;
+        me.notacredito = respuesta.notacredito;
       } catch (error) {
         console.log(error);
         if (error.response.status === 401) {
@@ -240,7 +240,7 @@ export default {
       }   
     },
     descargarPDF() {
-       let url='/descargarFactura';
+       let url='api/descargarNotaCredito';
       // Obtener el contenido del modal
       const contenido = $('.modal-body').html();
       /* console.log(contenido); */
@@ -252,7 +252,7 @@ export default {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'Factura.pdf');
+            link.setAttribute('download', 'NotaCredito.pdf');
             document.body.appendChild(link);
             link.click();
          })
@@ -321,7 +321,7 @@ export default {
   },
   mounted() {
     // se auto-ejecuta apenas termina de cargar el DOM
-    this.listarFacturas(this.buscar);
+    this.listarNotaCredito(this.buscar);
     this.methodCan();
   },
   watch: {
@@ -333,7 +333,7 @@ export default {
 };
 </script>
 <style>
-.factura {
+.notacredito {
   table-layout: fixed;
 }
 
@@ -341,24 +341,24 @@ export default {
   font-weight: bold;
 }
 
-.factura > thead {
+.notacredito > thead {
   border-top: solid 3px #000;
   border-bottom: 3px solid #000;
 }
 
-.factura > thead > tr > th:nth-child(2), .factura > tbod > tr > td:nth-child(2) {
+.notacredito > thead > tr > th:nth-child(2), .notacredito > tbod > tr > td:nth-child(2) {
   width: 300px;
 }
 
-.factura > thead > tr > th:nth-child(n+3) {
+.notacredito > thead > tr > th:nth-child(n+3) {
   text-align: right;
 }
 
-.factura > tbody > tr > td:nth-child(n+3) {
+.notacredito > tbody > tr > td:nth-child(n+3) {
   text-align: right;
 }
 
-.factura > tfoot > tr > th, .factura > tfoot > tr > th:nth-child(n+3) {
+.notacredito > tfoot > tr > th, .notacredito > tfoot > tr > th:nth-child(n+3) {
   font-size: 19px;
   text-align: right;
 }

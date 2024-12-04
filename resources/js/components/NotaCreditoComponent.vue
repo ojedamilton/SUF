@@ -3,17 +3,15 @@
     <div class="card my-3">
       <div class="d-flex card-header">
         <div class="p-0 flex-grow-1">
-          <h5><i class="bi bi-plus-circle"></i> Nueva Factura</h5>
+          <h5><i class="bi bi-plus-circle"></i> Nueva Nota de Crédito</h5>
         </div>
       </div>
 
       <div class="card-body">
 
-        <form class="form-horizontal" role="form" id="datos_factura">
+        <form class="form-horizontal" role="form" id="datos_notacredito">
           <div class="row">
-            <label for="nombre_cliente" class="col-lg-1 control-label"
-              >Cliente</label
-            >
+            <label for="nombre_cliente" class="col-lg-1 control-label">Cliente</label>
             <div class="col-lg-3 dropdown">
               <input type="text" autocomplete="off" class="form-control input-sm dropdown-toggle" v-model="buscarCliente" @keyup="listarClientes(buscarCliente)"  id="nombre_cliente" placeholder="Selecciona un cliente" value="" data-toggle="dropdown"
                 aria-expanded="true"/>
@@ -23,33 +21,33 @@
                 </div>
               <input v-model="idCliente" name="id_cliente" type="hidden" value="" />
             </div>
-            <label for="tel1" class="col-lg-1 control-label">Teléfono</label>
+            <label for="telefono" class="col-lg-1 control-label">Teléfono</label>
             <div class="col-lg-2">
               <input type="text" class="form-control input-sm" id="telefono" v-model="telefono" value="" readonly="">
             </div>
-            <label for="mail" class="col-lg-1 control-label">Email</label>
+            <label for="email" class="col-lg-1 control-label">Email</label>
             <div class="col-lg-4">
               <input type="text" class="form-control input-sm" id="email" v-model="email" readonly=""  value="" />
             </div>
           </div>
 
           <div class="row my-2">
-            <label for="empresa" class="col-lg-1 control-label">Vendedor</label>
+            <label for="vendedor" class="col-lg-1 control-label">Vendedor</label>
             <div class="col-lg-3">
               <input type="text" class="form-control input-sm" id="vendedor" v-model="nombreVendedor" readonly="" />
             </div>
-            <label for="tel2" class="col-lg-1 control-label">Fecha</label>
+            <label for="fechaNotaCredito" class="col-lg-1 control-label">Fecha</label>
             <div class="col-lg-2">
-              <input type="text" class="form-control input-sm" id="fecha" v-model="fecha" readonly="" />
+              <input type="text" class="form-control input-sm" id="fechaNotaCredito" v-model="fechaNotaCredito" readonly="" />
             </div>
-            <label for="email" class="col-lg-1 control-label">Pago</label>
+            <label for="valor" class="col-lg-1 control-label">Pago</label>
             <div class="col-lg-2">
               <select class="form-control input-sm" v-model="pagoId" id="valor" name="valor">
                 <option value="0">Seleccionar...</option>
                 <option  v-for="valor in arrayValores" :key="valor.id" :value="valor.id">{{valor.nombreValor}}</option>
               </select>
             </div>
-            <label for="email" class="col-lg-1 control-label">T.Factura</label>
+            <label for="tipoFactura" class="col-lg-1 control-label">T.NC</label>
             <div class="col-lg-1">
               <select class="form-control input-sm" v-model="tipoFacturaId"  id="tipoFactura" name="tipoFactura">
                 <option value=0>...</option>
@@ -58,21 +56,17 @@
             </div>
           </div>
 
-          <div class="col-md-12">
-            <div class="d-flex justify-content-md-end">
-              <div class="btn-group" role="group" aria-label="Basic example">
-                <button
-                  type="button"
-                  class="btn btn-success"
-                  @click="abrirModal(),listarArticulos(1,buscarArticulo)"
-                >
-                  <i class="bi bi-plus-circle-fill"></i> Agregar Articulo
-                </button>
-             <!--    <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-printer-fill"></i> Imprimir
-                </button> -->
-              </div>
+          <div class="row my-3 align-items-center">
+            <label for="factura_asociada" class="col-lg-1 control-label">Fact. Asoc.</label>
+            <div class="col-lg-3">
+              <input type="text" autocomplete="off" class="form-control input-sm" id="factura_asociada" placeholder="N° Factura Asociada" />
             </div>
+            <div class="col-lg-8 d-flex justify-content-end">
+              <button type="button" class="btn btn-success px-4" @click="abrirModal(),listarArticulos(1,buscarArticulo)">
+                <i class="bi bi-plus-circle-fill"></i> Agregar Artículo
+              </button>
+            </div>
+
           </div>
         </form>
 
@@ -128,23 +122,23 @@
               </tr>
               <tr>
                 <td class="text-end" colspan="4">SUBTOTAL $</td>
-                <td id="subTotalFactura" colspan="2" class="text-end">0</td>
+                <td id="subTotalNotaCredito" colspan="2" class="text-end">0</td>
                 <td></td>
               </tr>
               <tr>
                 <td class="text-end font-weight-bold" colspan="4">TOTAL $</td>
-                <td id="totalFactura" colspan="3" class="text-end font-weight-bold">0</td>
+                <td id="totalNotaCredito" colspan="3" class="text-end font-weight-bold">0</td>
               </tr>
             </tbody>
           </table>
-           <div v-show="errorFactura" class="form-group div-error">
+           <div v-show="errorNotaCredito" class="form-group div-error">
                 <div class="text-left">
-                    <div v-for="error in errorMostrarMsjFactura" :key="error" v-text="error">
+                    <div v-for="error in errorMostrarMsjNotaCredito" :key="error" v-text="error">
                     </div>
                 </div>
             </div>
           <div class="d-flex justify-content-md-end">
-            <button class="btn btn-primary" @click="facturarTodo()" >Facturar</button>
+            <button class="btn btn-primary" @click="realizarNotaCredito()" >Realizar NC</button>
           </div>
         </div>
         <!-- Carga los datos ajax -->
@@ -194,7 +188,7 @@
                                   <input class="form-control form-control-sm lineacantidad" value="1" type="number" name="cantidad" :id="articulo.id">
                                   </td>
                                 <td v-if="articulo.stock.cantidad != 0">
-                                  <button @click="rellenarDetalleFactura(articulo.id,articulo.nombreArticulo,articulo.precio,articulo.stock.cantidad),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
+                                  <button @click="rellenarDetalleNotaCredito(articulo.id,articulo.nombreArticulo,articulo.precio,articulo.stock.cantidad),sumarSubtotal(),obtenerDescuento()" class="btn btn-primary">Agregar</button> <!--  -->
                                 </td>
                                 <td v-else>
                                   <button disabled class="btn btn-danger">SinStock</button> 
@@ -255,7 +249,7 @@ export default {  // todo lo que voy a exportar
       offset:3,
       telefono:'',
       email:'',
-      fecha:'',
+      fechaNotaCredito:'',
       cliente:'',
       idCliente:0,
       precio:0,
@@ -267,9 +261,9 @@ export default {  // todo lo que voy a exportar
       idVendedor: 0,
       description: "",
       modal:0,
-      errorFactura: 0,
+      errorNotaCredito: 0,
       errorArticulos:0,
-      errorMostrarMsjFactura: [],
+      errorMostrarMsjNotaCredito: [],
       errorMostrarMsjArticulos:""
     }
   },
@@ -323,22 +317,22 @@ export default {  // todo lo que voy a exportar
     cerrarModal(){
      this.modal=0;
     },
-    validarFactura() {
-      this.errorFactura = 0;
-      this.errorMostrarMsjFactura = [];
-      let subtotal = document.querySelector('#subTotalFactura').textContent;
-      let total = document.querySelector('#totalFactura').textContent;
-      if(!this.buscarCliente) this.errorMostrarMsjFactura.push('* El nombre de cliente no puede estar vacío');
-      if(!this.telefono) this.errorMostrarMsjFactura.push('* El telefono no puede estar vacío');
-      if(!this.fecha) this.errorMostrarMsjFactura.push('* La fecha no puede estar vacío');
-      if(!this.pagoId) this.errorMostrarMsjFactura.push('* El metodo de pago no puede estar vacío');
-      if(!this.email) this.errorMostrarMsjFactura.push('* El email no puede estar vacío');
-      if(!this.tipoFacturaId || this.tipoFactura == 0) this.errorMostrarMsjFactura.push('* El tipoFactura no puede estar vacío');
-      if(!this.arrayDetalles[0]) this.errorMostrarMsjFactura.push('* No hay Articulos para Facturar');
-      if(subtotal < 0) this.errorMostrarMsjFactura.push('* El subtotal no puede ser negativo');
-      if(total < 0) this.errorMostrarMsjFactura.push('* El total no puede ser negativo');
-      if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjFactura.push('* El email no es valido');
-      if (this.errorMostrarMsjFactura.length) this.errorFactura = 1;
+    validarNotaCredito() {
+      this.errorNotaCredito = 0;
+      this.errorMostrarMsjNotaCredito = [];
+      let subtotal = document.querySelector('#subTotalNotaCredito').textContent;
+      let total = document.querySelector('#totalNotaCredito').textContent;
+      if(!this.buscarCliente) this.errorMostrarMsjNotaCredito.push('* El nombre de cliente no puede estar vacío');
+      if(!this.telefono) this.errorMostrarMsjNotaCredito.push('* El telefono no puede estar vacío');
+      if(!this.fechaNotaCredito) this.errorMostrarMsjNotaCredito.push('* La fecha no puede estar vacío');
+      if(!this.pagoId) this.errorMostrarMsjNotaCredito.push('* El metodo de pago no puede estar vacío');
+      if(!this.email) this.errorMostrarMsjNotaCredito.push('* El email no puede estar vacío');
+      if(!this.tipoFacturaId || this.tipoFactura == 0) this.errorMostrarMsjNotaCredito.push('* El tipo de comprobante no puede estar vacío');
+      if(!this.arrayDetalles[0]) this.errorMostrarMsjNotaCredito.push('* No hay Articulos agregados');
+      if(subtotal < 0) this.errorMostrarMsjNotaCredito.push('* El subtotal no puede ser negativo');
+      if(total < 0) this.errorMostrarMsjNotaCredito.push('* El total no puede ser negativo');
+      if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjNotaCredito.push('* El email no es valido');
+      if (this.errorMostrarMsjNotaCredito.length) this.errorNotaCredito = 1;
     },
     async usuarioAuth(){
        let me  = this;
@@ -434,7 +428,7 @@ export default {  // todo lo que voy a exportar
         this.idCliente=cliente;
     },
     /**
-     * Se encarga de rellenar el detalle de la factura
+     * Se encarga de rellenar el detalle de la nota de credito
      *
      * @param {integer} id - id del articulo
      * @param {string} nombre - nombre del articulo
@@ -443,7 +437,7 @@ export default {  // todo lo que voy a exportar
      * 
      * @returns {void}
      */
-    rellenarDetalleFactura(id, nombre,p,cantidad) {
+    rellenarDetalleNotaCredito(id, nombre,p,cantidad) {
       // resultado del return en validarStock()
       let resultStock = this.validarStock(id,cantidad);
       // Valido Stock antes de agregar el detalle
@@ -539,7 +533,7 @@ export default {  // todo lo que voy a exportar
     },
 
     /**
-     * Se encarga de eliminar cada Item del detalle de la factura
+     * Se encarga de eliminar cada Item del detalle de la nota de credito
      *
      * @param {integer} id
      * 
@@ -559,8 +553,8 @@ export default {  // todo lo que voy a exportar
         }
       }, 0)
       console.log(restaTotal)
-      const totalFactura = document.querySelector('#subTotalFactura')
-      totalFactura.textContent = restaTotal
+      const totalNotaCredito = document.querySelector('#subTotalNotaCredito')
+      totalNotaCredito.textContent = restaTotal
     },
     sumarSubtotal(){
       var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
@@ -568,58 +562,58 @@ export default {  // todo lo que voy a exportar
           acum=acum+elem.totalDetalle
           return acum
       },0)
-      const subTotalFactura = document.querySelector('#subTotalFactura')
-      subTotalFactura.textContent = subTotal
-      const totalFactura = document.querySelector('#totalFactura')
-      totalFactura.textContent = subTotal
+      const subTotalNotaCredito = document.querySelector('#subTotalNotaCredito')
+      subTotalNotaCredito.textContent = subTotal
+      const totalNotaCredito = document.querySelector('#totalNotaCredito')
+      totalNotaCredito.textContent = subTotal
       console.log(subTotal)
     },
     sumarTotal(){
       
-      const totalFactura = document.querySelector('#totalFactura')
-      totalFactura.textContent = total
+      const totalNotaCredito = document.querySelector('#totalNotaCredito')
+      totalNotaCredito.textContent = total
    
     },
     obtenerDescuento(){
-      const subTotalFactura = document.querySelector('#subTotalFactura');
-      const totalFactura = document.querySelector('#totalFactura');
+      const subTotalNotaCredito = document.querySelector('#subTotalNotaCredito');
+      const totalNotaCredito = document.querySelector('#totalNotaCredito');
       let dcto  = 0;
       switch (this.descuento) {
         case '5':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*5/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*5/100;
+          totalNotaCredito.textContent = dcto;
           break;
         case '10':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*10/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*10/100;
+          totalNotaCredito.textContent = dcto;
           break;
         case '15':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*15/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*15/100;
+          totalNotaCredito.textContent = dcto;
           break;
         case '20':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*20/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*20/100;
+          totalNotaCredito.textContent = dcto;
           break;
         case '25':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*25/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*25/100;
+          totalNotaCredito.textContent = dcto;
           break;
         case '30':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*30/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*30/100;
+          totalNotaCredito.textContent = dcto;
           break;
         case '40':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*40/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*40/100;
+          totalNotaCredito.textContent = dcto;
           break;
         case '50':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*50/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*50/100;
+          totalNotaCredito.textContent = dcto;
           break;
         case '60':
-          dcto = parseFloat(subTotalFactura.textContent) - parseFloat(subTotalFactura.textContent)*60/100;
-          totalFactura.textContent = dcto;
+          dcto = parseFloat(subTotalNotaCredito.textContent) - parseFloat(subTotalNotaCredito.textContent)*60/100;
+          totalNotaCredito.textContent = dcto;
           break;
         default:
            var parsedobj = JSON.parse(JSON.stringify(this.arrayDetalles))
@@ -627,27 +621,27 @@ export default {  // todo lo que voy a exportar
                  acum=acum+elem.totalDetalle
                 return acum
               },0)
-          totalFactura.textContent = total;
+          totalNotaCredito.textContent = total;
           break;
       }
       /*  if (this.descuento) {
-         const totalFactura = document.querySelector('#totalFactura');
-         let dcto = parseFloat(totalFactura.textContent)*parseInt(this.descuento)/100;  
-         let total = parseFloat(totalFactura.textContent) - dcto;
-         totalFactura.textContent = total;
+         const totalNotaCredito = document.querySelector('#totalNotaCredito');
+         let dcto = parseFloat(totalNotaCredito.textContent)*parseInt(this.descuento)/100;  
+         let total = parseFloat(totalNotaCredito.textContent) - dcto;
+         totalNotaCredito.textContent = total;
        } */
     },
   
     /**
-     * Se encarga de Facturar todo el detalle de la factura
+     * Se encarga de Realizar NC todo el detalle de la nc
      *
      * @returns {void}
      */
-    facturarTodo(){
+    realizarNotaCredito(){
       this.isLoading=true;
-      this.validarFactura();
-      if(this.errorFactura==1)return; 
-      let totalFactura = document.querySelector('#totalFactura').textContent;
+      this.validarNotaCredito();
+      if(this.errorNotaCredito==1)return; 
+      let totalNotaCredito = document.querySelector('#totalNotaCredito').textContent;
       let pago = parseInt(document.querySelector('#valor').value);
       let me = this;
       
@@ -656,14 +650,14 @@ export default {  // todo lo que voy a exportar
       //me.arrayDetalles=[];
       //debugger;
       console.log('me Array: '+this.arrayDetalles);
-      var url = "/facturar";
+      var url = "/api/notacredito";
       axios
         .post(url ,{ 
-              factura:{
+              notacredito:{
                 'pago':pago,
                 'id_cliente': this.idCliente,
-                'fecha':this.fecha,
-                'totalFactura':parseInt(totalFactura),
+                'fechaNotaCredito':this.fechaNotaCredito,
+                'totalNotaCredito':parseInt(totalNotaCredito),
                 'descuento':parseInt(this.descuento),
                 'tipoFacturaId':this.tipoFacturaId
               }, 
@@ -672,8 +666,8 @@ export default {  // todo lo que voy a exportar
         .then(function (response) {
           var respuesta = response.data;
           me.isLoading=false;
-          document.querySelector('#subTotalFactura').textContent='0';
-          document.querySelector('#totalFactura').textContent='0';
+          document.querySelector('#subTotalNotaCredito').textContent='0';
+          document.querySelector('#totalNotaCredito').textContent='0';
           me.arrayDetalles=[];
           me.buscar='';
           me.telefono='';
@@ -683,12 +677,12 @@ export default {  // todo lo que voy a exportar
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Tu Factura Ha sido Creada',
+            title: 'Tu Nota de Credito Ha sido Creada',
             showConfirmButton: false,
             timer: 3000
           })
           /* this.arrayDetalles.splice(this.arrayDetalles.lenght);
-          totalFactura='0'; */
+          totalNotaCredito='0'; */
         })
         .catch(function (error) {
           me.isLoading=false;
@@ -715,7 +709,7 @@ export default {  // todo lo que voy a exportar
    this.listarValores();
    this.listarClientes();
    let date = new Date();
-   this.fecha=date.toISOString().split('T')[0];
+   this.fechaNotaCredito=date.toISOString().split('T')[0];
    this.usuarioAuth();
    this.tipoFacturaEmpresa();
   
