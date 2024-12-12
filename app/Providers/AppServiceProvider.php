@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Models\DetalleCompra;
 use App\Models\DetalleFactura;
 use App\Models\DetalleNotaCredito;
+use App\Models\Factura;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
+use App\Observers\FacturaObserver;
 use App\Observers\MailObserver;
 use App\Observers\StockCompraObserver;
 use App\Observers\StockFacturaObserver;
@@ -33,11 +35,13 @@ class AppServiceProvider extends ServiceProvider
     {   
         // Cuando el usuario se crea, se envia un mail
         User::observe(MailObserver::class);
-        // Cuando se crea un detalle de factura, se disminuye el stock
+        // Cuando se crea un detalle de factura, se disminuye el stock(DetalleFactura es observado por StockFacturaObserver)
         DetalleFactura::observe(StockFacturaObserver::class);
-        // Cuando se crea un detalle de compra, se suma el stock
+        // Cuando se crea un detalle de compra, se suma el stock(DetalleCompra es observado por StockCompraObserver)
         DetalleCompra::observe(StockCompraObserver::class);
-        // Cuando se crea una nota de crédito, suma el stock
+        // Cuando se crea una nota de crédito, suma el stock(DetalleNotaCredito es observado por StockNotaCreditoObserver)
         DetalleNotaCredito::observe(StockNotaCreditoObserver::class);
+        // Cuando se crea una factura, se crea una linea en el trancom.txt
+        Factura::observe(FacturaObserver::class);
     }
 }

@@ -36,4 +36,20 @@ class Compra extends Model
        
         return $this->hasMany(DetalleCompra::class,'idCompra');
     }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'idUsuario');
+
+    }
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'idEmpresa');
+    }
+
+    public function valor()
+    {
+        return $this->belongsTo(Valor::class, 'idValor');
+    }
 }

@@ -19,6 +19,7 @@ class Factura extends Model implements Auditable
 
     protected $auditInclude = [
         'id',
+        'numeroFactura',
         'fechaFactura',
         'estadoFactura',
         'idCliente',
@@ -34,6 +35,7 @@ class Factura extends Model implements Auditable
 
     protected $fillable = [
         'id',
+        'numeroFactura',
         'fechaFactura',
         'estadoFactura',
         'idCliente',
@@ -49,7 +51,7 @@ class Factura extends Model implements Auditable
 
     public function puntoventa(){
        
-        return $this->belongsTo(PuntoVenta::class,'idPuntoVenta');
+        return $this->belongsTo(PuntoVenta::class,'idpuntoVenta');
     }
     
     public function tipofactura(){
@@ -65,5 +67,9 @@ class Factura extends Model implements Auditable
     public function detallesfactura(){
        
         return $this->hasMany(DetalleFactura::class,'idFactura');
+    }
+
+    public function valor(){
+        return $this->belongsTo(Valor::class,'idValor');
     }
 }

@@ -471,7 +471,7 @@
                   <ul class="nav nav-treeview">
                     <li   class="nav-item">
                       <router-link  class="nav-link" id="dashboard-link" to='/interfazVentas'>
-                        <i class="far fa-chart-bar nav-icon"></i>
+                        <i class="fa fa-cogs nav-icon"></i>
                         <p>Parametros</p>
                       </a>
                     </li>

@@ -57,16 +57,16 @@ class TipoEmpresaController extends Controller
             // dependiendo tipo empresa aplico la estrategia con el tipo de factura
             switch ($idTipoEmpresa->idTipoEmpresa) {
                 case 1:
-                    return (new ResponsableInscriptoStrategy)->tipoFactura();
+                    return (new ResponsableInscriptoStrategy)->tipoComprobante();
                     break;
                 case 2:
-                    return (new ExcentoIvaStrategy)->tipoFactura();
+                    return (new ExcentoIvaStrategy)->tipoComprobante();
                     break;
                 case 3:
-                    return (new MonotributistaStrategy)->tipoFactura();
+                    return (new MonotributistaStrategy)->tipoComprobante();
                     break;    
                 default:
-                    return (new MonotributistaStrategy)->tipoFactura();
+                    return (new MonotributistaStrategy)->tipoComprobante();
                     break;
             }
         } catch (\Throwable $th) {

@@ -10,14 +10,22 @@ class PuntoVenta extends Model
 {
     use HasFactory;
 
-    protected $table='puntoVenta';
+    protected $table='puntoventa';
 
     protected $fillable = [
         'id',
-        'numeroPuntoVenta'
+        'numPuntoVenta'
     ];
 
-    public function facturas (){
-        return $this->hasMany(Factura::class,'id');
+    public function facturas(){
+        return $this->hasMany(Factura::class,'idpuntoVenta');
+    }
+
+    public function notascredito(){
+        return $this->hasMany(NotaCredito::class,'idPuntoVenta');
+    }
+
+    public function interfazventas(){
+        return $this->hasMany(InterfazVenta::class,'idPuntoVenta');
     }
 }

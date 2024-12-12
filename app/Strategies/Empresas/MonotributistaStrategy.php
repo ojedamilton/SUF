@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class MonotributistaStrategy implements FacturacionInterface {
 
-    public function tipoFactura() {
+    public function tipoComprobante() {
         try {
             // Lógica para generar tipofactura C
             $tipoFactura = DB::table('tipoFacturas')->where('idTipoFactura',3)->get();
