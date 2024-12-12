@@ -14,8 +14,9 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AccionController;
+use App\Http\Controllers\InterfazVentaController;
 use App\Http\Controllers\NotaCreditoController;
-
+use App\Http\Controllers\PtoVentaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,5 +102,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/crearArticulo',[ArticuloController::class,'store'])->name('crearArticulos');
     Route::put('/updateArticulo', [ArticuloController::class,'update'])->name('updateArticulo');
     Route::post('/deleteArticulo', [ArticuloController::class,'destroy'])->name('deleteArticulo');
+    // Pto Venta
+    Route::get('/ptoventa',[PtoVentaController::class,'index'])->name('ptoventa');
+    // Interfaz Ventas
+    Route::get('/interfazVentaByEmpresa',[InterfazVentaController::class,'interfazVentaByEmpresa'])->name('interfazVentaByEmpresa');
+    Route::post('/crearinterfazventas',[InterfazVentaController::class,'store'])->name('crearinterfazventas');
 
 });

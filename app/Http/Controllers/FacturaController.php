@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Articulo;
 use App\Models\Factura;
+use App\Models\PuntoVenta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -89,8 +90,8 @@ class FacturaController extends Controller
      */
     public function store(Request $request)
     {
-        // Obtengo Pto Venta ||Proxima iteracion
-        $ptoVenta = 1;
+        // Obtengo Pto Venta
+        $ptoVenta = PuntoVenta::first()->id;
 
         // Obtener la empresa del usuario logueado
         $idEmpresa = Auth::user()->idEmpresa;

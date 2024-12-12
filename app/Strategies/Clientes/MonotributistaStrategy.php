@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class MonotributistaStrategy implements FacturacionInterface {
 
-    public function tipoFactura() {
+    public function tipoComprobante() {
      // Lógica para retornar tipofactura A
      $tipoFactura = DB::table('tipoFacturas')->where('idTipoFactura',1)->first();
      return[

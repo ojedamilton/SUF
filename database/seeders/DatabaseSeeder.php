@@ -28,5 +28,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoFacturaSeeder::class);
         $this->call(UsuarioGruposSeeder::class);
         $this->call(usuarioEmpresasSeeder::class);
+        $this->call(PtoVentaSeeder::class);
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class ResponsableInscriptoStrategy implements FacturacionInterface {
    
-    public function tipoFactura() {
+    public function tipoComprobante() {
         try {
             // Lógica para generar tipofactura A y B
             $tipoFactura = DB::table('tipoFacturas')->whereIn('idTipoFactura',[1,2])->orderBy('idTipoFactura','desc')->get();

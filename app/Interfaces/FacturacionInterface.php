@@ -4,6 +4,6 @@ namespace App\Interfaces;
 
 interface FacturacionInterface {
 
-    public function tipoFactura();
+    public function tipoComprobante();
 
 }
