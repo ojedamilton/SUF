@@ -175,7 +175,7 @@ class FacturaController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $factura=Factura::find($request->id);
-        $factura= Factura::with('puntoventa','tipofactura')->selectRaw("id,descuento,totalFactura,fechaModificacion,totalFactura,idPuntoVenta,idTipoFactura, CONCAT(LPAD(numeroFactura, 6, '0')) as numeroFactura")
+        $factura= Factura::with('puntoventa','tipofactura')->selectRaw("id,descuento,totalFactura,fechaModificacion,totalFactura,idpuntoVenta,idTipoFactura, CONCAT(LPAD(numeroFactura, 6, '0')) as numeroFactura")
                                 ->where('id',$request->id)
                                 ->first();
 

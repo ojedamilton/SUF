@@ -38,28 +38,40 @@ class InterfazVentaController extends Controller
             ], 500);
         }
     }
-    public function store (Request $request){
+    public function store(Request $request)
+{
+    try {
+        // Busca el registro por ID
+        $InterfazVenta = InterfazVenta::find($request->idInterfazVenta);
 
-        try {
-            $InterfazVenta = InterfazVenta::find($request->idInterfazVenta);
-            $InterfazVenta->nro_local = $request->nroLocal;
-            $InterfazVenta->nro_contrato = $request->nroContrato;
-            $InterfazVenta->pos_local = $request->posLocal;
-            $InterfazVenta->id_pto_vta = $request->idPtoVta;
-            $InterfazVenta->ruta = $request->ruta;
-            $InterfazVenta->id_empresa = Auth::user()->idEmpresa;
-            $InterfazVenta->save();
-            return response()->json([
-                'success' => true,
-                'message' => 'Interfaz de Venta creado con éxito',
-                'interfazVenta' => $InterfazVenta
-            ], 200);
+        // Si no existe, inicializa uno nuevo
+        if (!$InterfazVenta) {
+            $InterfazVenta = new InterfazVenta();
+            $InterfazVenta->id_empresa = Auth::user()->idEmpresa; // Asigna la empresa al nuevo registro
+        }
+
+        // Asigna los valores al registro
+        $InterfazVenta->nro_local = $request->nroLocal;
+        $InterfazVenta->nro_contrato = $request->nroContrato;
+        $InterfazVenta->pos_local = $request->posLocal;
+        $InterfazVenta->id_pto_vta = $request->idPtoVta;
+        $InterfazVenta->ruta = $request->ruta;
+
+        // Guarda el registro (crea o actualiza)
+        $InterfazVenta->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Interfaz de Venta configurada con éxito',
+            'interfazVenta' => $InterfazVenta,
+        ], 200);
         } catch (\Throwable $th) {
-            Log::error('InterfazVentaController@store -> '.$th);
+            // Manejo de errores
+            Log::error('InterfazVentaController@store -> ' . $th);
             return response()->json([
                 'success' => false,
-                'message' => 'Error al crear Interfaz de Venta',
-                'ptoVenta' => null
+                'message' => 'Error al configurar Interfaz de Venta',
+                'ptoVenta' => null,
             ], 500);
         }
     }

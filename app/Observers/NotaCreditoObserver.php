@@ -2,31 +2,31 @@
 
 namespace App\Observers;
 
-use App\Models\Factura;
+use App\Models\NotaCredito;
 use App\Models\InterfazVenta;
 use App\Models\TipoFactura;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class FacturaObserver
+class NotaCreditoObserver
 {
     /**
-     * Handle the Factura "created" event.
+     * Handle the NotaCredito "created" event.
      *
-     * @param  \App\Models\Factura  $factura
+     * @param  \App\Models\NotaCredito  $notacredito
      * @return void
      */
-    public function created(Factura $factura)
+    public function created(NotaCredito $notascredito)
     {
         try {
              // Cargar relaciones necesarias
-             $factura->load(['puntoventa', 'cliente', 'valor', 'tipofactura']);
+             $notascredito->load(['puntoventa', 'cliente', 'tipofactura']);
 
             // Obtener la interfaz de ventas asociada a la empresa de la factura
-            $interfazVenta = InterfazVenta::where('id_empresa', $factura->idEmpresa)->first();
+            $interfazVenta = InterfazVenta::where('id_empresa', $notascredito->idEmpresa)->first();
 
             if (!$interfazVenta) {
-                Log::warning("No se encontró una interfaz de venta para la empresa ID: {$factura->idEmpresa}");
+                Log::warning("No se encontró una interfaz de venta para la empresa ID: {$notascredito->idEmpresa}");
                 return;
             }
 
@@ -36,21 +36,21 @@ class FacturaObserver
             $pos = str_pad($interfazVenta->pos_local, 2, '0', STR_PAD_LEFT);
             $fecha = now()->format('Ymd'); // Fecha en formato AAAAMMDD
             $hora = now()->format('His'); // Hora en formato HHMMSS
-            $tipoCompra = substr($factura->tipofactura->tipoFactura ?? 'B', 0, 1) . 'D'; // 'D' Para facturas, segun requerimiento
-            $puntoVentaFiscal = str_pad($factura->puntoventa->numPuntoVenta ?? '0000', 4, '0', STR_PAD_LEFT);
-            $numeroFactura = str_pad($factura->numeroFactura, 8, '0', STR_PAD_LEFT);
+            $tipoCompra = substr($notascredito->tipofactura->tipoFactura ?? 'B', 0, 1) . 'C'; // -> 'C' Para NC, segun requerimientos
+            $puntoVentaFiscal = str_pad($notascredito->puntoventa->numPuntoVenta ?? '0000', 4, '0', STR_PAD_LEFT);
+            $numeroNotaCredito = str_pad($notascredito->numeroNotaCredito, 8, '0', STR_PAD_LEFT);
             $operacion = 'N'; // Operación normal
-            $codVendedor = str_pad($factura->idUsuario, 2, '0', STR_PAD_LEFT); // Ejemplo de código de vendedor
-            $dniCliente = 'DNI' . str_pad($factura->cliente->dniCliente ?? '0', 9, '0', STR_PAD_LEFT);
+            $codVendedor = str_pad($notascredito->idUsuario, 2, '0', STR_PAD_LEFT); // Ejemplo de código de vendedor
+            $dniCliente = 'DNI' . str_pad($notascredito->cliente->dniCliente ?? '0', 9, '0', STR_PAD_LEFT);
             $medioPago = 'PE  '; // Medio de pago
             $rubroLocal = str_pad('0000', 4, '0', STR_PAD_LEFT);
             $reporteSinIVA = str_pad('000000000', 9, '0', STR_PAD_LEFT);
             $importeIVA = str_pad('000000000', 9, '0', STR_PAD_LEFT);
-            $ingresoTotal = str_pad(number_format($factura->totalFactura, 2, '.', ''), 9, '0', STR_PAD_LEFT);
+            $ingresoTotal = str_pad(number_format($notascredito->totalNotaCredito, 2, '.', ''), 9, '0', STR_PAD_LEFT);
 
 
             // Generar la línea de salida
-            $linea = "{$nLocal}{$nContrato}{$pos}{$fecha}{$hora}{$tipoCompra}{$puntoVentaFiscal}{$numeroFactura}{$operacion}{$codVendedor}{$dniCliente}{$medioPago}{$rubroLocal}{$reporteSinIVA}{$importeIVA}{$ingresoTotal}\r\n";
+            $linea = "{$nLocal}{$nContrato}{$pos}{$fecha}{$hora}{$tipoCompra}{$puntoVentaFiscal}{$numeroNotaCredito}{$operacion}{$codVendedor}{$dniCliente}{$medioPago}{$rubroLocal}{$reporteSinIVA}{$importeIVA}{$ingresoTotal}\r\n";
 
             // Determinar la ruta donde se guardará el archivo
             $filePath = $interfazVenta->ruta;
@@ -68,7 +68,7 @@ class FacturaObserver
 
             Log::info("Archivo generado correctamente en: {$filePath}");
         } catch (\Exception $e) {
-            Log::error("Error al generar el archivo para la factura ID: {$factura->id}. Error: {$e->getMessage()}");
+            Log::error("Error al generar el archivo para la factura ID: {$notascredito->id}. Error: {$e->getMessage()}");
         }
     }
 

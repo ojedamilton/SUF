@@ -141,10 +141,10 @@ class ClienteController extends Controller
         
             switch ($request->idTipo) {
                 case 1:
-                    return (new ConsumidorFinalStrategy)->tipoFactura();
+                    return (new ConsumidorFinalStrategy)->tipoComprobante();
                     break;
                 case 2:
-                    return (new ExcentoStrategy)->tipoFactura();
+                    return (new ExcentoStrategy)->tipoComprobante();
                     break;
             }
 

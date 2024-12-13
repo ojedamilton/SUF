@@ -137,7 +137,7 @@ export default {
                         <tr>
                           <th></th>
                           <th></th>
-                          <th>Total Nota de Credito</th>
+                          <th>Total NC</th>
                           <th>{{notacredito.totalNotaCredito}}</th>
                         </tr>
                       </tfoot>

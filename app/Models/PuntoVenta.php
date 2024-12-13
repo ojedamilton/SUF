@@ -22,10 +22,10 @@ class PuntoVenta extends Model
     }
 
     public function notascredito(){
-        return $this->hasMany(NotaCredito::class,'idPuntoVenta');
+        return $this->hasMany(NotaCredito::class,'idpuntoVenta');
     }
 
     public function interfazventas(){
-        return $this->hasMany(InterfazVenta::class,'idPuntoVenta');
+        return $this->hasMany(InterfazVenta::class,'idpuntoVenta');
     }
 }

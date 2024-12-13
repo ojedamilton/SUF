@@ -34,7 +34,7 @@ class NotaCredito extends Model implements Auditable
 
     public function puntoventa(){
        
-        return $this->belongsTo(PuntoVenta::class,'idPuntoVenta');
+        return $this->belongsTo(PuntoVenta::class,'idpuntoVenta');
     }
     
     public function tipofactura(){

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Articulo;
 use App\Models\NotaCredito;
+use App\Models\PuntoVenta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -89,8 +90,8 @@ class NotaCreditoController extends Controller
      */
     public function store(Request $request)
     {
-        // Obtengo Pto Venta ||Proxima iteracion
-        $ptoVenta = 1;
+        // Obtengo Pto Venta
+        $ptoVenta = PuntoVenta::first()->id;
 
         // Obtener la empresa del usuario logueado
         $idEmpresa = Auth::user()->idEmpresa;
@@ -167,7 +168,7 @@ class NotaCreditoController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $notacredito=NotaCredito::find($request->id);
-        $notacredito= NotaCredito::with('puntoventa','tipofactura')->selectRaw("id,descuento,totalNotaCredito,fechaNotaCredito,totalNotaCredito,idPuntoVenta,idTipoFactura, CONCAT(LPAD(numeroNotaCredito, 6, '0')) as numeroNotaCredito")
+        $notacredito= NotaCredito::with('puntoventa','tipofactura')->selectRaw("id,descuento,totalNotaCredito,fechaNotaCredito,totalNotaCredito,idpuntoVenta,idTipoFactura, CONCAT(LPAD(numeroNotaCredito, 6, '0')) as numeroNotaCredito")
                                 ->where('id',$request->id)
                                 ->first();
 

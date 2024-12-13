@@ -6,9 +6,11 @@ use App\Models\DetalleCompra;
 use App\Models\DetalleFactura;
 use App\Models\DetalleNotaCredito;
 use App\Models\Factura;
+use App\Models\NotaCredito;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
 use App\Observers\FacturaObserver;
+use App\Observers\NotaCreditoObserver;
 use App\Observers\MailObserver;
 use App\Observers\StockCompraObserver;
 use App\Observers\StockFacturaObserver;
@@ -41,7 +43,9 @@ class AppServiceProvider extends ServiceProvider
         DetalleCompra::observe(StockCompraObserver::class);
         // Cuando se crea una nota de crédito, suma el stock(DetalleNotaCredito es observado por StockNotaCreditoObserver)
         DetalleNotaCredito::observe(StockNotaCreditoObserver::class);
-        // Cuando se crea una factura, se crea una linea en el trancom.txt
-        Factura::observe(FacturaObserver::class);
+        // Cuando se crea una factura, se crea una linea en el trancomp.txt
+        Factura::observe(FacturaObserver::class);        
+        // Cuando se crea una nc, se crea una linea en el trancomp.txt
+        NotaCredito::observe(NotaCreditoObserver::class); 
     }
 }
