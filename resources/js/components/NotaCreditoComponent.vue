@@ -59,7 +59,7 @@
           <div class="row my-3 align-items-center">
             <label for="factura_asociada" class="col-lg-1 control-label">Fact. Asoc.</label>
             <div class="col-lg-3">
-              <input type="text" autocomplete="off" class="form-control input-sm" id="factura_asociada" placeholder="N° Factura Asociada" />
+              <input type="text" autocomplete="off"  v-model="FacturaAsociada" class="form-control input-sm" id="factura_asociada" placeholder="N° Factura Asociada" />
             </div>
             <div class="col-lg-8 d-flex justify-content-end">
               <button type="button" class="btn btn-success px-4" @click="abrirModal(),listarArticulos(1,buscarArticulo)">
@@ -222,6 +222,7 @@
 </template>
 <script>
 import axios from "axios"; // Importo libreria Axios
+import { set } from "lodash";
 export default {  // todo lo que voy a exportar
   props: ["path"], // obtengo constante definida en app.js
   data() {  // variables con las que me manejo en el template
@@ -251,6 +252,7 @@ export default {  // todo lo que voy a exportar
       idCliente:0,
       precio:0,
       pagoId:0,
+      FacturaAsociada:0,
       tipoFacturaId:0,
       cantidadArtModal:1,
       tituloModal: "",
@@ -326,10 +328,36 @@ export default {  // todo lo que voy a exportar
       if(!this.email) this.errorMostrarMsjNotaCredito.push('* El email no puede estar vacío');
       if(!this.tipoFacturaId || this.tipoFactura == 0) this.errorMostrarMsjNotaCredito.push('* El tipo de comprobante no puede estar vacío');
       if(!this.arrayDetalles[0]) this.errorMostrarMsjNotaCredito.push('* No hay Articulos agregados');
+      if(this.FacturaAsociada == 0) this.errorMostrarMsjNotaCredito.push('* La Factura Asociada no puede estar vacía');
       if(subtotal < 0) this.errorMostrarMsjNotaCredito.push('* El subtotal no puede ser negativo');
       if(total < 0) this.errorMostrarMsjNotaCredito.push('* El total no puede ser negativo');
       if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.errorMostrarMsjNotaCredito.push('* El email no es valido');
       if (this.errorMostrarMsjNotaCredito.length) this.errorNotaCredito = 1;
+    },
+    validarFacturaAsociada(){
+      //this.errorNotaCredito = 0;
+      //this.errorMostrarMsjNotaCredito = [];
+      let me = this;
+      let url = 'api/validarFacturaAsociada';
+      let totalNotaCredito = document.querySelector('#totalNotaCredito').textContent;
+      //debugger;
+      axios.
+        post(url,
+          {FacturaAsociada:this.FacturaAsociada,
+          totalNotaCredito:Number.parseFloat(totalNotaCredito).toFixed(2),
+          tipoFacturaId:this.tipoFacturaId}
+        )
+        .then((response)=>{
+          var respuesta = response.data;
+          if (respuesta.success) {
+            //me.errorMostrarMsjNotaCredito.push(respuesta.message);
+            //me.errorNotaCredito = 1;
+          }
+        })
+        .catch((error)=>{
+          me.errorMostrarMsjNotaCredito.push(error.response.data.message);
+          me.errorNotaCredito = 1;
+        });
     },
     async usuarioAuth(){
        let me  = this;
@@ -584,60 +612,66 @@ export default {  // todo lo que voy a exportar
     realizarNotaCredito(){
       this.isLoading=true;
       this.validarNotaCredito();
-      if (this.errorNotaCredito === 1) {
-        this.isLoading = false;
-        return;
-      }
-
+      this.validarFacturaAsociada();
       let totalNotaCredito = document.querySelector('#totalNotaCredito').textContent;
       let pago = parseInt(document.querySelector('#valor').value);
       let me = this;
 
       var url = "/api/notacredito";
-      axios
-        .post(url ,{ 
-              notacredito:{
-                'pago':pago,
-                'id_cliente': this.idCliente,
-                'fechaNotaCredito':this.fechaNotaCredito,
-                'totalNotaCredito':parseInt(totalNotaCredito),
-                'descuento':parseInt(this.descuento),
-                'tipoFacturaId':this.tipoFacturaId
-              }, 
-              detalles:this.arrayDetalles
-        }) 
-        .then(function (response) {
-          var respuesta = response.data;
-          me.isLoading=false;
-          document.querySelector('#subTotalNotaCredito').textContent='0';
-          document.querySelector('#totalNotaCredito').textContent='0';
-          me.arrayDetalles=[];
-          me.buscar='';
-          me.telefono='';
-          me.email='';
-          me.descuento=0;
-          console.log(respuesta);
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Tu Nota de Credito Ha sido Creada',
-            showConfirmButton: false,
-            timer: 3000
-          })
-          /* this.arrayDetalles.splice(this.arrayDetalles.lenght);
-          totalNotaCredito='0'; */
-        })
-        .catch(function (error) {
-          me.isLoading=false;
-          let errorMessage=error.response.data.message;
+      setTimeout(() => {
+        if (this.errorNotaCredito == 1) {
+          this.isLoading = false;
+          return;
+        }
+        axios
+          .post(url ,{ 
+                notacredito:{
+                  'pago':pago,
+                  'id_cliente': this.idCliente,
+                  'fechaNotaCredito':this.fechaNotaCredito,
+                  'totalNotaCredito':parseInt(totalNotaCredito),
+                  'descuento':parseInt(this.descuento),
+                  'tipoFacturaId':this.tipoFacturaId,
+                  'idFacturaAsociada':this.FacturaAsociada,
+                }, 
+                detalles:this.arrayDetalles
+          }) 
+          .then(function (response) {
+            var respuesta = response.data;
+            me.isLoading=false;
+            document.querySelector('#subTotalNotaCredito').textContent='0';
+            document.querySelector('#totalNotaCredito').textContent='0';
+            me.arrayDetalles=[];
+            me.buscar='';
+            me.telefono='';
+            me.email='';
+            me.descuento=0;
+            me.idCliente='';
+            me.pagoId=0;
+            me.FacturaAsociada=0;
+            me.tipoFacturaId=0;
             Swal.fire({
               position: 'center',
-              icon: 'error',
-              title: errorMessage,
+              icon: 'success',
+              title: 'Tu Nota de Credito Ha sido Creada',
               showConfirmButton: false,
               timer: 3000
-            });
-        });
+            })
+            /* this.arrayDetalles.splice(this.arrayDetalles.lenght);
+            totalNotaCredito='0'; */
+          })
+          .catch(function (error) {
+            me.isLoading=false;
+            let errorMessage=error.response.data.message;
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: errorMessage,
+                showConfirmButton: false,
+                timer: 3000
+              });
+          });
+      }, 3000);
     },
      cambiarPagina(page,buscar){
         let me = this;

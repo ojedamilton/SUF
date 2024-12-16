@@ -29,6 +29,7 @@ class NotaCredito extends Model implements Auditable
         'totalNotaCredito',
         'idpuntoVenta',
         'idTipoFactura',
+        'idFacturaAsociada',
         'descuento'
     ];
 

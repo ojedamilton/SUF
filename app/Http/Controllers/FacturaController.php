@@ -82,6 +82,46 @@ class FacturaController extends Controller
         }
     }
 
+    public function validarFacturaAsociada(Request $request)
+    {
+        $factura = Factura::where('numeroFactura', $request->FacturaAsociada)
+            ->where('idEmpresa', Auth::user()->idEmpresa)
+            ->first();
+
+        if (!$factura) {
+            return response()->json([
+                'success' => false,
+                'message' => '* Factura no encontrada',
+                'factura' => null,
+                'detalle' => null,
+            ], 404);
+        }
+        
+        if ($factura->totalFactura != $request->totalNotaCredito) {
+            return response()->json([
+                'success' => false,
+                'message' => '* El total de la NC es distinto al de la factura asociada',
+                'factura' => null,
+                'detalle' => null,
+            ], 500);
+        }
+
+        if ($factura->idTipoFactura != $request->tipoFacturaId) {
+            return response()->json([
+                'success' => false,
+                'message' => '* El tipo de factura de la NC es distinto al de la factura asociada',
+                'factura' => null,
+                'detalle' => null,
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Factura Asociada Encontrada',
+            'factura' => $factura,
+            'detalle' => null,
+        ], 200);
+    }
     /**
      * Store a newly created resource in storage.
      *
