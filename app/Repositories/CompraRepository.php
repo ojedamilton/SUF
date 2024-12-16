@@ -19,9 +19,9 @@ class CompraRepository {
 
         $query = $this->model->query()
             //->with('detallescompra', 'detallescompra.articulo','detallescompra.articulo.stock')
-            ->select('compras.id','compras.numeroCompra','compras.totalCompra','compras.fechaCompra') //'users.name as nameUser','users.apellido as apellidoUser','proveedors.nombreProveedor','proveedors.apellidoProveedor')
-            //->leftJoin('users','compras.idUsuario','=','users.id')
-            //->leftJoin('proveedors','compras.idProveedor','=','proveedors.id')
+            ->select('compras.id','compras.numeroCompra','compras.totalCompra','compras.fechaCompra', 'users.name as nameUser','users.apellido as apellidoUser','proveedors.nombreProveedor','proveedors.apellidoProveedor')
+            ->leftJoin('users','compras.idUsuario','=','users.id')
+            ->leftJoin('proveedors','compras.idProveedor','=','proveedors.id')
             ->orderBy('compras.id', 'desc')
             ->where('compras.idEmpresa', Auth::user()->idEmpresa);
     

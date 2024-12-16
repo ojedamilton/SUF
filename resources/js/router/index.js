@@ -21,11 +21,14 @@ import InventarioStock from "../components/InventarioStockComponent.vue";
 import NuevoArticulo from "../components/NuevoArticuloComponent.vue";
 import ListadoArticulo from "../components/ListadoArticuloComponent.vue";
 import EstadisticasVentas from "../components/EstadisticasVentasComponent.vue";
+import EstadisticasNC from "../components/EstadisticasNCComponent.vue";
+import EstadisticasCompras from "../components/EstadisticasComprasComponent.vue";
 import GruposComponent from "../components/GruposComponent.vue";
 import AccionesComponent from "../components/AccionesComponent.vue";
 import GruposAccionesComponent from "../components/GruposAccionesComponent.vue";
 import NotFoundComponent from "../components/NotFoundComponent.vue";
 import InterfazVentasComponent from "../components/InterfazVentasComponent.vue";
+
 
 const routes = [
     {
@@ -142,6 +145,16 @@ const routes = [
         path: "/estadisticasVentas",
         name: "estadisticasVentas",
         component: EstadisticasVentas,
+    },
+    {
+        path: "/estadisticasNC",
+        name: "estadisticasNC",
+        component: EstadisticasNC,
+    },
+    {
+        path: "/estadisticasCompras",
+        name: "estadisticasCompras",
+        component: EstadisticasCompras,
     },
     {
         path: "/grupos",

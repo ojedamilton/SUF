@@ -444,7 +444,43 @@
                       <li   class="nav-item">
                         <router-link  class="nav-link" id="dashboard-link" to='/estadisticasVentas'>
                           <i class="fa fa-book nav-icon"></i>
-                          <p>Reportes Ventas</p>
+                          <p>Reporte Facturas</p>
+                        </router-link>
+                      </li>
+                    @endcan
+                    @cannot('reportVendedor')
+                      <li class="nav-item">
+                        <router-link  class="nav-link" id="dashboard-link" to='/notfound'>
+                          <i class="fa fa-book nav-icon"></i>
+                          <span class="badge badge-danger">Solicite Permiso</span>
+                        </router-link>
+                      </li>
+                    @endcannot
+                  </ul>
+                  <ul class="nav nav-treeview">
+                    @can('reportVendedor')
+                      <li   class="nav-item">
+                        <router-link  class="nav-link" id="dashboard-link" to='/estadisticasNC'>
+                          <i class="fa fa-book nav-icon"></i>
+                          <p>Reporte NC</p>
+                        </router-link>
+                      </li>
+                    @endcan
+                    @cannot('reportVendedor')
+                      <li class="nav-item">
+                        <router-link  class="nav-link" id="dashboard-link" to='/notfound'>
+                          <i class="fa fa-book nav-icon"></i>
+                          <span class="badge badge-danger">Solicite Permiso</span>
+                        </router-link>
+                      </li>
+                    @endcannot
+                  </ul>
+                  <ul class="nav nav-treeview">
+                    @can('reportVendedor')
+                      <li   class="nav-item">
+                        <router-link  class="nav-link" id="dashboard-link" to='/estadisticasCompras'>
+                          <i class="fa fa-book nav-icon"></i>
+                          <p>Reporte Compras</p>
                         </router-link>
                       </li>
                     @endcan
