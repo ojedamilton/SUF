@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Articulo;
 use App\Models\Factura;
+use App\Models\NotaCredito;
 use App\Models\PuntoVenta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetalleFactura;
+use App\Models\DetalleNotaCredito;
 use App\Models\Stock;
 use App\Repositories\FacturaRepository;
 use Dompdf\Dompdf;
@@ -257,81 +259,128 @@ class FacturaController extends Controller
         return $dompdf->stream('contenido-modal.pdf');
     }
 
-    public function reporteventas(){
-
+    public function reporteventas()
+    {
         $fecha_actual = Carbon::now();
         $inicio_mes_actual = Carbon::now()->startOfMonth();
-
-        $total_facturada_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
-                                                ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
-                                                ->sum('totalFactura');
-        
-        $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa)
+    
+        // Totales de facturas
+        $total_facturada_mes_actual = Factura::where('idEmpresa', Auth::user()->idEmpresa)
+            ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
+            ->sum('totalFactura');
+    
+        $cantidad_facturas = Factura::where('idEmpresa', Auth::user()->idEmpresa)
             ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
             ->count();
-        
-        $cantidad_articulos_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
+    
+        $cantidad_articulos_facturados = Factura::where('idEmpresa', Auth::user()->idEmpresa)
             ->whereBetween('fechaModificacion', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
-            ->join('detallesfacturas','facturas.id','=','detallesfacturas.idFactura')
+            ->join('detallesfacturas', 'facturas.id', '=', 'detallesfacturas.idFactura')
             ->sum('detallesfacturas.cantidadArticulo');
-
-        $ArtMasVendido = 'Sin Articulos';
-
-        // Metricas Para Grafico de Barras ChartJS
-        $numeroMes      = $fecha_actual->month;
-        $nombreMes      = $fecha_actual->formatLocalized('%B');
-        $nameMeses      = [];
-        $amount         = [];
-        $countFacturas  = [];
+    
+        // Totales de notas de crédito
+        $total_notas_credito_mes_actual = NotaCredito::where('idEmpresa', Auth::user()->idEmpresa)
+            ->whereBetween('fechaNotaCredito', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
+            ->sum('totalNotaCredito');
+    
+        $cantidad_notas_credito = NotaCredito::where('idEmpresa', Auth::user()->idEmpresa)
+            ->whereBetween('fechaNotaCredito', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
+            ->count();
+    
+        $cantidad_articulos_notas_credito = NotaCredito::where('idEmpresa', Auth::user()->idEmpresa)
+            ->whereBetween('fechaNotaCredito', [$inicio_mes_actual->toDateString(), $fecha_actual->toDateString()])
+            ->join('detallesnotascredito', 'notascredito.id', '=', 'detallesnotascredito.idNotaCredito')
+            ->sum('detallesnotascredito.cantidadArticulo');
+    
+        // Ajustar las métricas totales restando las notas de crédito
+        $total_ventas_ajustado = $total_facturada_mes_actual - $total_notas_credito_mes_actual;
+        $cantidad_articulos_ajustado = $cantidad_articulos_facturados - $cantidad_articulos_notas_credito;
+    
+        // Métricas para el gráfico de barras
+        $numeroMes = $fecha_actual->month;
+        $nameMeses = [];
+        $amount = [];
+        $countFacturas = [];
         $countArticulos = [];
-
-        for ($i=1; $i <= $numeroMes ; $i++) { 
-            // Get Current Month with dates
+    
+        for ($i = 1; $i <= $numeroMes; $i++) {
             $currentMonth = $fecha_actual->month($i);
             $nameofMonth = $currentMonth->formatLocalized('%B');
-            array_push($nameMeses,$nameofMonth);
+            array_push($nameMeses, $nameofMonth);
+    
             $startOfMonth = $currentMonth->startOfMonth()->toDateString();
             $endOfMonth = date("Y-m-t", strtotime($currentMonth->toDateString()));
-
-            $total_facturada_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
-                    ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
-                    ->sum('totalFactura');
-            array_push($amount,$total_facturada_mes_actual);
-
-            $cantidad_facturas=Factura::where('idEmpresa',Auth::user()->idEmpresa)
+    
+            // Facturas mensuales
+            $total_facturas_mes = Factura::where('idEmpresa', Auth::user()->idEmpresa)
+                ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
+                ->sum('totalFactura');
+    
+            // Notas de crédito mensuales
+            $total_notas_credito_mes = NotaCredito::where('idEmpresa', Auth::user()->idEmpresa)
+                ->whereBetween('fechaNotaCredito', [$startOfMonth, $endOfMonth])
+                ->sum('totalNotaCredito');
+    
+            // Ajustar ventas por mes
+            $ventas_ajustadas_mes = $total_facturas_mes - $total_notas_credito_mes;
+            array_push($amount, $ventas_ajustadas_mes);
+    
+            $cantidad_facturas_mes = Factura::where('idEmpresa', Auth::user()->idEmpresa)
                 ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
                 ->count();
-            array_push($countFacturas,$cantidad_facturas);
-
-            $cantidad_articulos_mes_actual = Factura::where('idEmpresa',Auth::user()->idEmpresa)
+    
+            array_push($countFacturas, $cantidad_facturas_mes);
+    
+            $cantidad_articulos_facturados_mes = Factura::where('idEmpresa', Auth::user()->idEmpresa)
                 ->whereBetween('fechaModificacion', [$startOfMonth, $endOfMonth])
-                ->join('detallesfacturas','facturas.id','=','detallesfacturas.idFactura')
+                ->join('detallesfacturas', 'facturas.id', '=', 'detallesfacturas.idFactura')
                 ->sum('detallesfacturas.cantidadArticulo');
-            array_push($countArticulos,$cantidad_articulos_mes_actual);
-
+    
+            $cantidad_articulos_notas_mes = NotaCredito::where('idEmpresa', Auth::user()->idEmpresa)
+                ->whereBetween('fechaNotaCredito', [$startOfMonth, $endOfMonth])
+                ->join('detallesnotascredito', 'notascredito.id', '=', 'detallesnotascredito.idNotaCredito')
+                ->sum('detallesnotascredito.cantidadArticulo');
+    
+            $articulos_ajustados_mes = $cantidad_articulos_facturados_mes - $cantidad_articulos_notas_mes;
+            array_push($countArticulos, $articulos_ajustados_mes);
         }
-        // Metricas Grafico Pie
-        $cantidadArticulos = DetalleFactura::select('a.nombreArticulo',DB::raw('SUM(detallesfacturas.cantidadArticulo) as total'))
-            ->join('facturas as f','detallesfacturas.idFactura','=','f.id')
-            ->join('articulos as a','detallesfacturas.idArticulo','=','a.id')
-            ->where('f.idEmpresa',Auth::user()->idEmpresa)
+    
+        // Métricas para el gráfico de pie
+        $articulos_facturados = DetalleFactura::select('a.nombreArticulo', DB::raw('SUM(detallesfacturas.cantidadArticulo) as total'))
+            ->join('facturas as f', 'detallesfacturas.idFactura', '=', 'f.id')
+            ->join('articulos as a', 'detallesfacturas.idArticulo', '=', 'a.id')
+            ->where('f.idEmpresa', Auth::user()->idEmpresa)
+            ->whereBetween('f.fechaModificacion', [$startOfMonth, $endOfMonth])
             ->groupBy('detallesfacturas.idArticulo', 'a.id', 'a.nombreArticulo')
-            ->orderByDesc('total')
-            ->pluck('total','nombreArticulo');
-    //DetalleFactura::whereDate();
-        return response()->json([
-            "cantVentaMensual"          =>$cantidad_facturas,
-            "totalVentaMensual"         =>$total_facturada_mes_actual,
-            "cantidadArticulosMensual"  =>$cantidad_articulos_mes_actual,
-            "ArtMasVendido"             =>$ArtMasVendido,
-            "toCurrentMonths"           =>$nameMeses,
-            "amount"                    =>$amount,
-            "countFacturas"             =>$countFacturas,
-            "countArticulos"            =>$countArticulos,
-            'cantidadArticulos'         =>$cantidadArticulos,
-        ],200);
-         
+            ->pluck('total', 'nombreArticulo');
 
-    }
+        $articulos_notas_credito = DetalleNotaCredito::select('a.nombreArticulo', DB::raw('SUM(detallesnotascredito.cantidadArticulo) as total'))
+            ->join('notascredito as nc', 'detallesnotascredito.idNotaCredito', '=', 'nc.id')
+            ->join('articulos as a', 'detallesnotascredito.idArticulo', '=', 'a.id')
+            ->where('nc.idEmpresa', Auth::user()->idEmpresa)
+            ->whereBetween('nc.fechaNotaCredito', [$startOfMonth, $endOfMonth])
+            ->groupBy('detallesnotascredito.idArticulo', 'a.id', 'a.nombreArticulo')
+            ->pluck('total', 'nombreArticulo');
+
+        // Combinar los datos de facturas y notas de crédito para calcular los totales ajustados
+        $cantidadArticulos = $articulos_facturados->map(function ($total, $articulo) use ($articulos_notas_credito) {
+            return $total - ($articulos_notas_credito[$articulo] ?? 0);
+        })->filter(function ($total) {
+            return $total > 0; // Eliminar artículos con valores negativos o cero
+        });
+
+    
+        return response()->json([
+            "cantVentaMensual" => $cantidad_facturas - $cantidad_notas_credito,
+            "totalVentaMensual" => $total_ventas_ajustado,
+            "cantidadArticulosMensual" => $cantidad_articulos_ajustado,
+            "ArtMasVendido" => 'Sin Articulos',
+            "toCurrentMonths" => $nameMeses,
+            "amount" => $amount,
+            "countFacturas" => $countFacturas,
+            "countArticulos" => $countArticulos,
+            'cantidadArticulos' => $cantidadArticulos,
+        ], 200);
+    }    
 
 }
