@@ -128,6 +128,7 @@ class NotaCreditoController extends Controller
             $notacredito->idpuntoVenta = $ptoVenta;
             $notacredito->totalNotaCredito = $request->notacredito['totalNotaCredito'];
             $notacredito->descuento = $request->notacredito['descuento'];
+            $notacredito->idFacturaAsociada = $request->notacredito['idFacturaAsociada'];
             $notacredito->save();
 
             // Instancio Detalles

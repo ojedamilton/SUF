@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/deleteUsuario', [UserController::class,'destroy'])->name('deleteUsuario');
     // Facturacion
     Route::get('/allfacturas',[FacturaController::class,'getAllFacturas'])->name('allfacturas');
+    Route::post('/validarFacturaAsociada',[FacturaController::class,'validarFacturaAsociada'])->name('validarFacturaAsociada');
 
     // Notas de credito
     Route::post('/notacredito', [NotaCreditoController::class,'store'])->name('notacredito');
