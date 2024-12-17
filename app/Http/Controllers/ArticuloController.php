@@ -140,18 +140,18 @@ class ArticuloController extends Controller
          $validator = Validator::make(
             $request->all(),
             [
-                'nombreArticulo'=>'required|max:50',
-                'precioCompra'=>'required|numeric',
-                'precio'=>'required',
-                'idCategoria'=>'required',
+                'nombre'=>'required|max:50',
+                'precioC'=>'required|numeric',
+                'precioV'=>'required',
+                'categoriaId'=>'required',
                 'selectedProveedor'=>'required'
             ],[
-                'nombreArticulo.required'=>'El nombre es requerido',
-                'nombreArticulo.max'=>'El nombre no debe superar los 50 caracteres',
-                'precioCompra'=>'precio Compra es requerido',
-                'precioCompra.numeric'=>'precio Compra debe ser numerico',
-                'precio'=>'precio venta es requerido',
-                'idCategoria'=>'La Categoria es requerida',
+                'nombre.required'=>'El nombre es requerido',
+                'nombre.max'=>'El nombre no debe superar los 50 caracteres',
+                'precioC'=>'precio Compra es requerido',
+                'precioC.numeric'=>'precio Compra debe ser numerico',
+                'precioV'=>'precio venta es requerido',
+                'categoriaId'=>'La Categoria es requerida',
                 'selectedProveedor'=>'El Proveedor es requerido',
             ]
         );

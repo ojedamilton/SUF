@@ -20,26 +20,22 @@ public function run()
             [
                 'idArticulo' => 1,
                 'cantidad' => 100,
-                'cantidadMinima' => 5,
-                'idEmpresa' => 1
+                'cantidadMinima' => 5
             ],
             [
                 'idArticulo' => 2,
                 'cantidad' => 60,
-                'cantidadMinima' => 5,
-                'idEmpresa' => 1
+                'cantidadMinima' => 5
             ],
             [
                 'idArticulo' => 3,
                 'cantidad' => 150,
-                'cantidadMinima' => 6,
-                'idEmpresa' => 1
+                'cantidadMinima' => 6
             ],
             [
                 'idArticulo' => 4,
                 'cantidad' => 50,
-                'cantidadMinima' => 4,
-                'idEmpresa' => 1
+                'cantidadMinima' => 4
             ],
         ];
 

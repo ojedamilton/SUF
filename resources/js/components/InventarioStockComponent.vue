@@ -85,7 +85,7 @@
                                 </div>
 
                                 <!-- Errores Validación -->
-                                <div v-show='errorcliente' class='form-group row align-items-center div-error'>
+                                <div v-show='errorInventario' class='form-group row align-items-center div-error'>
                                     <div class='text-center text-error'>
                                         <div v-for='error in errorMostrarMsjuser' :key='error' v-text='error'></div>
                                     </div>
@@ -137,7 +137,7 @@ export default {
                 'to':0,
             },
             offset:3,
-            errorcliente:0,
+            errorInventario:0,
             errorMostrarMsjuser:[],
         }
     },
@@ -254,7 +254,7 @@ export default {
          */
         actualizarInventario(){
             this.validarInventario();
-            if(this.errorRole==1 ){
+            if(this.errorInventario==1 ){
                 return;
             } 
             let me=this;
@@ -291,11 +291,11 @@ export default {
          * @return void
          */
         validarInventario(){
-            this.errorcliente=0;
+            this.errorInventario=0;
             this.errorMostrarMsjuser=[];
-            if(!this.cantidad) this.errorMostrarMsjuser.push('* La cantidad no puede estar vacío');
-            if(!this.cantidadMinima) this.errorMostrarMsjuser.push('* La cantidad minima no puede estar vacío');
-            if(this.errorMostrarMsjuser.length) this.errorcliente=1;
+            if(this.cantidad < 0) this.errorMostrarMsjuser.push('* La cantidad no puede ser menor que 0');
+            if(this.cantidadMinima < 0) this.errorMostrarMsjuser.push('* La cantidad minima no puede ser menor que 0');
+            if(this.errorMostrarMsjuser.length) this.errorInventario=1;
         },
     },
     mounted() {

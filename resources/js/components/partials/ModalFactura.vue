@@ -79,7 +79,7 @@ export default {
                     <div class="col-4">
                       <h5>Tipo Factura</h5>
                       <p>
-                        {{factura.tipoFactura}}
+                        {{factura.tipofactura.tipoFactura}}
                       </p>
                     </div>
                     <div class="col-4">

@@ -79,7 +79,7 @@ export default {
                     <div class="col-4">
                       <h5>Tipo Nota de Credito</h5>
                       <p>
-                        {{notacredito.tipoFactura}}
+                        {{notacredito.tipofactura.tipoFactura}}
                       </p>
                     </div>
                     <div class="col-4">
