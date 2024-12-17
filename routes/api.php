@@ -87,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/detallescomprasbyid',[CompraController::class,'getDetallesComprasById'])->name('detallescomprasbyid');
     Route::post('/getcomprasbyid',[CompraController::class,'getComprasById'])->name('comprasbyid');
     Route::post('/descargarCompra',[CompraController::class,'descargarCompra'])->name('descargarcompra');
+    Route::post('deleteCompra',[CompraController::class,'destroy'])->name('deleteCompra');
 
     // Proveedor
     Route::get('/proveedores',[ProveedorController::class,'getAllProveedores'])->name('proveedores');

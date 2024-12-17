@@ -35,4 +35,23 @@ class StockCompraObserver
             Log::error($th->getMessage());
         }
     }
+
+    public function deleting(DetalleCompra $detallecompra){
+        // Logeo de Actualizacion Detalle Factura
+        Log::info("Detalle Compra actualizado: id->".$detallecompra->id." NumeroCompra   ->".$detallecompra->idCompra." idArticulo->".$detallecompra->idArticulo." Cantidad->".$detallecompra->cantidadArticulo);
+        try {
+            // Refresco Instancia $factura recien creada
+            $detallecompra->refresh();
+            $detallecompra = $detallecompra->load('articulo');
+            // Sumo Stock de Articulo
+            $stock = Stock::where('idArticulo',$detallecompra->idArticulo)->first();
+            $stock->cantidad = $stock->cantidad + $detallecompra->cantidadArticulo;
+            $stock->save();
+            Log::info("Se actualizo el Stock para el Articulo: ".$stock->idArticulo." cantidad: ".$stock->cantidad);
+            
+        } catch (\Throwable $th) {
+            Log::info("No se actualizo el Stock en Compra: id ->".$detallecompra->id." Numero: ".$detallecompra->idCompra);
+            Log::error($th->getMessage());
+        }
+    }
 }

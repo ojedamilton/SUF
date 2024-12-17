@@ -35,6 +35,13 @@
                     <span title="Solicitar Permiso" v-else>
                       <i class="fas fa-times"></i>
                     </span>
+                     <!-- Permiso visualizador de Compras -->
+                     <a v-if="idAccionesUser.includes('viewComprador')"  @click="eliminarCompra(compra.id);" href="#" class="text-muted">
+                      <i class="fas fa-trash-alt text-danger"></i>
+                    </a>
+                    <span title="Solicitar Permiso" v-else>
+                      <i class="fas fa-times"></i>
+                    </span>
                   </td>
                 </tr>
               </tbody>
@@ -117,6 +124,65 @@
         // Filtrar el arreglo para mostrar solo las compras de la página actual
         this.comprasPaginadas = this.arrayCompras.slice(inicio, fin);
       },
+              /**
+         * Pop-up de confirmación para eliminar
+         * Aceptar: envio por metodo post el idcliente
+         * Cancelar : mensaje de cancelación y no se hace nada
+         * Verificar /deleteCliente en web.php
+         * Controlador ClienteController.php metodo destroy()
+         * 
+         * @param integer idcliente
+         * @return SwalFire modal de confirmación
+         */
+         eliminarCompra(idCompra){
+            const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+            })
+            swalWithBootstrapButtons.fire({
+                title: 'Estas seguro de eliminarlo?',
+                // text: "You won't be able to revert this!",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value) {  
+                    let me=this;
+                    var url = 'api/deleteCompra';
+                    axios.post(url,{
+                        'idCompra':idCompra,
+                    }).then(function (response){
+                        me.cerrarModal();
+                        me.listarCompras(me.pagination.current_page,me.buscar);
+                        swal.fire({
+                            title:'Eliminado!',
+                            text:'El registro fue Eliminado.',
+                            icon:'success',
+                            timer: 1500,
+                            timerProgressBar: true,
+                        })
+                    }).catch(function(error){
+                        console.log(error);
+                        if(error.status === 401){
+                        location.reload(true)
+                    }
+                    });
+                }else if(result.dismiss === Swal.DismissReason.cancel){
+                    swal.fire({
+                        title: 'Cancelled',
+                        text:'Tu registro está a salvo ',
+                        icon:'error',
+                        timer: 1500,
+                        timerProgressBar: true,
+                    })
+                }  
+            })          
+        },
       paginaAnterior() {
         if (this.paginaActual > 1) {
           this.paginaActual--;

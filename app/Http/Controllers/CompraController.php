@@ -224,4 +224,32 @@ class CompraController extends Controller
 
     }
 
+    public function destroy(Request $request)
+    {
+        // Si quieren ingresar sin un request, redirecciona al home
+        if (!$request->ajax()) return redirect('/');
+        // Eliminar Compra
+        // Try - catch para manejar errores
+
+        try {
+            // Comienzo Transaccion
+            DB::beginTransaction();
+            // Elimino Compra
+            $compra = Compra::find($request->idCompra);
+            $compra->delete();
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Compra Eliminada Correctamente',
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            Log::error($th->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al Eliminar Compra',
+            ], 500);
+        }
+    }
+
 }
