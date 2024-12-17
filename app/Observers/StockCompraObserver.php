@@ -45,7 +45,7 @@ class StockCompraObserver
             $detallecompra = $detallecompra->load('articulo');
             // Sumo Stock de Articulo
             $stock = Stock::where('idArticulo',$detallecompra->idArticulo)->first();
-            $stock->cantidad = $stock->cantidad + $detallecompra->cantidadArticulo;
+            $stock->cantidad = $stock->cantidad - $detallecompra->cantidadArticulo;
             $stock->save();
             Log::info("Se actualizo el Stock para el Articulo: ".$stock->idArticulo." cantidad: ".$stock->cantidad);
             
